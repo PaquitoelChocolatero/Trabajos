@@ -6,8 +6,8 @@
 
 int main (int argc, char *argv[]){                      //argc is the number os parameters, argv are all the strings typed in the console    
     
-    char file_buffer [1024];
-    ssize_t ro_bytes;
+    char file_buffer [1024];                            //Text itself
+    ssize_t nbytes;                                     //Size of the text
     
     if(argc != 2){                                      //Check if the user has typed a file to open
         printf("Error: you need to enter a file\n");
@@ -17,22 +17,18 @@ int main (int argc, char *argv[]){                      //argc is the number os 
     int openedFile = open(argv[1], O_RDONLY);           //Open the typed file only with read permissions
 
     if(openedFile == -1){                               //Check if the file exists
-        
         printf("Error: the file doesn't exit\n");
         return -1;
-        
     } else {
-        
-        ro_bytes = read(openedFile, file_buffer, 1024);
+        nbytes = read(openedFile, file_buffer, 1024);
         close(openedFile);
         
-        if(ro_bytes == 0){
-            printf("The file is empty \n");
+        if(nbytes == 0){                                //Check if the file is empty
+            printf("The file is empty\n");
             return 0;
         } else {
-            printf("%s", file_buffer);
+            printf("%s", file_buffer);                  //Print the file
         }
     }
-
     return 0;
 }
