@@ -3,7 +3,7 @@ Sistemas Operativos - Practica 1 - Llamadas al sistema
 
 Este programa verifica que el formato del entregable de la practica es el correcto (sigue las especificaciones de nombrado, y esta bien comprimido).
 
-Tambien realiza una prueba basica de funcionamiento para cada uno de los tres programas solicitados en la practica. Cumplir esta prueba no es garantia de tener la maxima nota en el ejercicio. Se trata solo de una sugerencia para que los alumnos comprueben el funcionamiento general de su programa. Los alumnos deberan ademas cumplir los otros requisitos del programa, realizar el codigo adecuado, comentarlo, probar casos extremos, y en general cumplir con las demas exigencias descritas en el enunciado de la practica. 
+Tambien realiza una prueba basica de funcionamiento para cada uno de los tres programas solicitados en la practica. Cumplir esta prueba no es garantia de tener la maxima nota en el ejercicio. Se trata solo de una sugerencia para que los alumnos comprueben el funcionamiento general de su programa. Los alumnos deberan ademas cumplir los otros requisitos del programa, realizar el codigo adecuado, comentarlo, probar casos extremos, y en general cumplir con las demas exigencias descritas en el enunciado de la practica.
 '''
 import subprocess
 import signal
@@ -12,7 +12,7 @@ import glob
 import time
 import sys
 
-resultString =""
+global resultString
 
 def normalizeOutput(result):
 	'''
@@ -48,7 +48,7 @@ def lookForTargetFile(folder,targetFile):
 			if item.lower()==targetFile.lower():
 				return innerFolder+"/"+item
 	return toReturn
-	
+
 
 def checkTargetFile(folder,targetFile):
 	'''
@@ -68,17 +68,16 @@ def testExerciseCAT(folder):
 	Funcion que realiza la prueba sugerida del programa mycat
 	'''
 
-	global resultString 
 	#Definimos los nombres del fichero de codigo fuente, programa y fichero de prueba
 	targetFile="mycat.c"
 	programFile="mycat"
-	
+
 	#Buscamos el fichero fuente
 	filePath=checkTargetFile(folder,targetFile)
 	if filePath=="-":
 		print "CORRECTOR:", targetFile, "no encontrado"
 		return "-"
-	
+
 	#Compilamos el fichero fuente
 	programPath=folder+programFile
 	compiled=subprocess.call(["gcc", filePath,"-o", programPath])
@@ -92,9 +91,9 @@ def testExerciseCAT(folder):
 
 	#Ejecutamos el programa del alumno
 	cmd = programPath + " " + folder+testFile
-	pro = subprocess.Popen(cmd, stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True, preexec_fn=os.setsid)  
+	pro = subprocess.Popen(cmd, stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True, preexec_fn=os.setsid)
 	time.sleep(0.5)
-	os.killpg(pro.pid, signal.SIGTERM) 
+	os.killpg(pro.pid, signal.SIGTERM)
 
 	result2, stderr = pro.communicate()
 
@@ -103,14 +102,14 @@ def testExerciseCAT(folder):
 	obtainedResult = normalizeOutput(result2)
 
 	#Comparamos las salidas e imprimimos resultados
-	print "CORRECTOR MYCAT. Salida esperada:" 
+	print "CORRECTOR MYCAT. Salida esperada:"
 	print result1
-	print "CORRECTOR MYCAT. Salida del programa:" 
+	print "CORRECTOR MYCAT. Salida del programa:"
 	print result2
 
 	if result1 == result2:
 		print "CORRECTOR MYCAT. PRUEBA CORRECTA"
-		resultString += "1 " 
+		resultString += "1 "
 	else:
 		print "CORRECTOR MYCAT. PRUEBA INCORRECTA. Las salidas difieren"
 		resultString += "0 "
@@ -190,7 +189,7 @@ def testExerciseCAT(folder):
         result1 = 255
 
         #Ejecutamos el programa del alumno
-        cmd = programPath 
+        cmd = programPath
         pro = subprocess.Popen(cmd, stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True, preexec_fn=os.setsid)
         time.sleep(0.5)
         os.killpg(pro.pid, signal.SIGTERM)
@@ -244,9 +243,9 @@ def testExerciseLS(folder):
 
 	#Ejecutamos el programa del alumno
 	cmd = programPath + " " + folder
-	pro = subprocess.Popen(cmd, stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True, preexec_fn=os.setsid)  
+	pro = subprocess.Popen(cmd, stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True, preexec_fn=os.setsid)
 	time.sleep(0.5)
-	os.killpg(pro.pid, signal.SIGTERM) 
+	os.killpg(pro.pid, signal.SIGTERM)
 	result2, stderr = pro.communicate()
 
 	#Obtenemos las salidas de la prueba con la que vamos a comparar y de la ejecucion del programa del alumno
@@ -254,9 +253,9 @@ def testExerciseLS(folder):
 	obtainedResult = normalizeOutput(result2)
 
 	#Comparamos las salidas e imprimimos resultados
-	print "CORRECTOR MYLS. Salida esperada:" 
+	print "CORRECTOR MYLS. Salida esperada:"
 	print result1
-	print "CORRECTOR MYLS. Salida del programa:" 
+	print "CORRECTOR MYLS. Salida del programa:"
 	print result2
 
 	if result1 == result2:
@@ -369,9 +368,9 @@ def testExerciseSIZE(folder):
 
 	#Ejecutamos el programa del alumno
 	cmd = programPath
-	pro = subprocess.Popen(cmd, stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True, preexec_fn=os.setsid)  
+	pro = subprocess.Popen(cmd, stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True, preexec_fn=os.setsid)
 	time.sleep(0.5)
-	os.killpg(pro.pid, signal.SIGTERM) 
+	os.killpg(pro.pid, signal.SIGTERM)
 	result2, stderr = pro.communicate()
 
 	os.chdir(cwd)
@@ -381,9 +380,9 @@ def testExerciseSIZE(folder):
 	obtainedResult = normalizeOutput(result2)
 
 	#Comparamos las salidas e imprimimos resultados
-	print "CORRECTOR MYSIZE. Salida esperada:" 
+	print "CORRECTOR MYSIZE. Salida esperada:"
 	print result1
-	print "CORRECTOR MYSIZE. Salida del programa:" 
+	print "CORRECTOR MYSIZE. Salida del programa:"
 	print result2
 
 	if result1 == result2:
@@ -440,19 +439,19 @@ if(__name__=="__main__"):
 	else:
 		print 'CORRECTOR: corrigiendo', sys.argv[1]
 		inputFile = sys.argv[1]
-		
+
 		#Comprobamos que el fichero existe
 		if not os.path.isfile(inputFile):
 			print "El fichero", inputFile, "no existe"
 			sys.exit(0)
-	
+
 		#Comprobamos el formato del nombre del fichero
 		tokens=inputFile.replace(".zip","")
 		tokens=tokens.split("_")
 		if len(tokens) != 3 and len(tokens) != 4 and len(tokens) != 5:
 			print "Formato del nombre del archivo incorrecto: ssoo_p1_AAAAA_BBBBB_CCCCC.zip"
 			sys.exit(0)
-			
+
 		ssoo=tokens[0]
 		p1=tokens[1]
 		u1=tokens[2]
@@ -467,7 +466,7 @@ if(__name__=="__main__"):
 			sys.exit(0)
 
 		print "CORRECTOR: NIA 1",u1, "NIA 2", u2, "NIA 3", u3
-		
+
 		#Preparamos la carpeta temporal donde se realizaran las pruebas
 		tempFolder="/tmp/ssoo/"
 		testFile="f_aes.txt"
@@ -476,9 +475,9 @@ if(__name__=="__main__"):
 		os.mkdir(tempFolder)
 		os.mkdir(tempFolder+"dirC")
 		os.mkdir(tempFolder+"dirA")
-		subprocess.call(["touch",tempFolder+"f_empty.txt"])		
+		subprocess.call(["touch",tempFolder+"f_empty.txt"])
 		subprocess.call("echo \"AAAAA\" > " + tempFolder + testFile, shell=True)
-		
+
 		subprocess.call(["cp",inputFile,tempFolder])
 		subprocess.call(["touch",tempFolder+"dirA/"+"f_sizetrue.txt"])
                 subprocess.call("echo \"AAAAA\" > " + tempFolder + testFile, shell=True)
@@ -494,7 +493,7 @@ if(__name__=="__main__"):
 			print "Error al descomprimir el fichero zip"
 			sys.exit(0)
 
-		
+
 		#Realizamos una prueba basica de cada uno de los programas
 
 		testExerciseCAT(tempFolder)
@@ -504,7 +503,7 @@ if(__name__=="__main__"):
 		testExerciseSIZE(tempFolder)
 
 		global resultString
-		print(resultString) 
+		print(resultString)
 
 		subprocess.call(["rm","-r","/tmp/ssoo"])
 
