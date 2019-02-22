@@ -8,14 +8,18 @@
 int main(int argc, char *argv[])
 {
     char actual_dir[PATH_MAX];
+    DIR *opened_dir;
+    struct dirent *dir;
 
     if(argc < 2){              /*If arguments are lower than two it means that we are working with the actual directory*/
 
 	if (getcwd(actual_dir, sizeof(actual_dir)) != NULL) {
-		printf("Current working dir: %s\n", actual_dir);
+		opened_dir = opendir(actual_dir);
+		while ((dir = readdir(opened_dir)) != NULL) {
+ 			printf("%s\n", dir->d_name);
+		}
 	} else {
 		perror("getcwd() error");
-		return 1;
    	}
 	return 0;
         
@@ -25,10 +29,11 @@ int main(int argc, char *argv[])
         return 0;
         
     } else {                    /*It means that we are working with an introduced directory*/
-        
         getcwd(actual_dir, sizeof(actual_dir));
 	strcat(actual_dir, argv[1]);
-        printf("Current working dir: %s\n", actual_dir);
+	opened_dir = opendir(actual_dir);
+	while ((dir = readdir(opened_dir)) != NULL) {
+ 		printf("%s\n", dir->d_name);
+	}
     }
-    
 }
