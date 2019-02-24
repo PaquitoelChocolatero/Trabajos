@@ -36,14 +36,13 @@ int main(int argc, char *argv[])
         } else {
             
             perror("getcwd() error");
-        
+            return -1;
         }
-        return 0;
         
     } else {       /*It can't have more than two arguments*/
         
         printf("Error: introduce only one argument\n");
-        return 0;
+        return -1;
         
     }
     

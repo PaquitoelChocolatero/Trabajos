@@ -25,12 +25,12 @@ int main(int argc, char *argv[])
             perror("getcwd() error");
         
         }
-        return 0;
+        return -1;
         
     } else if (argc > 2){       /*It can't have more than two arguments*/
         
         printf("Error: introduce only one argument\n");
-        return 0;
+        return -1;
         
     } else {                    /*It means that we are working with an introduced directory*/
         
@@ -41,5 +41,5 @@ int main(int argc, char *argv[])
             printf("%s\n", dir->d_name);
         }
     }
-    closedir(opened_dir);
+    closedir(opened_dir);ss
 }
