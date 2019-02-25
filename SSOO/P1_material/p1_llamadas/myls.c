@@ -33,7 +33,9 @@ int main(int argc, char *argv[]){
         
     } else {                    /*It means that we are working with an introduced directory*/
 
-        if(argv[1][0]=="/"){                                        //If it is a root directory we don't want to concatenate it with the actual one
+        char *root_directory = "/";
+
+        if(argv[1][0]==root_directory[0]){                                        //If it is a root directory we don't want to concatenate it with the actual one
 
             opened_dir = opendir(argv[1]);
             if(opened_dir){
