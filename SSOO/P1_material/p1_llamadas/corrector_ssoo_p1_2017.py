@@ -12,7 +12,7 @@ import glob
 import time
 import sys
 
-global resultString
+resultString =""
 
 def normalizeOutput(result):
 	'''
@@ -68,6 +68,7 @@ def testExerciseCAT(folder):
 	Funcion que realiza la prueba sugerida del programa mycat
 	'''
 
+	global resultString
 	#Definimos los nombres del fichero de codigo fuente, programa y fichero de prueba
 	targetFile="mycat.c"
 	programFile="mycat"
