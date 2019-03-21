@@ -41,5 +41,5 @@ int main(int argc, char *argv[])
             printf("%s\n", dir->d_name);
         }
     }
-    closedir(opened_dir);ss
+    closedir(opened_dir);
 }
