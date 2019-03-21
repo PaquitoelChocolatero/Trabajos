@@ -10,13 +10,15 @@
 #include <stddef.h>			/* NULL */
 #include <stdio.h>			/* setbuf, printf */
 
-#include <stdlib.h>			
+#include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
 #include <sys/sysinfo.h>
 #include <linux/kernel.h>
 #include <sys/wait.h>
+#include <limits.h>
+#include <sys/time.h>
 
 extern int obtain_order();		/* See parser.y for description */
 
@@ -27,10 +29,11 @@ int main(void) {
 	int args_counter;
 	char *filev[3];
 	int ret;
-    int bg
+    int bg;
     
     int pid;
-
+    char *getcwd(char *buf, size_t size);
+    
 	setbuf(stdout, NULL);			/* Unbuffered */
 	setbuf(stdin, NULL);
 
@@ -68,11 +71,77 @@ int main(void) {
  * END OF THE PART TO BE REMOVED
  */
 
-/*
- *  NORMAL COMMANDS
- */	
-            if (num_commands == 1) {
+        /*
+         * SPECIAL COMMANDS
+         */
+        if (strncmp("mytime", argvv[0][0], 6) == 0){
+            struct timeval ti, tf;
+            long elapsed;
+            gettimeofday(&ti, 0);
+            
+            printf("prueba");
+            
+            pid = fork();
+            if (pid == 0) {
+                
+                printf("%c", filev[0]);
+                char* filev_chopped = filev + 7;
+                printf("%c", filev_chopped[0]);
+                
+                //If there is an entry we close the current one and redirect to the new one
+                if (filev_chopped[0] != NULL) {
+                    close(0);
+                    open(filev_chopped[0], O_RDONLY);
+                }
+                
+                //The same but printing on screen
+                if (filev_chopped[1] != NULL) {
+                    close(1);
+                    open(filev_chopped[1], O_CREAT|O_TRUNC|O_RDONLY);
+                }
+                
+                //The same but with the erros.
+                if (filev_chopped[2] != NULL) {
+                    close(2);
+                    open(filev_chopped[2], O_CREAT|O_TRUNC|O_RDONLY);
+                }
 
+                //Print child PID
+                printf("Hijo: %i\n\n", pid);
+                //Do the exec
+                execvp(argvv[0][0], argvv[0]);
+            }
+
+            //Parent code, so wait for the child to finish
+            //if its the only one in the order
+            if (bg == 0) {
+                printf("\nEsperando al hijo: %i\n", pid);
+                waitpid(pid, NULL, 0);
+            }
+            else if (bg == 1){
+                bg = 0;
+                execvp(argvv[0][0], argvv[0]);
+            }
+            
+            else printf("[%i]\n", pid);
+            
+            gettimeofday(&tf, 0);
+            elapsed = (tf.tv_sec-ti.tv_sec)*1000000 + tf.tv_usec-ti.tv_usec;
+            printf("%f", elapsed);
+            
+        } else if (strncmp("mypwd", argvv[0][0], 6) == 0){
+            
+            char cwd[PATH_MAX];
+            if (getcwd(cwd, sizeof(cwd)) != NULL) {
+                printf("Current dir: %s\n", cwd);
+            } else {
+                perror("​Mypwd error​");
+            }
+            
+        /*
+         *  NORMAL COMMANDS
+         */	
+        } else if (num_commands == 1) {
 				//Do the fork
                 pid = fork();
 				if (pid == 0) {
@@ -103,14 +172,17 @@ int main(void) {
 
 				//Parent code, so wait for the child to finish
 				//if its the only one in the order
-				else if (bg == 0) {
+				if (bg == 0) {
 					printf("\nEsperando al hijo: %i\n", pid);
 					waitpid(pid, NULL, 0);
 				}
-				else if (bg == 1) bg=0;
+				else if (bg == 1){
+                    bg = 0;
+                    execvp(argvv[0][0], argvv[0]);
+                }
 
 				else printf("[%i]\n", pid);
-}
+        }
 
     } //fin while 
 
