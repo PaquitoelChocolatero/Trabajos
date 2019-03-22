@@ -127,9 +127,9 @@ int main(void) {
             
             gettimeofday(&tf, 0);
             elapsed = (tf.tv_sec-ti.tv_sec)*1000000 + tf.tv_usec-ti.tv_usec;
-            printf("%f", elapsed);
+            printf("%f\n", elapsed);
             
-        } else if (strncmp("mypwd", argvv[0][0], 6) == 0){
+        } else if (strncmp("mypwd", argvv[0][0], 5) == 0){
             
             char cwd[PATH_MAX];
             if (getcwd(cwd, sizeof(cwd)) != NULL) {
@@ -172,13 +172,12 @@ int main(void) {
 
 				//Parent code, so wait for the child to finish
 				//if its the only one in the order
-				if (bg == 0) {
+				if (!bg) {
 					printf("\nEsperando al hijo: %i\n", pid);
 					waitpid(pid, NULL, 0);
 				}
-				else if (bg == 1){
+				else if (bg){
                     bg = 0;
-                    execvp(argvv[0][0], argvv[0]);
                 }
 
 				else printf("[%i]\n", pid);
