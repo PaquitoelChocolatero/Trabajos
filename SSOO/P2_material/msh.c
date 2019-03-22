@@ -7,9 +7,8 @@
  * THIS FILE IS TO BE MODIFIED
  */
 
-#include <stddef.h>			/* NULL */
-#include <stdio.h>			/* setbuf, printf */
-
+#include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -45,35 +44,11 @@ int main(void) {
 		num_commands = ret - 1;		/* Line */
 		if (num_commands == 0) continue;	/* Empty line */
 
-/*
- * THE PART THAT MUST BE REMOVED STARTS HERE
- * THE FOLLOWING LINES ONLY GIVE AN IDEA OF HOW TO USE THE STRUCTURES
- * argvv AND filev. THESE LINES MUST BE REMOVED.
- */
-
-/*		for (command_counter = 0; command_counter < num_commands; command_counter++) {
- *			for (args_counter = 0; (argvv[command_counter][args_counter] != NULL); args_counter++) {
- *				printf("%s ", argvv[command_counter][args_counter]);
- *			}
- *			printf("\n");
- *		}
- *	
- *		if (filev[0] != NULL) printf("< %s\n", filev[0]);// IN
- *
- *		if (filev[1] != NULL) printf("> %s\n", filev[1]);// OUT
- *	
- *		if (filev[2] != NULL) printf(">& %s\n", filev[2]);// ERR
- *	
- *		if (bg) printf("&\n");
- */
-
-/*
- * END OF THE PART TO BE REMOVED
- */
-
         /*
          * SPECIAL COMMANDS
          */
+
+        //MYTIME
         if (strncmp("mytime", argvv[0][0], 6) == 0){
             struct timeval ti, tf;
             long elapsed;
@@ -141,12 +116,28 @@ int main(void) {
         /*
          *  NORMAL COMMANDS
          */	
-        } else if (num_commands == 1) {
-				//Do the fork
-                pid = fork();
-				if (pid == 0) {
+        } else if(num_commands > 1){
+            //Go command by command
+            for(int i=0; i<num_commands; i++){
+                //Create a pipe
+                int strcat("pipe", i)[2];
+                pipe(pipe);
 
-					//If there is an entry we close the current one and redirect to the new one
+                //Create each son
+                pid=fork();
+                
+                //CHILD
+                if(pid==0){
+                    dup2(pipe[0], filev[0]);//Redirect the pipe to the standard output
+                    dup2(pipe[1], filev[1]);
+                    close(pipe[0]);//Close the pipe
+                    close(pipe[1]);
+                }
+
+                //FATHER
+                else{
+
+                    //If there is an entry we close the current one and redirect to the new one
 					if (filev[0] != NULL) {
 						close(0);
 						open(filev[0], O_RDONLY);
@@ -164,23 +155,51 @@ int main(void) {
 						open(filev[2], O_CREAT|O_TRUNC|O_RDONLY);
 					}
 
-					//Print child PID
-					printf("Hijo: %i\n\n", pid);
-					//Do the exec
-					execvp(argvv[0][0], argvv[0]);
-				}
+					//Exec
+					execvp(argvv[i][0], argvv[i]);
 
-				//Parent code, so wait for the child to finish
-				//if its the only one in the order
-				if (!bg) {
-					printf("\nEsperando al hijo: %i\n", pid);
-					waitpid(pid, NULL, 0);
-				}
-				else if (bg){
-                    bg = 0;
+                    //Close the pipe
+                    close(pipe);
+                    //Wait for the child to die
+                    waitpid(pid, NULL, 0);
+                }
+            }
+        } else if (num_commands == 1) {
+            //Do the fork
+            pid = fork();
+            if (pid == 0) {
+
+                //If there is an entry we close the current one and redirect to the new one
+                if (filev[0] != NULL) {
+                    close(0);
+                    open(filev[0], O_RDONLY);
                 }
 
-				else printf("[%i]\n", pid);
+                //The same but printing on screen
+                if (filev[1] != NULL) {
+                    close(1);
+                    open(filev[1], O_CREAT|O_TRUNC|O_RDONLY);
+                }
+
+                //The same but with the errors.
+                if (filev[2] != NULL) {
+                    close(2);
+                    open(filev[2], O_CREAT|O_TRUNC|O_RDONLY);
+                }
+
+                //Print child's PID
+                printf("Hijo: %i\n\n", pid);
+                //Do the exec
+                execvp(argvv[0][0], argvv[0]);
+            }
+
+            if (!bg) {
+                printf("\nEsperando al hijo: %i\n", pid);
+                waitpid(pid, NULL, 0);
+            }
+            else if (bg) bg = 0;
+
+            else printf("[%i]\n", pid);
         }
 
     } //fin while 
