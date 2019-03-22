@@ -78,7 +78,7 @@ int main(void) {
                 //Print child PID
                 printf("Hijo: %i\n\n", pid);
                 //Do the exec
-                execvp(argvv[1][0], argvv[1]);
+                execvp(argvv[0][1], argvv[0]);
             }
 
             //Parent code, so wait for the child to finish
