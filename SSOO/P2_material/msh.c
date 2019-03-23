@@ -32,6 +32,7 @@ int main(void) {
     
     int pid;
     char *getcwd(char *buf, size_t size);
+    struct timeval start, end;
     
 	setbuf(stdout, NULL);			/* Unbuffered */
 	setbuf(stdin, NULL);
@@ -49,11 +50,9 @@ int main(void) {
          */
 
         //MYTIME
-        if (strncmp("mytime", argvv[0][0], 6) == 0){
-            struct timeval ti, tf;
-            long elapsed;
-            gettimeofday(&ti, 0);
-                        
+        if (strncmp("mytime", argvv[0][0], 6) == 0) {
+            gettimeofday(&start, NULL);
+            
             pid = fork();
             if (pid == 0) {
                 
@@ -74,15 +73,18 @@ int main(void) {
                     close(2);
                     open(filev[2], O_CREAT|O_TRUNC|O_RDONLY);
                 }
-
+                
+                for (int i = 0; i < sizeof(argvv); i++) {
+                    argvv[0][i] = argvv[0][i+1];
+                }
                 //Do the exec
-                execvp(argvv[0][1], argvv[0]);
+                execvp(argvv[0][0], argvv[0]);
             }
             waitpid(pid, NULL, 0);
 
-            gettimeofday(&tf, 0);
-            elapsed = (tf.tv_sec-ti.tv_sec)*1000000 + tf.tv_usec-ti.tv_usec;
-            printf("Time spent: %f secs.\n", elapsed);
+            gettimeofday(&end, NULL);
+            printf("Time spent: %f secs.\n", (double)((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec))/1000000);
+
             
         } else if (strncmp("mypwd", argvv[0][0], 5) == 0){
             
