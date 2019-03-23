@@ -18,12 +18,14 @@ int main(int argc, char *argv[]){
 
     //CHILD
     if(pid==0){
-        close(p[1]);//Cerramos escritura del hijo porque sólo va a leer
+        close(p[1]);//Son is only going to read, close the writing pipe
         
         dup2(p[0], STDIN_FILENO);//Redirect the pipe to the standard output
         close(p[0]);//Close the pipe
 
-        execlp("grep", "grep", "hola", NULL);//exec listing the parameters inheriting from the father
+        execlp("grep", "grep", "hola", NULL);//exec listing the parameters inheriting from the father //Doesn't work but...
+
+//Just reading a doc and printing it through the other one
 /*
         //Reading from pipe in chunks of 1024
         char print[1024];
@@ -33,11 +35,12 @@ int main(int argc, char *argv[]){
             bytes = read(STDIN_FILENO, print, 1024);
         }
 */
+
     }
     
     //FATHER
     else{
-        close(p[0]);//El padre sólo escribe
+        close(p[0]);//Father only writes
         
         //Reading desired file in chunks of 1024
         int openedFile = open(argv[1], O_RDONLY);
