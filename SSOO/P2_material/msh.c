@@ -33,6 +33,7 @@ int main(void) {
     int pid;
     char *getcwd(char *buf, size_t size);
     struct timeval start, end;
+
     
 	setbuf(stdout, NULL);			/* Unbuffered */
 	setbuf(stdin, NULL);
@@ -78,7 +79,7 @@ int main(void) {
                 }
                 
                 //Do the exec
-                execvp(argvv[0][0], argvv[0]);
+                execvp(argvv[0][1], argvv[0]+1);
             }
             waitpid(pid, NULL, 0);
 
