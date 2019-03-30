@@ -1,0 +1,3 @@
+para numeros primos mirar man factor para ver cómo saca los primos
+
+Mirar ejemplo de charla de dani para ver como cortar cosas en un output de bash

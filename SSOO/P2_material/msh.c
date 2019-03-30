@@ -23,9 +23,7 @@ extern int obtain_order();		/* See parser.y for description */
 
 int main(void) {
 	char ***argvv;
-	int command_counter;
 	int num_commands;
-	int args_counter;
 	char *filev[3];
 	int ret;
     int bg;
@@ -45,7 +43,7 @@ int main(void) {
 		if (ret == -1) continue;	/* Syntax error */
 		num_commands = ret - 1;		/* Line */
 		if (num_commands == 0) continue;	/* Empty line */
-
+        
         /*
          * SPECIAL COMMANDS
          */
@@ -74,18 +72,14 @@ int main(void) {
                     open(filev[2], O_CREAT|O_WRONLY);
                 }
                 
-                for (int i = 0; i < sizeof(argvv); i++) {
-                    argvv[0][i] = argvv[0][i+1];
-                }
-                
                 //Do the exec
                 execvp(argvv[0][1], argvv[0]+1);
             }
             waitpid(pid, NULL, 0);
-
+            
             gettimeofday(&end, NULL);
             printf("Time spent: %f secs.\n", (double)((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec))/1000000);
-            
+
         } else if (strncmp("mypwd", argvv[0][0], 5) == 0){
             
             char cwd[PATH_MAX];
@@ -107,17 +101,33 @@ int main(void) {
             for(int i=0; i<num_commands; i++){
                 //Create a pipe
                 pipe(p[i]);
-
                 //Create each son
                 pid=fork();
                 
                 //CHILD
                 if(pid==0){
-                    dup2(p[i][0], filev[0]);//Redirect the pipe to the standard output
-                    dup2(p[i][1], filev[1]);
-                    close(p[i][0]);//Close the pipe
-                    close(p[i][1]);
-                    
+                    if(i==0) {
+                        dup2(p[i][0], STDOUT_FILENO);//Write
+                        close(p[i][0]);
+                    }else if(i>0 && i<num_commands){
+                        dup2(p[i-1][1], STDIN_FILENO);//Read
+                        
+                        printf("%i\n", p[i-1][1]);
+                        printf("%i\n", STDIN_FILENO);
+                        
+                        dup2(p[i][0], STDOUT_FILENO);//Write
+                        
+                        printf("%i\n", p[i][0]);
+                        printf("%i\n", STDOUT_FILENO);
+                        
+                        close(p[i-1][1]);
+                        close(p[i][0]);
+                    }else if(i==num_commands-1){
+                        dup2(p[i-1][1], STDIN_FILENO);//Read
+                        close(p[i][0]);
+                        close(p[i][1]);//Doesn't write
+                        close(p[i-1][1]);
+                    }
                     //If there is an entry we close the current one and redirect to the new one
 					if (filev[0] != NULL) {
 						close(0);
@@ -127,13 +137,13 @@ int main(void) {
 					//The same but printing on screen
 					if (filev[1] != NULL) {
 						close(1);
-						open(filev[1], O_CREAT|O_TRUNC|O_RDONLY);
+						open(filev[1], O_CREAT|O_WRONLY);
 					}
 
 					//The same but with the erros.
 					if (filev[2] != NULL) {
 						close(2);
-						open(filev[2], O_CREAT|O_TRUNC|O_RDONLY);
+						open(filev[2], O_CREAT|O_WRONLY);
 					}
 				
                     //Exec
@@ -142,7 +152,8 @@ int main(void) {
                 
                 //If the command is meant to be run in foregound wait for it
                 if (!bg) {
-                    waitpid(pid, NULL, 0);
+                    for
+                    wait(NULL);
                 }
                 //If the command is in background don't wait for it
                 else if (bg){
