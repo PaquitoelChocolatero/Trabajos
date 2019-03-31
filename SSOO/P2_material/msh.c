@@ -106,53 +106,50 @@ int main(void) {
                 
                 //CHILD
                 if(pid==0){
+                    //First command
                     if(i==0) {
                         dup2(p[i][0], STDOUT_FILENO);//Write
                         close(p[i][0]);
-                    }else if(i>0 && i<num_commands){
-                        dup2(p[i-1][1], STDIN_FILENO);//Read
                         
-                        printf("%i\n", p[i-1][1]);
-                        printf("%i\n", STDIN_FILENO);
+                        //If there is an entry we close the current one and redirect to the new one
+					    if (filev[0] != NULL) {
+						    close(0);
+						    open(filev[0], O_RDONLY);
+					    }
+                    }
+                    //Middle commands
+                    else if(i>0 && i<num_commands){
+                        dup2(p[i-1][1], STDIN_FILENO);//Read
                         
                         dup2(p[i][0], STDOUT_FILENO);//Write
                         
-                        printf("%i\n", p[i][0]);
-                        printf("%i\n", STDOUT_FILENO);
-                        
                         close(p[i-1][1]);
                         close(p[i][0]);
-                    }else if(i==num_commands-1){
+                    }
+                    //Last command
+                    else if(i==num_commands-1){
                         dup2(p[i-1][1], STDIN_FILENO);//Read
                         close(p[i][0]);
                         close(p[i][1]);//Doesn't write
                         close(p[i-1][1]);
-                    }
-                    //If there is an entry we close the current one and redirect to the new one
-					if (filev[0] != NULL) {
-						close(0);
-						open(filev[0], O_RDONLY);
-					}
-
-					//The same but printing on screen
-					if (filev[1] != NULL) {
-						close(1);
-						open(filev[1], O_CREAT|O_WRONLY);
-					}
-
-					//The same but with the erros.
-					if (filev[2] != NULL) {
-						close(2);
-						open(filev[2], O_CREAT|O_WRONLY);
-					}
-				
+                    
+                        //The same but printing on screen
+                        if (filev[1] != NULL) {
+                            close(1);
+                            open(filev[1], O_CREAT|O_WRONLY);
+                        }
+                        //The same but with the erros.
+                        if (filev[2] != NULL) {
+                            close(2);
+                            open(filev[2], O_CREAT|O_WRONLY);
+                        }
+                    }				
                     //Exec
 				    execvp(argvv[i][0], argvv[i]);
                 }
                 
                 //If the command is meant to be run in foregound wait for it
                 if (!bg) {
-                    for
                     wait(NULL);
                 }
                 //If the command is in background don't wait for it
