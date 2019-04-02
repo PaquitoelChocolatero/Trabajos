@@ -1,2 +1,19 @@
-hola
-que tal estás
+miau
+ 200
+drwxr-xr-x 2 alex alex  4096 abr  2 23:28 .
+drwxr-xr-x 4 alex alex  4096 mar 21 22:31 ..
+-rwxr-xr-x 1 alex alex  7281 mar 21 22:31 corrector_ssoo_p2-v2.sh
+-rw-r--r-- 1 alex alex   457 mar 21 22:31 Makefile
+-rwxr-xr-x 1 alex alex 58120 abr  2 23:28 msh
+-rw-r--r-- 1 alex alex  5430 abr  2 23:27 msh.c
+-rw-r--r-- 1 alex alex 13032 abr  2 23:28 msh.o
+-rw-r--r-- 1 alex alex 16904 abr  2 22:56 parser.o
+-rw-r--r-- 1 alex alex  2110 mar 23 18:30 parser.y
+-rw-r--r-- 1 alex alex   527 mar 21 22:31 scanner.l
+-rw-r--r-- 1 alex alex 37568 abr  2 22:56 scanner.o
+-rw-r--r-- 1 alex alex   868 abr  2 22:44 test02.txt
+-rw-r--r-- 1 alex alex    20 mar 26 16:22 test.txt
+-rwxr-xr-x 1 alex alex   127 mar 21 22:31 unzip_script.sh
+-rw-r--r-- 1 alex alex   155 mar 21 22:31 y.c
+-rw-r--r-- 1 alex alex  5192 abr  2 22:56 y.o
+-rw-r--r-- 1 alex alex  2340 abr  2 22:56 y.tab.h
