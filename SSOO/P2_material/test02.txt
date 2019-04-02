@@ -1,0 +1,30 @@
+corrector_ssoo_p2-v2.sh
+Makefile
+msh
+msh.c
+msh.o
+parser.o
+parser.y
+scanner.l
+scanner.o
+test02.txt
+test.txt
+unzip_script.sh
+y.c
+y.o
+y.tab.h
+1 corrector_ssoo_p2-v2.sh
+-rw-r--r-- 1 alex alex   457 mar 21 22:31 Makefile
+-rwxr-xr-x 1 alex alex 57480 abr  2 21:45 msh
+-rw-r--r-- 1 alex alex  6038 abr  2 21:45 msh.c
+-rw-r--r-- 1 alex alex 10624 abr  2 21:45 msh.o
+-rw-r--r-- 1 alex alex 16896 mar 26 16:22 parser.o
+-rw-r--r-- 1 alex alex  2110 mar 23 18:30 parser.y
+-rw-r--r-- 1 alex alex   527 mar 21 22:31 scanner.l
+-rw-r--r-- 1 alex alex 37560 mar 21 22:31 scanner.o
+-rw-r--r-- 1 alex alex   139 abr  2 17:14 test02.txt
+-rw-r--r-- 1 alex alex    20 mar 26 16:22 test.txt
+-rwxr-xr-x 1 alex alex   127 mar 21 22:31 unzip_script.sh
+-rw-r--r-- 1 alex alex   155 mar 21 22:31 y.c
+-rw-r--r-- 1 alex alex  5192 mar 21 22:31 y.o
+-rw-r--r-- 1 alex alex  2330 mar 24 11:53 y.tab.h
