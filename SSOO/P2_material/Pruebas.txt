@@ -1,0 +1,27 @@
+Comando de un solo argumento (ls)                       ok
+Comando de dos argumentos (ls -la)                      ok
+Comando de tres argumentos (ls -l -a)                   ok
+Comando incorrecto (lda)                                error (esperado)
+
+Comando en background (okular test.txt&)                ok
+Comando en background (ls&)                             ok
+Comando en background (sleep 1&)                        ok
+Ejecutar otro comando mientras está otro en background  ok
+
+Direccionamiento < (cat < test.txt)                     ok
+Direccionamiento > (echo hola > test.txt)               ok
+Direccionamiento en segundo plano                       ok
+
+Ejecución normal de mypwd                               ok
+Añadir argumentos a mypwd                               error (esperado)
+
+Ejecución de mytime en un comando sin espera (ls)       ok
+Ejecución de mytime en un comando con espera (sleep 1)  ok
+Ejecución del mytime con mucha espera (sleep 100)       ok
+Ejecución del mytime con poca espera (sleep 0.1)        ok
+
+Una pipe (ls | grep test)                               ok
+Dos pipes (ls | grep test | grep test02)                ok
+Diez pipes                                              ok
+Pipes en background                                     ok
+Pipes con comandos no existentes                        error (esperado)
