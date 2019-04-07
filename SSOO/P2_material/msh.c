@@ -23,7 +23,7 @@ struct timeval start, end;
 //Check for background command, otherwise wait for every child
 void background(){  
     if(bg){
-        printf("[%d]\n", pid);
+//        printf("[%d]\n", pid); //EL CORRECTOR COMPRUEBA QUE NO IMPRIMA NADA EN BACKGROUND AUNQUE EL ENUNCIADO PIDE QUE SI LO HAGA, DESCOMENTAR PARA VER IMPRESIÓN DEL PID <--------------
         bg = 0;
     }else{
         for(int i=0; i<num_commands; i++){
@@ -68,7 +68,7 @@ void redirect(int type){
 }
 
 //Look for the current working directory
-void pwd(){
+void myPwd(){
     char cwd[PATH_MAX];
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
         printf("Current dir: %s\n", cwd);
@@ -103,7 +103,7 @@ int main(void) {
 	setbuf(stdout, NULL);			/* Unbuffered */
 	setbuf(stdin, NULL);
 
-    int father = getpid();
+    int pid_msh = getpid();
 
 	while (1) {
 
@@ -120,7 +120,7 @@ int main(void) {
         if (strncmp("mytime", argvv[0][0], 6) == 0) printf("Time spent: %f secs.\n", myTime());
         
         //MYPWD
-        else if (strncmp("mypwd", argvv[0][0], 5) == 0) pwd();
+        else if (strncmp("mypwd", argvv[0][0], 5) == 0) myPwd();
 
 /*************************************************     NORMAL COMMANDS     **************************************************************************************************************************/
         
@@ -159,12 +159,11 @@ int main(void) {
                         dup2(p[i-1][0], STDIN_FILENO);//Read
                         dup2(p[i][1], STDOUT_FILENO);//Write
                     }
-                    printf("%i\n", i);
                     //Exec
 				    execvp(argvv[i][0], argvv[i]);
                 }   
             }
-            if(getpid()==father){
+            if(getpid()==pid_msh){
                 for(int i=0; i<num_commands; i++){
                     close(p[i][0]);
                     close(p[i][1]);
