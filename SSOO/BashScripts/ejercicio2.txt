@@ -1,0 +1,48 @@
+1a etapa:
+
+Se ejecuta el comando transalate (tr) con la opción complement (-c), 
+el parámetro ([:alnum:]) hace que busque sólo cadenas de letras o números 
+y el parámetro [\\n\*] hace que por cada carácter no alfanumérico se imprima un salto de línea.
+
+Por último se está haciendo una redirección desde la entrada estándar (< $1) para ejecutar
+el comando discreto en el fichero que le pasemos por parámetro.
+
+2a etapa:
+
+La segunda fase del pipeline es el comando sort, que como su propio nombre indica 
+ordena la salida de la primera fase alfanuméricamente, es decir, primero van los espacios,
+después los números del 0 al 9 y a continuación las letras de la A a la Z sin importar
+si es mayúsula o minúscula.
+
+3a etapa:
+
+El siguiente comando es uniq, esto hace que de la salida del
+pipeline anterior no se repitan cadenas idénticas de caracteres.
+
+La opción -c añade un prefijo de cuántas veces ha aparecido cada cadena.
+
+4a etapa:
+
+De nuevo se hace un sort, pero esta vez lleva la etiqueta -nr, la cual es una concatenación
+de la etiqueta -n (ordenar por valor numérico) y -r (revierte la salida).
+
+Por lo que la salida serán todas las cadenas de caracteres que hay en el fichero introducido
+ordenadas de mayor a menor número de apariciones.
+
+5a etapa:
+
+El último comando es head -$2, con él vamos a imprimir exclusivamente las n primeras
+líneas de la salida anterior(osea las n cadenas más recurrentes), n se la pasamos como
+segundo parámetro.
+
+Modificación:
+
+#!/bin/bash
+if [[ "$1" ]] && [[ "$2" ]]; then
+  tr -c [:alnum:] [\\n\*] < $1 | sort | uniq -c | sort -nr | head -$2
+else
+  echo "Usage: ./exercise2_b.sh FILE NUM"
+fi
+
+Simplemente hay que comprobar antes de ejecutar el pipeline si hay dos parámetros y en caso
+contrario imprimir el mensaje de error en uso especificado en el enunciado.
