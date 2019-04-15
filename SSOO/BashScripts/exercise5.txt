@@ -1,0 +1,13 @@
+ a) El archivo exercise5.sh ha incrementado su tamaño considerablemente.
+ 
+ b) El script exercise5.sh muestra un dialog con el que permite descomprimir una serie de directorios y archivos comprimidos en xz. Estos han sido almacenados al final de exercise5.sh por el script exercise5_repackage.sh.
+ 
+Exit 0 es necesario para que el script finalice cuando no encuentre ningún error, en caso de encontrar algún error el numero sería mayor que cero.
+
+El 2<&1 sirve para direccionar stderror a stout de tal manera que los errores que encuentre durante la ejecucicón (archivos no encontrados, por ejemplo) serán enviados a la salida.
+
+El código del script permite mostrar un dialog con una serie de opciones multiples seleccionables, las cuales corresponden a una serie de directorios donde van a ser extraidos, despues se realiza la descompresión de las opciones seleccionadas mostrando por pantalla una barra de proceso gracias a los comandos tail y pv.
+
+c) ya tal
+
+d) El script exercise5_repackage.sh tiene 3 funciones: addarchive, extract y truncate. Addarchive permite comprimir un archivo y almacenar el resultado en una dirección de destino (exercise5.sh o otro archivo) mientras muestra una barra de proceso, los errores son ignorados al ser direccionados a /dev/null. Extract permite descomprimir un archivo mostrando una barra de proceso. Truncate permite seleccionar las 7 primeras líneas de un paramtro introducido.
