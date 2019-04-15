@@ -2,11 +2,8 @@
 WHAT=$(dialog --backtitle $0 --output-fd 1 --checklist 'Select items to uncompress:\n\nSPACE: check/uncheck     TAB: changes focus     INTRO: accept\nMouse can also be used, if supported by your terminal emulator.' 16 76 26 README 'Read this before doing anything else' off ChangeLog 'History of changes' off usr/include/ 'C/C++ headers' off usr/share/backgrounds/ 'Backgrounds for X desktop environments' off usr/share/pixmaps/ 'X11 pixmaps' off usr/share/man/ 'Manual pages' off)
 SIZE=$(stat --printf=%s $0)
 if [ -n "$WHAT" ]; then
-  dialog --inputbox "Enter a directory:" 8 60 2>/tmp/input.$$
-  FILE="$(cat /tmp/input.$$)"
-  (tail -n +8 $0 | pv -n -s $SIZE -i 0.25 | base64 -d | tar -xzf - $WHAT -V="$FILE") 2>&1 | dialog --gauge 'Uncompressing...' 8 46 
+  (tail -n +8 $0 | pv -n -s $SIZE -i 0.25 | base64 -d | tar -xzf - $WHAT) 2>&1 | dialog --gauge 'Uncompressing...' 8 46
 fi
-rm -f /tmp/input.$$
 exit 0;
 H4sIAAAAAAAAA+3UwU6DQBAGYK7yFONJjbFhKVD11mg1Rr009e62jLBmZQkLqfTpXWptNMb0VJsm
 /3dZAsMMC8yMR8Prx5G3VYGTRFG3ikEcfF+XRBx5oh/1RRwmQeLOi1BEiUfBdh/rU2NrWRF5r1Kb

@@ -4,7 +4,7 @@
  
 Exit 0 es necesario para que el script finalice cuando no encuentre ningún error, en caso de encontrar algún error el numero sería mayor que cero.
 
-El 2<&1 sirve para direccionar stderror a stout de tal manera que los errores que encuentre durante la ejecucicón (archivos no encontrados, por ejemplo) serán enviados a la salida.
+El 2>&1 sirve para direccionar stderror a stout de tal manera que los errores que encuentre durante la ejecucicón (archivos no encontrados, por ejemplo) serán enviados a la salida.
 
 El código del script permite mostrar un dialog con una serie de opciones multiples seleccionables, las cuales corresponden a una serie de directorios donde van a ser extraidos, despues se realiza la descompresión de las opciones seleccionadas mostrando por pantalla una barra de proceso gracias a los comandos tail y pv.
 
