@@ -7,9 +7,14 @@ if [ -n "$WHAT" ]; then
   #Input redirects to /tmp/input.$$ file
   dialog --inputbox "Enter a directory:" 8 60 2>/tmp/input.$$
   #The variable takes its value from reading the answer
-  FILE="$(cat /tmp/input.$$)"
+  if [ "$(cat /tmp/input.$$)" == "." ]; then
+    FILE="$(pwd)/Exercise5Files/"
+  else
+    FILE="$(pwd)/$(cat /tmp/input.$$)/Exercise5Files/"
+  fi
   #Uncompressing the selected files
-  (tail -n +8 $0 | pv -n -s $SIZE -i 0.25 | base64 -d | tar -xzf - $WHAT -V="$FILE") 2>&1 | dialog --gauge 'Uncompressing...' 8 46 
+  mkdir -p $FILE
+  (tail -n +23 $0 | pv -n -s $SIZE -i 0.25 | base64 -d | tar -xzvf - $WHAT -C $FILE) 2>&1 | dialog --gauge 'Uncompressing...' 8 46 
 fi
 #Deleting the temporary file created for the variable
 rm -f /tmp/input.$$
