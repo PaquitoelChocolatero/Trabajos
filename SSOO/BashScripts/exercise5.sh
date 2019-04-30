@@ -14,7 +14,9 @@ if [ -n "$WHAT" ]; then
   fi
   #Uncompressing the selected files
   mkdir -p $FILE
-  (tail -n +23 $0 | pv -n -s $SIZE -i 0.25 | base64 -d | tar -xzvf - $WHAT -C $FILE) 2>&1 | dialog --gauge 'Uncompressing...' 8 46 
+  cd
+  cd $FILE
+  (tail -n +25 $0 | pv -n -s $SIZE -i 0.25 | base64 -d | tar -xzvf - $WHAT) 2>&1 | dialog --gauge 'Uncompressing...' 8 46 
 fi
 #Deleting the temporary file created for the variable
 rm -f /tmp/input.$$
