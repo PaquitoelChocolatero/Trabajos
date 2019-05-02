@@ -1,13 +1,34 @@
 #include "../include/concurrency_layer.h"
+#include <pthread.h>
+
+//Mutex needed for readers and writers
+pthread_mutex_t stock_operations;
+pthread_mutex_t stat_readers;
+
+//Concurrency conditions for each rol
+pthread_cond_t n_brokers;
+pthread_cond_t n_executers;
+pthread_cond_t n_readers;
 
 void init_concurrency_mechanisms(){
 
-}
-/*
-void destroy_concurrency_mechanisms(){
+    //Initialize mutex
+    pthread_mutex_init(&stock_operations, NULL);
+    pthread_mutex_init(&stat_readers, NULL);
 
+    //Initialize conditions
+    pthread_cond_init(&n_brokers, NULL);
+    pthread_cond_init(&n_executers, NULL);
+    pthread_cond_init(&n_readers, NULL);
 }
-*/
+
+void destroy_concurrency_mechanisms(){
+    pthread_mutex_destroy(&stock_operations);
+    pthread_mutex_destroy(&stat_readers);
+    pthread_cond_destroy(&n_executers);
+    pthread_cond_destroy(&n_readers);
+}
+
 void* broker(void * args){
   struct broker_info *info;
   info = args;
