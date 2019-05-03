@@ -50,7 +50,7 @@ void* operation_executer(void * args){
     
     if(pthread_mutex_trylock(&myexit_mutex) == 0){
         
-        while (!*exit){
+        while (!*myexit){
             dequeue_operation(myMarket->stock_operations, op);
             process_operation(myMarket, op);
         }
@@ -72,7 +72,7 @@ void* stats_reader(void * args){
     
     if(pthread_mutex_trylock(&myexit_mutex) == 0){
         
-        while (!*exit){
+        while (!*myexit){
            print_market_status(&myMarket);
            usleep(myfreq);
         }
