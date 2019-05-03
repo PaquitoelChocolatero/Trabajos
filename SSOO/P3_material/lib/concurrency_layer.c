@@ -32,17 +32,20 @@ void* broker(void * args){
     struct operation * op;
 
     while(next_operation(it, op->id, &op->type, &op->num_shares, &op->share_price) != -1){
-        new_operation(op, op->id, op->type, op->num_shares, op->share_price);
-        enqueue_operation(myMarket->stock_operations, op);
+        if(!operations_queue_full(myMarket->stock_operations)){
+            new_operation(op, op->id, op->type, op->num_shares, op->share_price);
+            enqueue_operation(myMarket->stock_operations, op);
+
+        }
     }
     destroy_iterator(it);
 }
 
 void* operation_executer(void * args){
-    
+
     struct exec_info *info;
     info = args;
-    int* myexit = info->exit;
+    int *myexit = info->exit;
     stock_market * myMarket = info->market;
     pthread_mutex_t *myexit_mutex = info->exit_mutex;
     
@@ -51,9 +54,11 @@ void* operation_executer(void * args){
     int lock = pthread_mutex_lock(myexit_mutex);
     if(lock == 0){
         
-        while (!*myexit){
-            dequeue_operation(myMarket->stock_operations, op);
-            process_operation(myMarket, op);
+        while (!myexit){
+            if(!operations_queue_empty(myMarket->stock_operations)){
+                dequeue_operation(myMarket->stock_operations, op);
+                process_operation(myMarket, op);
+            }
         }
     } else {
         *myexit = 1;
@@ -63,10 +68,10 @@ void* operation_executer(void * args){
 
 
 void* stats_reader(void * args){
-
+    
     struct reader_info *info;
     info = args;
-    int* myexit = info->exit;
+    int *myexit = info->exit;
     stock_market * myMarket = info->market;
     pthread_mutex_t *myexit_mutex = info->exit_mutex;
     int myfreq = info->frequency;
@@ -76,7 +81,7 @@ void* stats_reader(void * args){
     int lock = pthread_mutex_lock(myexit_mutex);
     if(lock == 0){
         
-        while (!*myexit){
+        while (!myexit){
            print_market_status(myMarket);
            usleep(myfreq);
         }
@@ -84,5 +89,4 @@ void* stats_reader(void * args){
         *myexit = 1;
     }
     pthread_mutex_unlock(myexit_mutex);
-    
 }
