@@ -48,14 +48,17 @@ void* operation_executer(void * args){
     
     struct operation * op;
     
-    if(pthread_mutex_trylock(&myexit_mutex) == 0){
+    int lock = pthread_mutex_lock(myexit_mutex);
+    if(lock == 0){
         
         while (!*myexit){
             dequeue_operation(myMarket->stock_operations, op);
             process_operation(myMarket, op);
         }
+    } else {
+        *myexit = 1;
     }
-    pthread_mutex_unlock(&myexit_mutex);
+    pthread_mutex_unlock(myexit_mutex);
 }
 
 
@@ -70,13 +73,16 @@ void* stats_reader(void * args){
     
     struct operation * op;
     
-    if(pthread_mutex_trylock(&myexit_mutex) == 0){
+    int lock = pthread_mutex_lock(myexit_mutex);
+    if(lock == 0){
         
         while (!*myexit){
-           print_market_status(&myMarket);
+           print_market_status(myMarket);
            usleep(myfreq);
         }
+    } else {
+        *myexit = 1;
     }
-    pthread_mutex_unlock(&myexit_mutex);
+    pthread_mutex_unlock(myexit_mutex);
     
 }
