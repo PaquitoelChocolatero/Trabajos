@@ -67,6 +67,8 @@ body {
     width: 33.33%;
 
     padding: 0 20px;
+    
+    
 
 }
 
@@ -87,31 +89,86 @@ body {
 
 }
 
-
-
 /* Style the counter cards */
 
 .card {
-
+    
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
 
     padding: 16px;
 
     text-align: left;
 
+    background-color: #f9f9f9;
+
+}
+
+.card-title {
+    float: left;
+}
+
+.kebab-menu {
+    float: right;
+}
+
+.little-card {
+
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
+
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 5px;
+    margin-bottom: 10px;
+    text-align: left;
+
     background-color: white;
 
 }
 
+.task-image {
+    float: left;
+    margin-left: 5px;
+    margin-right: 10px;
+}
 
+.card-actions {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.card-date {
+    float: right;
+}
+
+.add-task-btn {
+    
+    float: right;
+    color: white;
+
+    background-color: teal;
+    
+    padding: 1rem;
+    margin-top: 15px;
+    
+    text-align: center;
+
+}
+
+.add-task-btn:hover {
+
+    background-color: #cdd2d4;
+    color: #4d4d4d;
+
+}
+
+.small-space { margin-top: 80px; }
 .space { margin-top: 100px; }
-
 
 
 .sbuttons {
 
     bottom: 5%;
-
+    
     position: fixed;
 
     margin: 1em;
