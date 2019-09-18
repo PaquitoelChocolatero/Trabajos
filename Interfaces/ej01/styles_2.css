@@ -1,0 +1,207 @@
+body { 
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f2f2f3;
+}
+
+.header {
+    overflow: hidden;
+    padding: 14px 10px;
+    text-align: left;
+    background: #37474f;
+    color: white;
+    font-size: 14px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.header-logo {
+    float: left;
+    padding-right: 10px;
+}
+
+.header a {
+    float: left;
+    color: white;
+    text-align: left;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 14px; 
+    line-height: 25px;
+    border-radius: 4px;
+}
+
+.header a.name {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.header a:hover {
+    background-color: #62727b;
+    color: white;
+}
+
+.header a.active {
+    background-color: #607d8b;
+    color: white;
+    font-weight: bold;
+}
+
+.header-right {
+    float: right;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Float three columns side by side */
+
+.column {
+    float: left;
+    width: 33.33%;
+    padding: 0 20px;
+}
+
+.row {
+    margin-top: 15px;
+}
+
+/* Clear floats after the columns */
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 16px;
+    text-align: left;
+    background-color: #f9f9f9;
+}
+
+#card-title {
+    float: left;
+}
+
+#kebab-menu {
+    float: right;
+    width: 28px;
+    height: 28px;
+}
+i
+.card-top {
+    position: absolute;
+    margin-top: 2px;
+}
+
+.little-card {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 5px;
+    margin-bottom: 10px;
+    text-align: left;
+    background-color: white;
+    position: relative;
+
+}
+
+.little-card input{
+    position: absolute;
+    top: 3px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+}
+
+.task-image {
+    float: left;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
+.card-actions {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#card-date {
+    float: right;
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.add-task-btn {
+    float: right;
+    color: white;
+    background-color: teal;
+    padding: 1rem;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.add-task-btn:hover {
+    background-color: #cdd2d4;
+    color: #4d4d4d;
+}
+
+.small-space { margin-top: 80px; }
+
+[tooltip]:before {
+    font-weight: 600;
+    border-radius: 2px;
+    background-color: #585858;
+    color: #fff;
+    content: attr(tooltip);
+    font-size: 12px;
+    visibility: hidden;
+    opacity: 0;
+    padding: 5px 7px;
+    margin-left: 10px;
+    position: absolute;
+    left: 100%;
+    bottom: 20%;
+    white-space: nowrap;
+}
+
+[tooltip]:hover:before,
+
+[tooltip]:hover:after {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Responsive columns - one column layout (vertical) on small screens */
+@media screen and (max-width: 600px) {
+    .header a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+
+    .header-right {
+        float: none;
+    }
+
+    .column {
+        width: 100%;
+        display: block;
+        margin-bottom: 20px;
+    }
+}
+
+footer{
+    height: 50px;
+    padding-top: 20px;
+    text-align: center;
+    background: #37474f;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+footer a{
+    color: white;
+}
