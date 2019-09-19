@@ -4,7 +4,7 @@ body {
     background-color: #f2f2f3;
 }
 
-.header {
+header {
     overflow: hidden;
     padding: 14px 10px;
     text-align: left;
@@ -14,12 +14,15 @@ body {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
 }
 
-.header-logo {
+.header-left {
     float: left;
-    padding-right: 10px;
 }
 
-.header a {
+header .logo{
+    float: left;
+}
+
+header a {
     float: left;
     color: white;
     text-align: left;
@@ -30,25 +33,26 @@ body {
     border-radius: 4px;
 }
 
-.header a.name {
+header a.name {
     font-size: 20px;
     font-weight: bold;
 }
 
-.header a:hover {
+header a:hover {
     background-color: #62727b;
     color: white;
-}
-
-.header a.active {
-    background-color: #607d8b;
-    color: white;
-    font-weight: bold;
 }
 
 .header-right {
     float: right;
 }
+
+header a.active {
+    background-color: #607d8b;
+    color: white;
+    font-weight: bold;
+}
+
 
 * {
 
