@@ -84,22 +84,37 @@ header a.active {
     background-color: #f9f9f9;
 }
 
-.card-title {
+.title {
     float: left;
+    width: 100%;
+    position: relative;
+    z-index: 100;
+    display: flex;
+    align-items: center;
 }
 
-.kebab-menu {
+#kebab-menu {
     float: right;
+    width: 28;
+    height: 28;
+    right: 0;
+    top: 0;
 }
 
-.little-card {
+.inner {
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
     padding-right: 10px;
     padding-left: 10px;
     padding-top: 5px;
+    margin-top: 5%;
     margin-bottom: 10px;
     text-align: left;
     background-color: white;
+    position: relative;
+}
+
+.close {
+    float: right;
 }
 
 .task-image {
@@ -111,6 +126,9 @@ header a.active {
 .card-actions {
     margin-left: 5px;
     margin-right: 5px;
+}
+.card-actions p{
+    margin-bottom: 10%;
 }
 
 .card-date {
