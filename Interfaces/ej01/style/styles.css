@@ -78,36 +78,37 @@ header a.active {
 
 /* Style the counter cards */
 .card {
+    margin-top: 30px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
     padding: 16px;
+    padding-bottom: 115px;
     text-align: left;
     background-color: #f9f9f9;
 }
 
 .title {
     float: left;
-    width: 100%;
-    position: relative;
-    z-index: 100;
     display: flex;
     align-items: center;
+    margin-top: -30px;
+    margin-bottom: -20px;
+    font-size: 24px;
+    font-weight: 300;
 }
 
 #kebab-menu {
     float: right;
+    margin-left: 360px;
     width: 28;
     height: 28;
-    right: 0;
-    top: 0;
 }
 
 .inner {
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
     padding-right: 10px;
     padding-left: 10px;
-    padding-top: 5px;
-    margin-top: 5%;
-    margin-bottom: 10px;
+    margin-top: 50px;
+    margin-bottom: -35px;
     text-align: left;
     background-color: white;
     position: relative;
@@ -115,6 +116,12 @@ header a.active {
 
 .close {
     float: right;
+    margin-top: 10px;
+}
+
+.card-content {
+    padding-top: 40px;
+    padding-bottom: 40px;
 }
 
 .task-image {
@@ -126,13 +133,13 @@ header a.active {
 .card-actions {
     margin-left: 5px;
     margin-right: 5px;
-}
-.card-actions p{
-    margin-bottom: 10%;
+    display: flex;
+    align-items: center;
 }
 
 .card-date {
     float: right;
+    margin-top: -30px;
 }
 
 .add-task-btn {
@@ -140,8 +147,10 @@ header a.active {
     color: white;
     background-color: teal;
     padding: 1rem;
-    margin-top: 15px;
     text-align: center;
+    border-radius: 5px;
+    width: 100%;
+    height: 60px;
 }
 
 .add-task-btn:hover {
@@ -190,14 +199,14 @@ header a.active {
 }
 
 footer{
-    height: 50px;
-    padding-top: 20px;
     text-align: center;
     background: #37474f;
     color: white;
     position: fixed;
     bottom: 0;
+    padding-top: 3px;
     width: 100%;
+    height: 30px;
 }
 
 footer a{
