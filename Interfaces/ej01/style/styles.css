@@ -166,6 +166,21 @@ header a.active {
     margin-top: 100px; 
 }
 
+footer{
+    text-align: center;
+    background: #37474f;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    padding-top: 3px;
+    width: 100%;
+    height: 30px;
+}
+
+footer a{
+    color: white;
+}
+
 /* Responsive columns - one column layout (vertical) on small screens */
 @media screen and (max-width: 600px) {
 
@@ -196,19 +211,4 @@ header a.active {
         display: block;
         margin-bottom: 20px;
     }
-}
-
-footer{
-    text-align: center;
-    background: #37474f;
-    color: white;
-    position: fixed;
-    bottom: 0;
-    padding-top: 3px;
-    width: 100%;
-    height: 30px;
-}
-
-footer a{
-    color: white;
 }
