@@ -186,3 +186,35 @@ footer{
 footer a{
     color: white;
 }
+
+/* Responsive columns - one column layout (vertical) on small screens */
+@media screen and (max-width: 600px) {
+
+    header .logo {
+        float: left;
+    }
+    
+    header a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+    
+    header a.name {
+        margin-left: 40px;
+    }
+
+    .header-right {
+        float: none;
+    }
+    
+    .header-left {
+        float: none;
+    }
+    
+    .column {
+        width: 100%;
+        display: block;
+        margin-bottom: 20px;
+    }
+}
