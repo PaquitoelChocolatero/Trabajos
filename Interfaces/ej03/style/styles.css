@@ -187,7 +187,44 @@ footer a{
     color: white;
 }
 
-/* Responsive columns - one column layout (vertical) on small screens */
+/* Responsive for tablets */
+@media screen and (max-width: 768px) {
+
+    header .logo {
+        float: left;
+    }
+    
+    header a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+    
+    header a.name {
+        margin-left: 40px;
+    }
+
+    .header-right {
+        float: none;
+    }
+    
+    .header-left {
+        float: none;
+    }
+    
+    .column {
+        width: 100%;
+        display: block;
+        margin-bottom: 20px;
+    }
+    
+    .card-date {
+        float: right;
+        position: absolute;
+        width: 100%;
+    }
+}
+/* Responsive for mobile devices */
 @media screen and (max-width: 600px) {
 
     header .logo {
