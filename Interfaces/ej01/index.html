@@ -6,6 +6,8 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta charset="UTF-8">
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+        <!--Tag needed to make the webpage responsive, see https://www.w3schools.com/css/css_rwd_viewport.asp for details-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>JATC</title>
     </head>
      
@@ -18,7 +20,7 @@
             </div>
             <div class="header-right">
                 <a class="active" href="#Mainclickyguy">Main clicky guy</a>
-                <a href="#Contact">Contact</a>
+                <a href="#contact">Contact</a>
                 <a href="#about">About</a>
             </div>
         </header>
@@ -27,190 +29,233 @@
             <div class="column">
                 <div class="card">
                 
-                    <div class="title">
+                    <div class="title" title="Section title">
                         <p>Tasks to Do</p>
-                        <input type="image" src="images/kebab.svg" alt="kebab" id="kebab-menu">
+                        <input type="image" src="images/kebab.svg" alt="kebab" id="kebab-menu" title="Menu">
                     </div>
                     
                     <div class="inner">
-                        <button type="button" class="close" aria-label="Close">
+                        <button type="button" class="close" aria-label="Close" title="Close">
                             <span aria-hidden="true">X</span>
                         </button>
                         
-                        <div class="card-content">
+                        <a href="#popup1">
+                        <div class="card-content" title="More details">
                             <img src="images/office.jpg" class="task-image" alt="Task-image" width="150" height="80">
                             <p>This is a paragraph.</p>
                         </div>
+                        </a>
                         
                         <div class="card-actions">
                             <a href="#like">
-                            <img src="images/like.svg" alt="like" width="24" height="24">
+                            <img src="images/like.svg" alt="like" width="24" height="24" title="Show others you like this task">
                             </a>
                             <a href="#comment">
-                            <img src="images/comment.svg" alt="comment" width="24" height="24">
+                            <img src="images/comment.svg" alt="comment" width="24" height="24" title="Comment yout opinnions about this task">
                             </a>
                             <a href="#share">
-                            <img src="images/share.svg" alt="share" width="24" height="24">
+                            <img src="images/share.svg" alt="share" width="24" height="24" title="Share with your companions this task">
                             </a>
                         </div>
-                        <p class="card-date">This is the date</p>
+                        <p class="card-date" title="Deadline date">This is the date</p>
                     </div>
                     
                     <div class="inner">
-                        <button type="button" class="close" aria-label="Close">
+                        <button type="button" class="close" aria-label="Close" title="Close">
                             <span aria-hidden="true">X</span>
                         </button>
-                                                
-                        <div class="card-content">
-                            <img src="images/office.jpg" class="task-image" alt="Task-image" width="150" height="80">
-                            <p>This is a paragraph.</p>
-                        </div>
-                                                
-                        <div class="card-actions">
-                            <a href="#like">
-                            <img src="images/like.svg" alt="like" width="24" height="24">
-                            </a>
-                            <a href="#comment">
-                            <img src="images/comment.svg" alt="comment" width="24" height="24">
-                            </a>
-                            <a href="#share">
-                            <img src="images/share.svg" alt="share" width="24" height="24">
-                            </a>
-                        </div>
-                        <p class="card-date">This is the date</p>
-                    </div>
                                     
-                    <button class="add-task-btn btn">Add a task</button>
+                        <a href="#popup1">
+                        <div class="card-content" title="More details">
+                            <img src="images/office.jpg" class="task-image" alt="Task-image" width="150" height="80">
+                            <p>This is a paragraph.</p>
+                        </div>
+                        </a>
+                                                
+                        <div class="card-actions">
+                            <a href="#like">
+                            <img src="images/like.svg" alt="like" width="24" height="24" title="Show others you like this task">
+                            </a>
+                            <a href="#comment">
+                            <img src="images/comment.svg" alt="comment" width="24" height="24" title="Comment yout opinnions about this task">
+                            </a>
+                            <a href="#share">
+                            <img src="images/share.svg" alt="share" width="24" height="24" title="Share with your companions this task">
+                            </a>
+                        </div>
+                        <p class="card-date" title="Deadline date">This is the date</p>
+                    </div>
                     
                 </div>
+                
+                <button class="add-task-btn btn" title="Add another task to this section">Add a task</button>
+                
             </div>
 
             <div class="column">
                 <div class="card">
                 
-                    <div class="title">
+                    <div class="title" title="Section details">
                         <p>In progress</p>
-                        <input type="image" src="images/kebab.svg" alt="kebab" id="kebab-menu">
+                        <input type="image" src="images/kebab.svg" alt="kebab" id="kebab-menu" title="Menu">
                     </div>
                     
                     <div class="inner">
-                        <button type="button" class="close" aria-label="Close">
+                        <button type="button" class="close" aria-label="Close" title="Close">
                             <span aria-hidden="true">X</span>
                         </button>
                         
-                        <div class="card-content">
+                        <a href="#popup1">
+                        <div class="card-content" title="More details">
                             <img src="images/office.jpg" class="task-image" alt="Task-image" width="150" height="80">
                             <p>This is a paragraph.</p>
                         </div>
+                        </a>
                         
                         <div class="card-actions">
                             <a href="#like">
-                            <img src="images/like.svg" alt="like" width="24" height="24">
+                            <img src="images/like.svg" alt="like" width="24" height="24" title="Show others you like this task">
                             </a>
                             <a href="#comment">
-                            <img src="images/comment.svg" alt="comment" width="24" height="24">
+                            <img src="images/comment.svg" alt="comment" width="24" height="24" title="Comment yout opinnions about this task">
                             </a>
                             <a href="#share">
-                            <img src="images/share.svg" alt="share" width="24" height="24">
+                            <img src="images/share.svg" alt="share" width="24" height="24" title="Share with your companions this task">
                             </a>
                         </div>
-                        <p class="card-date">This is the date</p>
+                        <p class="card-date" title="Deadline date">This is the date</p>
                     </div>
                     
-                    <button class="add-task-btn btn">Add a task</button>
-                    
                 </div>
+                
+                <button class="add-task-btn btn" title="Add another task to this section">Add a task</button>
+                
             </div>
 
             <div class="column">
                 <div class="card">
                 
-                    <div class="title">
+                    <div class="title" title="Section title">
                         <p>Finished</p>
-                        <input type="image" src="images/kebab.svg" alt="kebab" id="kebab-menu">
+                        <input type="image" src="images/kebab.svg" alt="kebab" id="kebab-menu" title="Menu">
                     </div>
                     
                     <div class="inner">
-                        <button type="button" class="close" aria-label="Close">
+                        <button type="button" class="close" aria-label="Close" title="Close">
                             <span aria-hidden="true">X</span>
                         </button>
                         
-                        <div class="card-content">
+                        <a href="#popup1">
+                        <div class="card-content" title="More details">
                             <img src="images/office.jpg" class="task-image" alt="Task-image" width="150" height="80">
                             <p>This is a paragraph.</p>
                         </div>
+                        </a>
                         
                         <div class="card-actions">
                             <a href="#like">
-                            <img src="images/like.svg" alt="like" width="24" height="24">
+                            <img src="images/like.svg" alt="like" width="24" height="24" title="Show others you like this task">
                             </a>
                             <a href="#comment">
-                            <img src="images/comment.svg" alt="comment" width="24" height="24">
+                            <img src="images/comment.svg" alt="comment" width="24" height="24" title="Comment yout opinnions about this task">
                             </a>
                             <a href="#share">
-                            <img src="images/share.svg" alt="share" width="24" height="24">
+                            <img src="images/share.svg" alt="share" width="24" height="24" title="Share with your companions this task">
                             </a>
                         </div>
-                        <p class="card-date">This is the date</p>
+                        <p class="card-date" title="Deadline date">This is the date</p>
                     </div>
                     <div class="inner">
-                        <button type="button" class="close" aria-label="Close">
+                        <button type="button" class="close" aria-label="Close" title="Close">
                             <span aria-hidden="true">X</span>
                         </button>
                         
-                        <div class="card-content">
+                        <a href="#popup1">
+                        <div class="card-content" title="More details">
                             <img src="images/office.jpg" class="task-image" alt="Task-image" width="150" height="80">
                             <p>This is a paragraph.</p>
                         </div>
+                        </a>
                         
                         <div class="card-actions">
                             <a href="#like">
-                            <img src="images/like.svg" alt="like" width="24" height="24">
+                            <img src="images/like.svg" alt="like" width="24" height="24" title="Show others you like this task">
                             </a>
                             <a href="#comment">
-                            <img src="images/comment.svg" alt="comment" width="24" height="24">
+                            <img src="images/comment.svg" alt="comment" width="24" height="24" title="Comment yout opinnions about this task">
                             </a>
                             <a href="#share">
-                            <img src="images/share.svg" alt="share" width="24" height="24">
+                            <img src="images/share.svg" alt="share" width="24" height="24" title="Share with your companions this task">
                             </a>
                         </div>
-                        <p class="card-date">This is the date</p>
+                        <p class="card-date" title="Deadline date">This is the date</p>
                     </div>
                     
                     <div class="inner">
-                        <button type="button" class="close" aria-label="Close">
+                        <button type="button" class="close" aria-label="Close" title="Close">
                             <span aria-hidden="true">X</span>
                         </button>
-                                                
-                        <div class="card-content">
+                                
+                        <a href="#popup1">
+                        <div class="card-content" title="More details">
                             <img src="images/office.jpg" class="task-image" alt="Task-image" width="150" height="80">
                             <p>This is a paragraph.</p>
                         </div>
+                        </a>
                                                 
                         <div class="card-actions">
                             <a href="#like">
-                            <img src="images/like.svg" alt="like" width="24" height="24">
+                            <img src="images/like.svg" alt="like" width="24" height="24" title="Show others you like this task">
                             </a>
                             <a href="#comment">
-                            <img src="images/comment.svg" alt="comment" width="24" height="24">
+                            <img src="images/comment.svg" alt="comment" width="24" height="24" title="Comment yout opinnions about this task">
                             </a>
                             <a href="#share">
-                            <img src="images/share.svg" alt="share" width="24" height="24">
+                            <img src="images/share.svg" alt="share" width="24" height="24" title="Share with your companions this task">
                             </a>
                         </div>
-                        <p class="card-date">This is the date</p>
+                        <p class="card-date" title="Deadline date">This is the date</p>
                     </div>
-                                    
-                    <button class="add-task-btn btn">Add a task</button>
+                    
+                    <div class="inner">
+                        <button type="button" class="close" aria-label="Close" title="Close">
+                            <span aria-hidden="true">X</span>
+                        </button>
+                                
+                        <a href="#popup1">
+                        <div class="card-content" title="More details">
+                            <img src="images/office.jpg" class="task-image" alt="Task-image" width="150" height="80">
+                            <p>This is a paragraph.</p>
+                        </div>
+                        </a>
+                                                
+                        <div class="card-actions">
+                            <a href="#like">
+                            <img src="images/like.svg" alt="like" width="24" height="24" title="Show others you like this task">
+                            </a>
+                            <a href="#comment">
+                            <img src="images/comment.svg" alt="comment" width="24" height="24" title="Comment yout opinnions about this task">
+                            </a>
+                            <a href="#share">
+                            <img src="images/share.svg" alt="share" width="24" height="24" title="Share with your companions this task">
+                            </a>
+                        </div>
+                        <p class="card-date" title="Deadline date">This is the date</p>
+                    </div>
                     
                 </div>
+                
+                <button class="add-task-btn btn" title="Add another task to this section">Add a task</button>
+                
             </div>
-
         </div>
         
-            <footer>
-                2019 Copyleft:<a href="https://gul.es" target="_blank"> Alejandro de la Cruz | Juan Banga</a>
-            </footer>
+        <footer>
+            <a href="https://en.wikipedia.org/wiki/Copyleft" target="_blank">2019 Copyleft:</a>
+            <a href="https://gul.es" target="_blank"> Alejandro de la Cruz</a>
+            <a href="https://gul.es" target="_blank"> Juan Banga</a>
+            
+        </footer>
     
     </body>
 
