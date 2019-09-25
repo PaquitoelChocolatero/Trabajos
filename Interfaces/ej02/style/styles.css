@@ -206,13 +206,16 @@ header a.active {
     border-radius: 5px;
     width: 60%;
     position: relative;
-    transition: all 5s ease-in-out;
+    transition: all 3s ease-in-out;
+    
+    overflow: auto;
+    max-height: 90vh;
 }
 
 .popup h2 {
     margin-top: 0;
     color: #333;
-    font-family: Tahoma, Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .popup .close {
@@ -242,15 +245,15 @@ header a.active {
 }
 
 .popup-image {
-    flex-shrink: 0;
-	min-width:20%;
-	min-height:20%;
-	width:20%;
-	height:20%;
+    width: 80%;
+    height: auto;
+    object-fit: contain;
+    margin-right: 10px;
+    vertical-align: middle;
 }
 
 .popup-text {
-
+    
 }
 
 .popup-actions {
@@ -259,6 +262,21 @@ header a.active {
     margin-right: 5px;
     display: flex;
     align-items: center;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+}
+
+.grid-image {
+    float: left;
+}
+
+.grid-text {
+    margin-left: 20px;
+    float: left;
 }
 
 .coments {
