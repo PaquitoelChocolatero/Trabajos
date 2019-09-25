@@ -191,3 +191,15 @@ footer {
 footer a {
     color: white;
 }
+
+.git {
+    float: right;
+    color: white;
+    background-color: teal;
+    text-align: center;
+}
+
+.git:hover {
+    background-color: #cdd2d4;
+    color: #4d4d4d;
+}
