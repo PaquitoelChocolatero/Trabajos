@@ -429,4 +429,32 @@ footer a {
         display: block;
         margin-bottom: 20px;
     }
+
+    .card-date {
+        float: right;
+        position: absolute;
+        width: auto;
+        right: 10%;
+        bottom: -5%;
+    }
+
+    .popup h2{
+        padding-top: 25%;
+        position: relative;
+    }
+    
+    .popup-image{
+        position: relative;
+        padding-top: 40%;
+        width: 100%;
+        float: center;
+    }
+
+    .date-pop {
+        float: right;
+        position: absolute;
+        width: auto;
+        right: 10%;
+        bottom: 19%;
+    }
 }
