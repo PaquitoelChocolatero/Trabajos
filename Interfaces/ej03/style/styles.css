@@ -1,4 +1,4 @@
-body { 
+body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     background-color: #f2f2f3;
@@ -12,6 +12,7 @@ header {
     color: white;
     font-size: 14px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+    
 }
 
 .header-left {
@@ -81,9 +82,12 @@ header a.active {
     margin-top: 30px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
     padding: 16px;
-    padding-bottom: 115px;
+    padding-bottom: 10px;
     text-align: left;
     background-color: #f9f9f9;
+    
+    overflow: auto;
+    max-height: 70vh;
 }
 
 .card-actions {
@@ -92,6 +96,12 @@ header a.active {
     display: flex;
     align-items: center;
 }
+
+a {
+    text-decoration: none;
+    color: black;
+}
+    
 .title {
     float: left;
     display: flex;
@@ -157,6 +167,9 @@ header a.active {
     border-radius: 5px;
     width: 100%;
     height: 60px;
+    
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
 .add-task-btn:hover {
@@ -164,15 +177,165 @@ header a.active {
     color: #4d4d4d;
 }
 
-.small-space { 
-    margin-top: 80px; 
+
+.box {
+    width: 60%;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.2);
+    padding: 35px;
+    border: 2px solid #fff;
+    border-radius: 20px/50px;
+    background-clip: padding-box;
+    text-align: center;
 }
 
-.space { 
-    margin-top: 100px; 
+.overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    transition: opacity 500ms;
+    visibility: hidden;
+    opacity: 0;
+}
+.overlay:target {
+    visibility: visible;
+    opacity: 1;
 }
 
-footer{
+.popup {
+    margin: 70px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    width: 60%;
+    position: relative;
+    transition: all 3s ease-in-out;
+    
+    overflow: auto;
+    max-height: 90vh;
+}
+
+.popup h2 {
+    margin-top: 0;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.popup .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    transition: all 200ms;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+}
+
+.popup .close:hover {
+    color: teal;
+}
+
+.popup .content {
+    max-height: 30%;
+    overflow: auto;
+}
+
+.popup-content {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.popup-image {
+    height: 100%;
+    width: 90%;
+}
+
+
+.popup-actions {
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+}
+
+.grid-image {
+    float: left;
+}
+
+.grid-text {
+    margin-left: 20px;
+    float: left;
+}
+
+.coments {
+    overflow: auto;
+    height: 300px;
+    margin-bottom: 10px
+}
+
+.container {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.darker {
+    border-color: #ccc;
+    background-color: #ddd;
+}
+
+.container::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.container img {
+    float: left;
+    max-width: 60px;
+    width: 100%;
+    margin-right: 20px;
+    border-radius: 50%;
+}
+
+.container img.right {
+    float: right;
+    margin-left: 20px;
+    margin-right:0;
+}
+
+.time-right {
+    float: right;
+    color: #aaa;
+}
+
+.time-left {
+    float: left;
+    color: #999;
+}
+
+.comment {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+}
+
+
+footer {
     text-align: center;
     background: #37474f;
     color: white;
@@ -183,8 +346,20 @@ footer{
     height: 30px;
 }
 
-footer a{
+footer a {
     color: white;
+}
+
+.git {
+    float: right;
+    color: white;
+    background-color: teal;
+    text-align: center;
+}
+
+.git:hover {
+    background-color: #cdd2d4;
+    color: #4d4d4d;
 }
 
 /* Responsive for tablets */
