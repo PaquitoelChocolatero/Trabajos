@@ -4,6 +4,7 @@ body {
     background-color: #f2f2f3;
 }
 
+/* Add some color, shadows an aligment to the page header */
 header {
     overflow: hidden;
     padding: 14px 10px;
@@ -12,9 +13,9 @@ header {
     color: white;
     font-size: 14px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
-    
 }
 
+/* Logo image and name to the left */
 .header-left {
     float: left;
 }
@@ -23,6 +24,7 @@ header .logo{
     float: left;
 }
 
+/* Decoration to header text */
 header a {
     float: left;
     color: white;
@@ -39,15 +41,18 @@ header a.name {
     font-weight: bold;
 }
 
+/* Add a hover when you are on the text */
 header a:hover {
     background-color: #62727b;
     color: white;
 }
 
+/* Three buttons to the left */
 .header-right {
     float: right;
 }
 
+/* Make the first one look activated */
 header a.active {
     background-color: #607d8b;
     color: white;
@@ -90,6 +95,7 @@ header a.active {
     max-height: 70vh;
 }
 
+/* Properties of share, like and comments actions */
 .card-actions {
     margin-left: 5px;
     margin-right: 5px;
@@ -102,6 +108,7 @@ a {
     color: black;
 }
     
+/* Card title properties */
 .title {
     float: left;
     display: flex;
@@ -119,6 +126,7 @@ a {
     height: 28;
 }
 
+/* Inner card effect */
 .inner {
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
     padding-right: 10px;
@@ -130,11 +138,13 @@ a {
     position: relative;
 }
 
+/* Inner card close button */
 .close {
     float: right;
     margin-top: 10px;
 }
 
+/* All the inner card content */
 .card-content {
     padding-top: 40px;
     padding-bottom: 40px;
@@ -158,6 +168,7 @@ a {
     margin-top: -30px;
 }
 
+/* Button to add task to the card group is going to be outside... */
 .add-task-btn {
     float: right;
     color: white;
@@ -172,12 +183,14 @@ a {
     margin-bottom: 20px;
 }
 
+/* ...and it will have a hover */
 .add-task-btn:hover {
     background-color: #cdd2d4;
     color: #4d4d4d;
 }
 
 
+/* Create an empty box for the popup */
 .box {
     width: 60%;
     margin: 0 auto;
@@ -189,6 +202,7 @@ a {
     text-align: center;
 }
 
+/* Some effects for the popup box */
 .overlay {
     position: fixed;
     top: 0;
@@ -205,6 +219,7 @@ a {
     opacity: 1;
 }
 
+/* Properties about the popup like margins and max height */
 .popup {
     margin: 70px auto;
     padding: 20px;
@@ -224,6 +239,7 @@ a {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Popup close button */
 .popup .close {
     position: absolute;
     top: 20px;
@@ -244,17 +260,20 @@ a {
     overflow: auto;
 }
 
+/* Image and text of the task */
 .popup-content {
     display: flex;
     align-items: center;
     height: 100%;
 }
 
+/* Image properties */
 .popup-image {
     height: 100%;
     width: 90%;
 }
 
+/* Tasks actions like in the card view */
 .popup-actions {
     margin-top: 10px;
     margin-left: 5px;
@@ -263,11 +282,13 @@ a {
     align-items: center;
 }
 
+/* Date, just like the card view */
 .date-pop {
     float: right;
     margin-top: -30px;
 }
 
+/* Create a grid to show the users */
 .grid-container {
     display: grid;
     grid-template-columns: auto auto auto;
@@ -283,6 +304,7 @@ a {
     float: left;
 }
 
+/* Comments container */
 .coments {
     overflow: auto;
     height: 300px;
@@ -308,6 +330,7 @@ a {
     display: table;
 }
 
+/* Avatars of the containers */
 .container img {
     float: left;
     max-width: 60px;
@@ -322,6 +345,7 @@ a {
     margin-right:0;
 }
 
+/* Time of the messages */
 .time-right {
     float: right;
     color: #aaa;
@@ -339,6 +363,7 @@ a {
 }
 
 
+/* Footer (end of page) properties */
 footer {
     text-align: center;
     background: #37474f;
@@ -354,6 +379,7 @@ footer a {
     color: white;
 }
 
+/* Git button */
 .git {
     float: right;
     color: white;
@@ -458,6 +484,7 @@ footer a {
         float: center;
     }
     
+/*     Image before text */
     .popup-image {
         margin-top: -45%;
         margin-left: 5%;
