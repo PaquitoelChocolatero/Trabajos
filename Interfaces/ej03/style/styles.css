@@ -255,6 +255,12 @@ a {
     width: 90%;
 }
 
+.popup-image2 {
+    height: 50%;
+    width: 50%;
+    margin-left: 5%;
+}
+
 .popup-actions {
     margin-top: 10px;
     margin-left: 5px;
@@ -459,12 +465,22 @@ footer a {
     }
     
     .popup-image {
-        margin-top: -40%;
-        padding-left: 10px;
+        margin-top: -30%;
         height: 300;
         width: auto;
     }
+	.popup-image2 {
+	    height: 60%;
+	    width: 70%;
+	    margin-left: 5%;
+	margin-top: -20%;
+	}
     
+    .popup-text2 {
+        margin-left: -120%;
+        margin-top: 60%;
+    }
+
     .popup-text {
         margin-left: -85%;
         margin-top: 60%;
