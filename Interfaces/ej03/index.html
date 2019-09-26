@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
     <html lang="en-US">
+    <!--Authors: Juan Banga Pardo, Alejandro de la Cruz Alvarado--> 
+    <!--Group 14--> 
+    <!--User interfaces--> 
     <head>
         <link rel="stylesheet" href="style/styles.css">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -8,6 +11,7 @@
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
         <!--Tag needed to make the webpage responsive, see https://www.w3schools.com/css/css_rwd_viewport.asp for details-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--Tab info-->
         <link rel="icon" href="images/favicon.ico">
         <title>JATC</title>
     </head>
@@ -15,10 +19,12 @@
     <body>
         
         <header>
+            <!--Page title and logo-->
             <div class="header-left">
                 <img src="images/logo_light-gray.png" class="logo" alt="Absolutely not GUL logo" width="50" height="40">
                 <a href="#default" class="name" title="For a lack of a better name">Just Another Trello Clone</a>
             </div>
+            <!--Buttons in the right-->
             <div class="header-right">
                 <a class="active" href="#Mainclickyguy">Main clicky guy</a>
                 <a href="#Contact">Contact</a>
@@ -26,20 +32,25 @@
             </div>
         </header>
         
+        <!--Container of every column-->
         <div class="row">
+            <!--First column-->
             <div class="column">
                 <div class="card">
-                
+                    <!--Title of the column and icon to remove-->
                     <div class="title" title="Section title">
                         <p>Tasks to Do</p>
                         <input type="image" src="images/kebab.svg" alt="kebab" id="kebab-menu" title="Menu">
                     </div>
                     
+                    <!--First card of content-->
                     <div class="inner">
+                        <!--Button to remove the card-->
                         <button type="button" class="close" aria-label="Close" title="Close">
                             <span aria-hidden="true">X</span>
                         </button>
                         
+                        <!--If card clicked the open popup-->
                         <a href="#popup1">
                         <div class="card-content" title="More details">
                             <img src="images/office.jpg" class="task-image" width="150" height="80">
@@ -47,6 +58,7 @@
                         </div>
                         </a>
                         
+                        <!--Like, comment and share buttons-->
                         <div class="card-actions">
                             <a href="#like">
                             <img src="images/like.svg" alt="like" width="24" height="24" title="Show others you like this task">
@@ -58,6 +70,7 @@
                             <img src="images/share.svg" alt="share" width="24" height="24" title="Share with your companions this task">
                             </a>
                         </div>
+                        <!--Date of the comment-->
                         <p class="card-date" title="Deadline date">26-09-2019</p>
                     </div>
                     
@@ -88,7 +101,7 @@
                     </div>
                     
                 </div>
-                
+                <!--Button to add more tasks to the columns (doesn't work)-->
                 <button class="add-task-btn btn" title="Add another task to this section">Add a task</button>
                 
             </div>
@@ -251,6 +264,7 @@
             </div>
         </div>
 
+        <!--Popup with the Rick Roll--> 
         <div id="popup1" class="overlay">
             <div class="popup">
                 <h2>You just got Rick Rolled!</h2>
@@ -278,6 +292,7 @@
                     </div>
                 </div>
                 
+                <!--Same like, comment and share icons--> 
                 <div class="popup-actions">
                     <a href="#like">
                     <img src="images/like.svg" alt="like" width="24" height="24" title="Show others you like this task">
@@ -291,6 +306,7 @@
                 </div>
                 <p class="date-pop" title="Deadline date">26-09-2019</p>
                 
+                <!--List of people envolved in this task divided by those online and online--> 
                 <p>You have shared your task/event with:</p>
                 
                 <div class="grid-container">
@@ -332,6 +348,7 @@
                     </div> 
                 </div>
                 
+                <!--Comment section--> 
                 <div class="coments">
                     <div class="container">
                         <img src="images/user-offline.png" alt="Avatar" title="User avatar">
@@ -358,6 +375,7 @@
                     </div>
                 </div>
                 
+                <!--Box to add a comment (doesn't work)--> 
                 <form>
                     <textarea class="comment">Type your comment here.</textarea>
                     <input type="submit" name="submit" value="Send" title="Send your comment">
@@ -366,6 +384,7 @@
             </div>
         </div>
         
+        <!--Footer with copyleft info, link to our web and our github--> 
         <footer>
             <a href="https://en.wikipedia.org/wiki/Copyleft" target="_blank">2019 Copyleft:</a>
             <a href="https://gul.es" target="_blank">Two nice GUL members</a>
