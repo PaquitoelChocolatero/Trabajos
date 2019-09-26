@@ -255,13 +255,17 @@ a {
     width: 90%;
 }
 
-
 .popup-actions {
     margin-top: 10px;
     margin-left: 5px;
     margin-right: 5px;
     display: flex;
     align-items: center;
+}
+
+.date-pop {
+    float: right;
+    margin-top: -30px;
 }
 
 .grid-container {
@@ -376,7 +380,7 @@ footer a {
     }
     
     header a.name {
-        margin-left: 40px;
+        margin-left: 50px;
     }
 
     .header-right {
@@ -393,11 +397,10 @@ footer a {
         margin-bottom: 20px;
     }
     
-    .card-date {
-        float: right;
-        position: absolute;
-        width: 100%;
+    .popup {
+        width: 90%;
     }
+    
 }
 /* Responsive for mobile devices */
 @media screen and (max-width: 600px) {
@@ -413,7 +416,7 @@ footer a {
     }
     
     header a.name {
-        margin-left: 40px;
+        margin-left: 50px;
     }
 
     .header-right {
@@ -429,6 +432,10 @@ footer a {
         display: block;
         margin-bottom: 20px;
     }
+    
+    .card {
+        padding-bottom: 50px;
+    }
 
     .card-date {
         float: right;
@@ -437,24 +444,39 @@ footer a {
         right: 10%;
         bottom: -5%;
     }
-
-    .popup h2{
+    
+    .popup {
+        width: 90%;
+    }
+    
+    .popup h2 {
         padding-top: 25%;
         position: relative;
     }
     
-    .popup-image{
-        position: relative;
-        padding-top: 40%;
-        width: 100%;
+    .popup-content {
         float: center;
     }
-
+    
+    .popup-image {
+        margin-top: -60%;
+        padding-left: 10px;
+        height: 300;
+        width: auto;
+    }
+    
+    .popup-text {
+        margin-left: -85%;
+        margin-top: 60%;
+    }
+    
     .date-pop {
         float: right;
-        position: absolute;
-        width: auto;
         right: 10%;
-        bottom: 19%;
+        bottom: 10%;
+    }
+    
+    .popup-actions {
+        margin-top: -0px;
     }
 }
