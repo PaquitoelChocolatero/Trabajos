@@ -16,7 +16,7 @@ function windowOnClick(event) {
     }
 }
 
-//Open the pop up in every card
+//Abrir el popup desde cualquier tarjeta
 for (var i=0; i < trigger.length; i++) {
     console.log(trigger[i]);
     trigger[i].onclick = function popup() {
@@ -24,13 +24,14 @@ for (var i=0; i < trigger.length; i++) {
     };
 }
 
-//Close the popup
+//Cerrar el popup en la x
 for (var i=0; i < closeButton.length; i++) {
     closeButton[i].onclick = function popup() {
         modal.classList.toggle("show-modal");
     };
 }
 
+//Todo el contenido en un array para que sea dinámico y poner añadir/borrar
 var cards = [  
     [
         "Tasks to Do",
@@ -92,27 +93,29 @@ var cards = [
 ];
 
 for(i=0; i<cards.length; i++){
+    //Creamos una columna
     $(function(){
         $('.column:first').clone().appendTo('.row');
     })
+    //Le ponemos el título correspondiente
     document.getElementById("card-title").innerHTML = cards[i][0];
     for(j=0; j<cards[i][1].length; j++){
-        if(j==0){
-            document.getElementById("card-image").src=cards[i][1][j][1];
-            document.getElementById("card-text").innerHTML = cards[i][1][j][2];
-            document.getElementById("card-date").innerHTML = cards[i][1][j][3];
-        }else{
+        //La primera ya existe, por lo que no la duplicamos
+        if(j!=0){
             $(function(){
                 $('.inner:last').clone().appendTo('.card:last');
             })
-            document.getElementById("card-image").src=cards[i][1][j][1];
-            document.getElementById("card-text").innerHTML = cards[i][1][j][2];
-            document.getElementById("card-date").innerHTML = cards[i][1][j][3];
         }
+        //Añadimos el resto del contenido
+        document.getElementById("card-image").src=cards[i][1][j][1];
+        document.getElementById("card-text").innerHTML = cards[i][1][j][2];
+        document.getElementById("card-date").innerHTML = cards[i][1][j][3];
     }
 }
+//Borramos la columna auxiliar
 $(function(){
     $('.column:first').remove();
 });
 
+//Para clicar fuera del pop up
 window.addEventListener("click", windowOnClick);
