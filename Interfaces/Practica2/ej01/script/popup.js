@@ -128,6 +128,20 @@ for (var i=0; i < closeButton.length; i++) {
 //Para clicar fuera del pop up
 window.addEventListener("click", windowOnClick);
 
+/*
+$(window).load(function () {
+    $(".trigger").click(function(){
+       $('.show-modal').show();
+    });
+    $('.show-modal').click(function(){
+        $('.show-modal').hide();
+    });
+    $('.close-button').click(function(){
+        $('.show-modal').hide();
+    });
+});
+*/
+
 //Abrir el popup desde cualquier x
 for (var i=0; i < remove.length; i++) {
     remove[i].onclick = function() {
