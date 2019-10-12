@@ -175,3 +175,30 @@ for (var i=0; i < cancel.length; i++) {
         addition.classList.toggle("show-addition");
     };
 }
+
+
+//Botón like con contador
+$(".like_button").on("click", function() {
+  var $like_count = $(this).parent().find('.like_count');
+  $count.html($like_count.html() + 1);
+});
+
+
+//Botón kebab menu
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
