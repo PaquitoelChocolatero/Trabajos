@@ -4,32 +4,11 @@ var closeButton = document.getElementsByClassName(".close-button");
 var inner = document.getElementsByClassName("inner");
 var card = document.getElementsByClassName("card");
 var column = document.getElementsByClassName("column");
-
-
-function popup() {
-    modal.classList.toggle("show-modal");
-}
-
-function windowOnClick(event) {
-    if (event.target === modal) {
-        popup();
-    }
-}
-
-//Abrir el popup desde cualquier tarjeta
-for (var i=0; i < trigger.length; i++) {
-    console.log(trigger[i]);
-    trigger[i].onclick = function popup() {
-        modal.classList.toggle("show-modal");
-    };
-}
-
-//Cerrar el popup en la x
-for (var i=0; i < closeButton.length; i++) {
-    closeButton[i].onclick = function popup() {
-        modal.classList.toggle("show-modal");
-    };
-}
+var remove = document.getElementsByClassName("close");
+var confirmation = document.querySelector(".confirmation");
+var cancel = document.querySelector(".calcel");
+var add = document.querySelector(".add-task-btn");
+var addition = document.querySelector(".addition");
 
 //Todo el contenido en un array para que sea dinámico y poner añadir/borrar
 var cards = [  
@@ -72,7 +51,7 @@ var cards = [
             ],
             [
                 2,
-                "images/brainstorm.jpg",
+                "images/brainstorm.png",
                 "Brainstorming for new projects",
                 "21-09-2019"
             ],
@@ -92,30 +71,93 @@ var cards = [
     ]
 ];
 
-for(i=0; i<cards.length; i++){
-    //Creamos una columna
-    $(function(){
-        $('.column:first').clone().appendTo('.row');
-    })
-    //Le ponemos el título correspondiente
-    document.getElementById("card-title").innerHTML = cards[i][0];
-    for(j=0; j<cards[i][1].length; j++){
-        //La primera ya existe, por lo que no la duplicamos
-        if(j!=0){
-            $(function(){
-                $('.inner:last').clone().appendTo('.card:last');
-            })
-        }
-        //Añadimos el resto del contenido
-        document.getElementById("card-image").src=cards[i][1][j][1];
-        document.getElementById("card-text").innerHTML = cards[i][1][j][2];
-        document.getElementById("card-date").innerHTML = cards[i][1][j][3];
-    }
-}
-//Borramos la columna auxiliar
+//Añadimos 1 a todo para obviar la columna auxiliar
 $(function(){
+    var it = 1;
+    for(i=0; i<cards.length; i++){
+        //Creamos una columna
+        $('.column:first').clone(true).appendTo('.row');
+        //Le ponemos el título correspondiente
+        document.getElementsByClassName("card-title")[i+1].innerHTML = cards[i][0];
+        for(j=0; j<cards[i][1].length; j++){
+            //La primera ya existe, por lo que no la duplicamos
+            if(j!=0){
+                $('.inner:last').clone(true).appendTo('.card:last');
+            }
+            //Añadimos el resto del contenido
+            document.getElementsByClassName("card-image")[it].src=cards[i][1][j][1];
+            document.getElementsByClassName("card-text")[it].innerHTML = cards[i][1][j][2];
+            document.getElementsByClassName("card-date")[it].innerHTML = cards[i][1][j][3];
+            it++;
+        }
+    }
+//Borramos la columna auxiliar
     $('.column:first').remove();
 });
 
+//Borrar la tarjeta en la x
+for (var i=0; i < remove.length; i++) {
+    remove[i].onclick = function() {
+        modal.classList.toggle("show-modal");
+    };
+}
+
+function popup() {
+    modal.classList.toggle("show-modal");
+}
+
+function windowOnClick(event) {
+    if (event.target === modal) {
+        popup();
+    }
+}
+
+//Abrir el popup desde cualquier tarjeta
+for (var i=0; i < trigger.length; i++) {
+    trigger[i].onclick = function popup() {
+        modal.classList.toggle("show-modal");
+    };
+}
+
+//Cerrar el popup en la x
+for (var i=0; i < closeButton.length; i++) {
+    closeButton[i].onclick = function popup() {
+        modal.classList.toggle("show-modal");
+    };
+}
 //Para clicar fuera del pop up
 window.addEventListener("click", windowOnClick);
+
+//Abrir el popup desde cualquier x
+for (var i=0; i < remove.length; i++) {
+    remove[i].onclick = function() {
+        confirmation.classList.toggle("show-confirmation");
+    };
+}
+
+//Cerrar el popup en cancel
+for (var i=0; i < cancel.length; i++) {
+    cancel[i].onclick = function() {
+        confirmation.classList.toggle("show-confirmation");
+    };
+}
+
+function remove(elem){
+
+}
+
+document.getElementById('confirm').addEventListener('click', remove());
+
+//Abrir el popup de adición desde cualquier add task
+for (var i=0; i < add.length; i++) {
+    add[i].onclick = function() {
+        addition.classList.toggle("show-addition");
+    };
+}
+
+//Cerrar el popup en cancel
+for (var i=0; i < cancel.length; i++) {
+    cancel[i].onclick = function() {
+        addition.classList.toggle("show-addition");
+    };
+}

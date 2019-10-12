@@ -29,7 +29,7 @@
                 <div class="card">
                 
                     <div class="title" title="Section title">
-                        <p id="card-title"></p>
+                        <p class="card-title"></p>
                         <input type="image" src="images/kebab.svg" alt="kebab" id="kebab-menu" title="Menu">
                     </div>
                     
@@ -39,8 +39,8 @@
                         </button>
 
                         <div class="trigger" title="More details">
-                            <img id="card-image" src="images/office.jpg" class="task-image" width="150" height="80">
-                            <p id="card-text"></p>
+                            <img class="card-image" src="images/office.jpg" class="task-image" width="150" height="80">
+                            <p class="card-text"></p>
                         </div>
                         </a>
                         
@@ -55,7 +55,7 @@
                             <img src="images/share.svg" alt="share" width="24" height="24" title="Share with your companions this task">
                             </a>
                         </div>
-                        <p id="card-date" title="Deadline date"></p>
+                        <p class="card-date" title="Deadline date"></p>
                     </div>
                 </div>
                 
@@ -170,6 +170,28 @@
                     <input type="submit" name="submit" value="Send" title="Send your comment">
                 </form>
                 
+            </div>
+        </div>
+
+        <!--Confirmation popup to remove card-->
+        <div class="confirmation">
+            <div class="popup">
+                <h1>Do you want to remove this task?</h1>
+                <button type="button" id="cancel">Cancel</button>
+                <button type="button" id="confirm"><strong>Confirm</strong></button>
+            </div>
+        </div>
+
+        <!--Form to add new card-->
+        <div class="addition">
+            <div class="popup">
+                <form>
+                    <h1>Please add the following information:</h1>
+                    <input type="text" minlength="1" name="New Task" placeholder="Type the new task">
+                    <input type="text" name="New Task_img" placeholder="url to image">
+                </form>
+                <button type="button" id="cancel">Cancel</button>
+                <button type="button" id="confirm"><strong>Confirm</strong></button>
             </div>
         </div>
         
