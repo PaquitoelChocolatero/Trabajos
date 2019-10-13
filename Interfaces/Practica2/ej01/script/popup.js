@@ -76,13 +76,13 @@ $(function(){
     var it = 1;
     for(i=0; i<cards.length; i++){
         //Creamos una columna
-        $('.column:first').clone(true).appendTo('.row');
+        $('.column:first').clone(true, true).appendTo('.row');
         //Le ponemos el título correspondiente
         document.getElementsByClassName("card-title")[i+1].innerHTML = cards[i][0];
         for(j=0; j<cards[i][1].length; j++){
             //La primera ya existe, por lo que no la duplicamos
             if(j!=0){
-                $('.inner:last').clone(true).appendTo('.card:last');
+                $('.inner:last').clone(true, true).appendTo('.card:last');
             }
             //Añadimos el resto del contenido
             document.getElementsByClassName("card-image")[it].src=cards[i][1][j][1];
@@ -92,7 +92,7 @@ $(function(){
         }
     }
 //Borramos la columna auxiliar
-    $('.column:first').remove();
+    //$('.column:first').remove();
 });
 
 //Borrar la tarjeta en la x
