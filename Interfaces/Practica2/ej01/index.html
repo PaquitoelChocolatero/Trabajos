@@ -27,6 +27,7 @@
             </div>
         </header>
         
+        <!--Plantilla de tarjeta-->
         <div class="row">
             <div class="column">
                 <div class="card">
@@ -76,7 +77,7 @@
             </div>
         </div>
 
-
+        <!--Pop Up normal-->
         <div id="popup2" class="modal">
             <div class="popup">
                 <h2>Daily standup meeting</h2>
@@ -187,8 +188,9 @@
 
         <!--Confirmation popup to remove card-->
         <div class="confirmation">
-            <div class="popup">
-                <h1>Do you want to remove this task?</h1>
+            <div class="popup-conf">
+                <a class="close-button" href="" title="Close popup">&times;</a>
+                <h2>Do you want to remove this task?</h2>
                 <button type="button" id="cancel">Cancel</button>
                 <button type="button" id="confirm"><strong>Confirm</strong></button>
             </div>
@@ -196,10 +198,12 @@
 
         <!--Form to add new card-->
         <div class="addition">
-            <div class="popup">
-                <form>
-                    <h1>Please add the following information:</h1>
+            <div class="popup-add">
+                <a class="close-button" href="" title="Close popup">&times;</a>
+                <form id="newData">
+                    <h2>Please add the following information:</h2>
                     <input type="text" minlength="1" name="New Task" placeholder="Type the new task">
+                    <br />
                     <input type="text" name="New Task_img" placeholder="url to image">
                 </form>
                 <button type="button" id="cancel">Cancel</button>
