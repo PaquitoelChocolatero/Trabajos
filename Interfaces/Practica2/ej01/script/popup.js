@@ -1,7 +1,5 @@
 $(document).ready(function(){
     var modal = document.querySelector(".modal");
-    var trigger = document.getElementsByClassName("trigger");
-    var closeButton = document.getElementsByClassName(".close-button");
     var inner = document.getElementsByClassName("inner");
     var card = document.getElementsByClassName("card");
     var column = document.getElementsByClassName("column");
@@ -105,7 +103,7 @@ $(document).ready(function(){
 
     function popup() {
         modal.classList.toggle("show-modal");
-    }
+    };
 
     function windowOnClick(event) {
         if (event.target === modal) {
@@ -119,20 +117,23 @@ $(document).ready(function(){
     });
 
     //Cerrar el popup en la x
-    $('div.inner').on('click', 'div.close-button', function popup() {
+    $('div.modal').on('click', 'div.close-button', function() {
         modal.classList.toggle("show-modal");
     });
 
     //Para clicar fuera del pop up
     window.addEventListener("click", windowOnClick);
-/*
+
     //Abrir el popup desde cualquier x
+    $('div.inner').on('click', 'button.close', function() {
+        confirmation.classList.toggle("show-confirmation");
+    });/*
     for (var i=0; i < remove.length; i++) {
         remove[i].onclick = function() {
             confirmation.classList.toggle("show-confirmation");
         };
-    }
-
+    }*/
+/*
     //Cerrar el popup en cancel
     for (var i=0; i < cancel.length; i++) {
         cancel[i].onclick = function() {
@@ -145,14 +146,12 @@ $(document).ready(function(){
     }
 
     document.getElementById('confirm').addEventListener('click', remove());
-
+*/
     //Abrir el popup de adición desde cualquier add task
-    for (var i=0; i < add.length; i++) {
-        add[i].onclick = function() {
-            addition.classList.toggle("show-addition");
-        };
-    }
-
+    $('button.btn').on('click', function() {
+        addition.classList.toggle("show-addition");
+    });
+/*
     //Cerrar el popup en cancel
     for (var i=0; i < cancel.length; i++) {
         cancel[i].onclick = function() {
