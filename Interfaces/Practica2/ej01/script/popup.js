@@ -112,7 +112,7 @@ $(document).ready(function(){
         dropdown.classList.toggle("show-dropdown");
     };
     
-    function shre() {
+    function share() {
         share.classList.toggle("show-share");
     };
 
@@ -181,7 +181,7 @@ $(document).ready(function(){
     
     //Share
     $('div.card-actions').on('click', 'image.sharebtn', function() {
-        current_task = $(this).parent();
+        current_task = $(this).siblings();
         share.classList.toggle("show-share");
     });
 
