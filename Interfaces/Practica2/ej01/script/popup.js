@@ -172,7 +172,7 @@ $(document).ready(function(){
     //En confirm cerramos el popup y borramos la tarjeta
     $('div.addition').on('click', '#confirm', function() {
         if($('#newText').val() == '' || $('#newText').val() == undefined){
-            $('#newText').css('border', 'solid red 1px');
+            $('#newText').css('border', 'solid red 2px');
         }else{
             //Clonamos un inner
             current_task.children('.inner:last').clone(true, true).appendTo(current_task);

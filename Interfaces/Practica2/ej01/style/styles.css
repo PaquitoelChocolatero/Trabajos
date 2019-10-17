@@ -468,6 +468,7 @@ footer a {
     background-color: teal;
     text-align:center;
     position:relative;
+    width: 15%;
 }
 
 #confirm:hover, #confirm:focus {
@@ -481,13 +482,14 @@ footer a {
 #cancel {
     display:inline-block;
     padding:0.7em 1.4em;
-    margin-left: 35%;
+    margin-left: 32%;
     border-radius:0.4em;
     font-weight:400;
     color:#FFFFFF;
     background-color: #b1b1b1;
     text-align:center;
     position:relative;
+    width: 15%;
 }
 
 #cancel:hover, #cancel:focus {
