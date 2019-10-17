@@ -2,6 +2,7 @@ $(document).ready(function(){
     var modal = document.querySelector(".modal");
     var confirmation = document.querySelector(".confirmation");
     var addition = document.querySelector(".addition");
+    var dropdown = document.querySelector(".dropdown");
 
     //Todo el contenido en un array para que sea dinámico y poner añadir/borrar
     var cards = [  
@@ -104,10 +105,15 @@ $(document).ready(function(){
     function popup3() {
         addition.classList.toggle("show-addition");
     };
+    
+    function dropdown() {
+        dropdown.classList.toggle("show-dropdown");
+    };
 
     function windowOnClick(event) {
         if (event.target === modal) popup();
         else if (event.target === confirmation) popup2();
+        else if (event.target === dropdown) dropdown();
         else if (event.target === addition){
             //Reset border
             $('#newText').css('border', 'solid rgb(158, 157, 157) 1px');
@@ -160,6 +166,11 @@ $(document).ready(function(){
         $('#newText').css('border', 'solid rgb(158, 157, 157) 1px');
         addition.classList.toggle("show-addition");
     });
+    
+    //Dropdown
+    $('div.title').on('click', 'div.dropdown', function() {
+        dropdown.classList.toggle("show-dropdown");
+    });
 
     //Capturamos el día de hoy
     var today = new Date();
@@ -201,10 +212,15 @@ $(document).ready(function(){
         }
     });
 
-    //Botón like con contador
-    $(".like_button").on("click", function() {
-        var $like_count = $(this).parent().find('.like_count');
-        $count.html($like_count.html() + 1);
-    }); 
+    function like() {
+        if (document.getElementById("lk").src == "images/like.svg") 
+        {
+            document.getElementById("lk").src = "images/like-active.png";
+        }
+        else 
+        {
+            document.getElementById("lk").src = "images/like.svg";
+        }
+    }
     
 });
