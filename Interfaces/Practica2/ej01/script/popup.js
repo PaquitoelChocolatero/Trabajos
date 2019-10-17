@@ -106,15 +106,9 @@ $(document).ready(function(){
     };
 
     function windowOnClick(event) {
-        if (event.target === modal) {
-            popup();
-        }
-        else if (event.target === confirmation) {
-            popup2();
-        }
-        else if (event.target === addition) {
-            popup3();
-        }
+        if (event.target === modal) popup();
+        else if (event.target === confirmation) popup2();
+        else if (event.target === addition) popup3();
     }
 
     //Abrir el popup desde cualquier tarjeta
@@ -130,7 +124,9 @@ $(document).ready(function(){
     //Para clicar fuera del pop up
     window.addEventListener("click", windowOnClick);
 
+    //Capture task that has been clicked
     var current_task;
+
     //Abrir el popup desde cualquier x
     $('div.inner').on('click', 'button.close', function() {
         current_task = $(this).parent();
@@ -148,34 +144,9 @@ $(document).ready(function(){
         confirmation.classList.toggle("show-confirmation");
     });
 
-    //Re-render page (?)
-    $(function(){
-        $('.column:first').show();
-        $('.column:not(:first)').remove();
-        var it = 1;
-        for(i=0; i<cards.length; i++){
-            //Creamos una columna
-            $('.column:first').clone(true, true).appendTo('.row');
-            //Le ponemos el título correspondiente
-            document.getElementsByClassName("card-title")[i+1].innerHTML = cards[i][0];
-            for(j=0; j<cards[i][1].length; j++){
-                //La primera ya existe, por lo que no la duplicamos
-                if(j!=0){
-                    $('.inner:last').clone(true, true).appendTo('.card:last');
-                }
-                //Añadimos el resto del contenido
-                document.getElementsByClassName("card-image")[it].src=cards[i][1][j][1];
-                document.getElementsByClassName("card-text")[it].innerHTML = cards[i][1][j][2];
-                document.getElementsByClassName("card-date")[it].innerHTML = cards[i][1][j][3];
-                it++;
-            }
-        }
-    //Borramos la columna auxiliar
-        $('.column:first').hide();
-    });
-
     //Abrir el popup de adición desde cualquier add task
     $('button.btn').on('click', function() {
+        current_task = $(this).siblings();
         addition.classList.toggle("show-addition");
     });
 
@@ -184,8 +155,23 @@ $(document).ready(function(){
         addition.classList.toggle("show-addition");
     });
 
+    //Capturamos el día de hoy
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+
+    today = dd + '-' + mm + '-' + yyyy;
+
     //En confirm cerramos el popup y borramos la tarjeta
     $('div.addition').on('click', '#confirm', function() {
+        //Clonamos un inner
+        current_task.children('.inner:last').clone(true, true).appendTo(current_task);
+        //Añadimos el resto del contenido
+        current_task.find('.card-image:last').attr('src', "images/coffe.jpg");
+        current_task.find('.card-text:last').html("test");
+        current_task.find('.card-date:last').html(today);
+        //Salimos del popup
         addition.classList.toggle("show-addition");
     });
 
@@ -193,10 +179,6 @@ $(document).ready(function(){
     $(".like_button").on("click", function() {
         var $like_count = $(this).parent().find('.like_count');
         $count.html($like_count.html() + 1);
-    });
-
-
-
-    
+    }); 
     
 });
