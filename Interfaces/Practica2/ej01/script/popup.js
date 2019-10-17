@@ -108,7 +108,11 @@ $(document).ready(function(){
     function windowOnClick(event) {
         if (event.target === modal) popup();
         else if (event.target === confirmation) popup2();
-        else if (event.target === addition) popup3();
+        else if (event.target === addition){
+            //Reset border
+            $('#newText').css('border', 'solid rgb(158, 157, 157) 1px');
+            popup3();
+        }
     }
 
     //Abrir el popup desde cualquier tarjeta
@@ -152,6 +156,8 @@ $(document).ready(function(){
 
     //Cerrar el popup en cancel
     $('div.addition').on('click', '#cancel', function() {
+        //Reset border
+        $('#newText').css('border', 'solid rgb(158, 157, 157) 1px');
         addition.classList.toggle("show-addition");
     });
 
@@ -165,14 +171,34 @@ $(document).ready(function(){
 
     //En confirm cerramos el popup y borramos la tarjeta
     $('div.addition').on('click', '#confirm', function() {
-        //Clonamos un inner
-        current_task.children('.inner:last').clone(true, true).appendTo(current_task);
-        //Añadimos el resto del contenido
-        current_task.find('.card-image:last').attr('src', "images/coffe.jpg");
-        current_task.find('.card-text:last').html("test");
-        current_task.find('.card-date:last').html(today);
-        //Salimos del popup
-        addition.classList.toggle("show-addition");
+        if($('#newText').val() == '' || $('#newText').val() == undefined){
+            $('#newText').css('border', 'solid red 1px');
+        }else{
+            //Clonamos un inner
+            current_task.children('.inner:last').clone(true, true).appendTo(current_task);
+            //Añadimos el resto del contenido
+            current_task.find('.card-text:last').html($('#newText').val());
+            
+            //Default value to new image
+            var newImg = "images/office.jpg";
+            //If image is provided set value
+            if($('#newImg').val()!=""){
+                newImg = $('#newImg').val();
+            }
+            current_task.find('.card-image:last').attr('src', newImg);
+            
+            current_task.find('.card-date:last').html(today);
+
+            //Reset values
+            $('#newText').val('');
+            $('#newImg').val('');
+            
+            //Reset border
+            $('#newText').css('border', 'solid rgb(158, 157, 157) 1px');
+
+            //Salimos del popup
+            addition.classList.toggle("show-addition");
+        }
     });
 
     //Botón like con contador

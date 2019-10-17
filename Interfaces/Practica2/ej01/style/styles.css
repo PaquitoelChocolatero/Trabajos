@@ -481,7 +481,7 @@ footer a {
 #cancel {
     display:inline-block;
     padding:0.7em 1.4em;
-    margin-left: 30%;
+    margin-left: 35%;
     border-radius:0.4em;
     font-weight:400;
     color:#FFFFFF;
@@ -496,4 +496,18 @@ footer a {
 
 #confirm:after, #confirm:active:after{
     top:0.1em;
+}
+
+#newText {
+    border: solid rgb(158, 157, 157) 1px;
+    margin-left: 22%;
+    width: 60%;
+    border-radius:0.2em;
+}
+
+#newImg {
+    border: solid rgb(158, 157, 157) 1px;
+    margin-left: 22%;
+    width: 60%;
+    border-radius:0.2em;
 }
