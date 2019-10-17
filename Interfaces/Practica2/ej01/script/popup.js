@@ -175,13 +175,14 @@ $(document).ready(function(){
     });
     
     //Dropdown
-    $('div.title').on('click', 'div.dropdown', function() {
+    $('div.card').on('click', 'div.dropdown', function() {
+        current_task = $(this).parent().parent();
         dropdown.classList.toggle("show-dropdown");
     });
     
     //Share
-    $('div.card-actions').on('click', 'image.sharebtn', function() {
-        current_task = $(this).siblings();
+    $('div.inner').on('click', 'div.share_button', function() {
+        current_task = $(this).parent().parent();
         share.classList.toggle("show-share");
     });
 
