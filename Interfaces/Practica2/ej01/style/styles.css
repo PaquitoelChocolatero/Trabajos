@@ -382,7 +382,7 @@ footer a {
     color: white;
 }
 
-.modal, .confirmation, .addition{
+.modal, .share, .confirmation, .addition{
     position: fixed;
     left: 0;
     top: 0;
@@ -409,7 +409,7 @@ footer a {
     background-color: darkgray;
 }
 
-.show-modal, .show-confirmation, .show-addition {
+.show-modal, .show-share, .show-confirmation, .show-addition {
     opacity: 1;
     visibility: visible;
     transform: scale(1.0);

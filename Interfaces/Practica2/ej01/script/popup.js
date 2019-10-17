@@ -3,6 +3,8 @@ $(document).ready(function(){
     var confirmation = document.querySelector(".confirmation");
     var addition = document.querySelector(".addition");
     var dropdown = document.querySelector(".dropdown");
+    var share = document.querySelector(".share");
+
 
     //Todo el contenido en un array para que sea dinámico y poner añadir/borrar
     var cards = [  
@@ -109,11 +111,16 @@ $(document).ready(function(){
     function dropdown() {
         dropdown.classList.toggle("show-dropdown");
     };
+    
+    function shre() {
+        share.classList.toggle("show-share");
+    };
 
     function windowOnClick(event) {
         if (event.target === modal) popup();
         else if (event.target === confirmation) popup2();
         else if (event.target === dropdown) dropdown();
+        else if (event.target === share) share();
         else if (event.target === addition){
             //Reset border
             $('#newText').css('border', 'solid rgb(158, 157, 157) 1px');
@@ -170,6 +177,12 @@ $(document).ready(function(){
     //Dropdown
     $('div.title').on('click', 'div.dropdown', function() {
         dropdown.classList.toggle("show-dropdown");
+    });
+    
+    //Share
+    $('div.card-actions').on('click', 'image.sharebtn', function() {
+        current_task = $(this).parent();
+        share.classList.toggle("show-share");
     });
 
     //Capturamos el día de hoy
