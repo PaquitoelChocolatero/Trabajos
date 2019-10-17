@@ -144,9 +144,7 @@ $(document).ready(function(){
 
     //En confirm cerramos el popup y borramos la tarjeta
     $('div.confirmation').on('click', '#confirm', function() {
-        //cards.splice(cards.indexOf($(current_task).find('.card-text')), 1);
-        cards[0][1].splice(1, 1);
-        alert(cards);
+        current_task.remove();
         confirmation.classList.toggle("show-confirmation");
     });
 
