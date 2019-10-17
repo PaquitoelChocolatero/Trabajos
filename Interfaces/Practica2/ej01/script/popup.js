@@ -96,10 +96,24 @@ $(document).ready(function(){
     function popup() {
         modal.classList.toggle("show-modal");
     };
+    
+    function popup2() {
+        confirmation.classList.toggle("show-confirmation");
+    };
+    
+    function popup3() {
+        addition.classList.toggle("show-addition");
+    };
 
     function windowOnClick(event) {
         if (event.target === modal) {
             popup();
+        }
+        else if (event.target === confirmation) {
+            popup2();
+        }
+        else if (event.target === addition) {
+            popup3();
         }
     }
 
