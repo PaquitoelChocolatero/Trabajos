@@ -78,7 +78,7 @@ $(document).ready(function(){
             for(j=0; j<cards[i][1].length; j++){
                 //La primera ya existe, por lo que no la duplicamos
                 if(j!=0){
-                    $('.inner:last').clone(true, true).appendTo('.card:last');
+                    $('.inner:last').clone(true, true).appendTo('.sortable:last');
                 }
                 //Añadimos el resto del contenido
                 document.getElementsByClassName("card-image")[it].src=cards[i][1][j][1];
@@ -92,7 +92,7 @@ $(document).ready(function(){
     });
 
     //Borrar la tarjeta en la x
-    $('div.inner').on('click', 'div.close', function() {
+    $('li.inner').on('click', 'div.close', function() {
         modal.classList.toggle("show-modal");
     });
 
@@ -124,7 +124,7 @@ $(document).ready(function(){
     }
 
     //Abrir el popup desde cualquier tarjeta
-    $('div.inner').on('click', 'div.trigger', function() {
+    $('li.inner').on('click', 'div.trigger', function() {
         modal.classList.toggle("show-modal");
     });
 
@@ -140,7 +140,7 @@ $(document).ready(function(){
     var current_task;
 
     //Abrir el popup desde cualquier x
-    $('div.inner').on('click', 'button.close', function() {
+    $('li.inner').on('click', 'button.close', function() {
         current_task = $(this).parent();
         confirmation.classList.toggle("show-confirmation");
     });
@@ -181,13 +181,13 @@ $(document).ready(function(){
     });
     
     //Share
-    $('div.inner').on('click', 'div.share_button', function() {
+    $('li.inner').on('click', 'div.share_button', function() {
         current_task = $(this).parent().parent();
         share.classList.toggle("show-share");
     });
 
     //Like
-    $('div.inner').on('click', 'div.like_button', function() {
+    $('li.inner').on('click', 'div.like_button', function() {
         /*
         if ($(this).attr('src') == 'images/like.svg'){
             $(this).parent().prepend('<input type="image" alt="like" id="lk" src="images/like-active.png" width="24" height="24" title="Show others you support this task">');
@@ -243,15 +243,12 @@ $(document).ready(function(){
     /*
     $( function() {
         $( "div.column" ).draggable({ axis: "x"});
-        $( "div.column" ).droppable({accept: "div.inner"});
+        $( "div.column" ).droppable({accept: "li.inner"});
         
-        $( "div.inner" ).draggable();
+        $( "li.inner" ).draggable();
         
     } );
     */
     
     $('.sortable').sortable();
-    
-    
-    
 });
