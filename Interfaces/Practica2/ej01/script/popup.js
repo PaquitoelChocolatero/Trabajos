@@ -108,10 +108,6 @@ $(document).ready(function(){
         addition.classList.toggle("show-addition");
     };
     
-    function dropdown() {
-        dropdown.classList.toggle("show-dropdown");
-    };
-    
     function share() {
         share.classList.toggle("show-share");
     };
@@ -119,7 +115,6 @@ $(document).ready(function(){
     function windowOnClick(event) {
         if (event.target === modal) popup();
         else if (event.target === confirmation) popup2();
-        else if (event.target === dropdown) dropdown();
         else if (event.target === share) share();
         else if (event.target === addition){
             //Reset border
@@ -176,8 +171,13 @@ $(document).ready(function(){
     
     //Dropdown
     $('div.title').on('click', 'div.dropdown', function() {
-        current_task = $(this).parent().parent();
+        current_task = $(this).parent().parent().parent();
         $(this).children('div.dropdown-content').toggle("show-dropdown");
+    });
+    
+    //Archive
+    $('div.title').on('click', 'a.archive', function() {
+        current_task.remove();
     });
     
     //Share

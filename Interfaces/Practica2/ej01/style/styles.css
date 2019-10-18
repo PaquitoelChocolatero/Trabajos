@@ -114,7 +114,6 @@ a {
 }
 
 .dropbtn {
-    margin-left: 1550%;
     width: 28;
     height: 28;
 }
@@ -122,10 +121,10 @@ a {
 .dropdown {
     position: relative;
     display: inline-block;
+    margin-left: 75%;
 }
 
 .dropdown-content {
-    margin-left: 1550%;
     display: none;
     position: absolute;
     background-color: #f1f1f1;
