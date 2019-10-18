@@ -7,8 +7,6 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
         
-
-        
         <script type="text/javascript" src=script/popup.js></script>
         
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -32,8 +30,7 @@
         </header>
         
         <!--Plantilla de tarjeta-->
-        <section id="connected">
-        <div class="row">
+        <div class="row" id="elements-container">
             <div class="column">
                 <div class="card">
                     <div class="title" title="Section title">
@@ -71,6 +68,7 @@
                                     <input type="image" class="sharebtn" alt="share" src="images/share.png" width="24" height="24" title="Share with your companions this task">
                                 </div>
                             </div>
+                            <span class="drag-area"></span>
                             <p class="card-date" title="Deadline date"></p>
                         </li>
                     </ul>
@@ -80,7 +78,6 @@
                 
             </div>
         </div>
-        </section>
 
         <!--Pop Up normal-->
         <div id="popup2" class="modal">
@@ -255,8 +252,8 @@
                 <img src="images/github.png" alt="github" width="15" height="15">
             </a>
         </footer>
-                <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-        <script src="script/jquery.sortable.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script src="script/drag-arrange.js"></script>
     </body>
 
 </html>  

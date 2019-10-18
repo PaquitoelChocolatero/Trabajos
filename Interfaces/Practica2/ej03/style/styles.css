@@ -64,6 +64,7 @@ header a.active {
     float: left;
     width: 33.33%;
     padding: 0 20px;
+    list-style: none;
 }
 
 .row {
@@ -75,6 +76,15 @@ header a.active {
     content: "";
     display: table;
     clear: both;
+}
+
+.sortcol .sortable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 /* Style the counter cards */
@@ -179,6 +189,16 @@ a {
     margin-right: 5px;
     display: flex;
     align-items: center;
+}
+
+.drag-area {
+    display: inline-block;
+    background: rgb(158, 211, 179);
+    width: 60px;
+    height: 40px;
+    vertical-align: top;
+    float: right;
+    cursor: move;
 }
 
 .card-date {

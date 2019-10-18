@@ -239,22 +239,7 @@ $(document).ready(function(){
             addition.classList.toggle("show-addition");
         }
     });
-    
-    /*
-    $( function() {
-        $( "div.column" ).draggable({ axis: "x"});
-        $( "div.column" ).droppable({accept: "li.inner"});
-        
-        $( "li.inner" ).draggable();
-        
-    } );
-    */
-    
-    $(function() {
-        
 
-        $('.sortable').sortable({
-            connectWith: '.sortable'
-        });
-    });
+    $('.column').arrangeable();
+    $('li').arrangeable({dragSelector: '.drag-area'});
 });
