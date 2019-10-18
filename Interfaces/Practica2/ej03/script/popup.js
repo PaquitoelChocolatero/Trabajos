@@ -250,5 +250,11 @@ $(document).ready(function(){
     } );
     */
     
-    $('.sortable').sortable();
+    $(function() {
+        
+
+        $('.sortable').sortable({
+            connectWith: '.sortable'
+        });
+    });
 });
