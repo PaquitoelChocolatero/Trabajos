@@ -175,15 +175,29 @@ $(document).ready(function(){
     });
     
     //Dropdown
-    $('div.card').on('click', 'div.dropdown', function() {
+    $('div.title').on('click', 'div.dropdown', function() {
         current_task = $(this).parent().parent();
-        dropdown.classList.toggle("show-dropdown");
+        $(this).children('div.dropdown-content').toggle("show-dropdown");
     });
     
     //Share
     $('div.inner').on('click', 'div.share_button', function() {
         current_task = $(this).parent().parent();
         share.classList.toggle("show-share");
+    });
+
+    //Like
+    $('div.inner').on('click', 'div.like_button', function() {
+        /*
+        if ($(this).attr('src') == 'images/like.svg'){
+            $(this).parent().prepend('<input type="image" alt="like" id="lk" src="images/like-active.png" width="24" height="24" title="Show others you support this task">');
+            $(this).remove();
+        }else{
+            $(this).parent().prepend('<input type="image" alt="like" id="lk" src="images/like.svg" width="24" height="24" title="Show others you support this task">');
+            $(this).remove();
+        }*/
+        $(this).parent().prepend('<input type="image" alt="like" id="lk" src="images/like-active.png" width="24" height="24" title="Show others you support this task">');
+        $(this).remove();
     });
 
     //Capturamos el día de hoy
@@ -224,17 +238,5 @@ $(document).ready(function(){
             //Salimos del popup
             addition.classList.toggle("show-addition");
         }
-    });
-
-    function like() {
-        if (document.getElementById("lk").src == "images/like.svg") 
-        {
-            document.getElementById("lk").src = "images/like-active.png";
-        }
-        else 
-        {
-            document.getElementById("lk").src = "images/like.svg";
-        }
-    }
-    
+    });    
 });

@@ -114,18 +114,18 @@ a {
 }
 
 .dropbtn {
-    margin-left: auto;
+    margin-left: 1550%;
     width: 28;
     height: 28;
 }
 
 .dropdown {
-    float: right;
     position: relative;
     display: inline-block;
 }
 
 .dropdown-content {
+    margin-left: 1550%;
     display: none;
     position: absolute;
     background-color: #f1f1f1;
@@ -133,7 +133,7 @@ a {
     overflow: auto;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     right: 0;
-    z-index: 1;
+    z-index: 1000;
 }
 
 .dropdown-content a {
