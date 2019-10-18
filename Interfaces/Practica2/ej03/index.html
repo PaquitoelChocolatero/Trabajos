@@ -30,7 +30,6 @@
         <div class="row">
             <div class="column">
                 <div class="card">
-                
                     <div class="title" title="Section title">
                         <p class="card-title"></p>
                         <div class="dropdown">
@@ -43,32 +42,34 @@
                             </div>
                         </div>
                     </div>
+                    <ul class="sortable">
+                        <li>
+                        <div class="inner">
+                            <button type="button" class="close" aria-label="Close" title="Close">
+                                <span aria-hidden="true">X</span>
+                            </button>
 
-                    
-                    <div class="inner">
-                        <button type="button" class="close" aria-label="Close" title="Close">
-                            <span aria-hidden="true">X</span>
-                        </button>
-
-                        <div class="trigger" title="More details">
-                            <img class="card-image" src="images/office.jpg" class="task-image" width="150" height="80">
-                            <p class="card-text"></p>
-                        </div>
-                        </a>
-                        
-                        <div class="card-actions">
-                            <div class="like_button">
-                                <input type="image" alt="like" id="lk" src="images/like.png" width="24" height="24" title="Show others you support this task">
+                            <div class="trigger" title="More details">
+                                <img class="card-image" src="images/office.jpg" class="task-image" width="150" height="80">
+                                <p class="card-text"></p>
                             </div>
-                            <a href="#comment">
-                            <img src="images/comment.png" alt="comment" width="24" height="24" title="Comment yout opinnions about this task">
                             </a>
-                            <div class="share_button">
-                                <input type="image" class="sharebtn" alt="share" src="images/share.png" width="24" height="24" title="Share with your companions this task">
+                            
+                            <div class="card-actions">
+                                <div class="like_button">
+                                    <input type="image" alt="like" id="lk" src="images/like.png" width="24" height="24" title="Show others you support this task">
+                                </div>
+                                <a href="#comment">
+                                <img src="images/comment.png" alt="comment" width="24" height="24" title="Comment yout opinnions about this task">
+                                </a>
+                                <div class="share_button">
+                                    <input type="image" class="sharebtn" alt="share" src="images/share.png" width="24" height="24" title="Share with your companions this task">
+                                </div>
                             </div>
+                            <p class="card-date" title="Deadline date"></p>
                         </div>
-                        <p class="card-date" title="Deadline date"></p>
-                    </div>
+                        </li>
+                    </ul>
                 </div>
                 
                 <button class="add-task-btn btn" title="Add another task to this section">Add a task</button>
@@ -248,7 +249,10 @@
             <a href="https://github.com/guluc3m" target="_blank">
                 <img src="images/github.png" alt="github" width="15" height="15">
             </a>
-        </footer>    
+        </footer>
+        
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="jquery.sortable.js"></script>
     </body>
 
 </html>  

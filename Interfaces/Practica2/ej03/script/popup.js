@@ -238,5 +238,20 @@ $(document).ready(function(){
             //Salimos del popup
             addition.classList.toggle("show-addition");
         }
-    });    
+    });
+    
+    /*
+    $( function() {
+        $( "div.column" ).draggable({ axis: "x"});
+        $( "div.column" ).droppable({accept: "div.inner"});
+        
+        $( "div.inner" ).draggable();
+        
+    } );
+    */
+    
+    $('.sortable').sortable();
+    
+    
+    
 });
