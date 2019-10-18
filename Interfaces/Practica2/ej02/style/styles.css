@@ -1,0 +1,663 @@
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f2f2f3;
+}
+
+header {
+    overflow: hidden;
+    padding: 14px 10px;
+    text-align: left;
+    background: #37474f;
+    color: white;
+    font-size: 14px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+    
+}
+
+.header-left {
+    float: left;
+}
+
+header .logo{
+    float: left;
+}
+
+header a {
+    float: left;
+    color: white;
+    text-align: left;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 14px; 
+    line-height: 25px;
+    border-radius: 4px;
+}
+
+header a.name {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+header a:hover {
+    background-color: #62727b;
+    color: white;
+}
+
+.header-right {
+    float: right;
+}
+
+header a.active {
+    background-color: #607d8b;
+    color: white;
+    font-weight: bold;
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+/* Float three columns side by side */
+.column {
+    float: left;
+    width: 33.33%;
+    padding: 0 20px;
+}
+
+.row {
+    margin: 0 15px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Style the counter cards */
+.card {
+    margin-top: 30px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
+    padding: 16px;
+    padding-bottom: 10px;
+    text-align: left;
+    background-color: #f9f9f9;
+    
+    overflow: auto;
+    max-height: 70vh;
+}
+
+.card-actions {
+    margin-left: 5px;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+    
+.title {
+    float: left;
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+    font-weight: bold;
+    font-size: 110%;
+    width: 100%;
+    height: 3em;
+}
+
+.dropbtn {
+    width: 28;
+    height: 28;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left: 75%;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    right: 0;
+    z-index: 1000;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown a:hover {background-color: #ddd;}
+
+.show-dropdown {display: block;}
+
+.inner {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-top: 50px;
+    margin-bottom: -35px;
+    text-align: left;
+    background-color: white;
+    position: relative;
+}
+
+.close {
+    float: right;
+    margin-top: 10px;
+}
+
+.trigger {
+    padding-top: 20px;
+}
+
+.task-image {
+    float: left;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
+.card-actions {
+    margin-left: 5px;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.card-date {
+    float: right;
+    margin-top: -30px;
+}
+
+.add-task-btn {
+    float: right;
+    color: white;
+    background-color: teal;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 5px;
+    width: 100%;
+    height: 60px;
+    
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.add-task-btn:hover {
+    background-color: #cdd2d4;
+    color: #4d4d4d;
+}
+
+
+.box {
+    width: 60%;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.2);
+    padding: 35px;
+    border: 2px solid #fff;
+    border-radius: 20px/50px;
+    background-clip: padding-box;
+    text-align: center;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    transition: opacity 500ms;
+    visibility: hidden;
+    opacity: 0;
+}
+.overlay:target {
+    visibility: visible;
+    opacity: 1;
+}
+
+.popup {
+    margin: 70px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    width: 60%;
+    position: relative;
+    transition: all 3s ease-in-out;
+    
+    overflow: auto;
+    max-height: 90vh;
+}
+
+.popup h2 {
+    margin-top: 0;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.popup .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    transition: all 200ms;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+}
+
+.popup .close:hover {
+    color: teal;
+}
+
+.popup .content {
+    max-height: 30%;
+    overflow: auto;
+}
+
+.popup-content {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.popup-image {
+    height: 100%;
+    width: 90%;
+}
+
+.popup-image2 {
+    height: 50%;
+    width: 50%;
+    margin-left: 5%;
+}
+
+.popup-actions {
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+}
+
+.grid-image {
+    float: left;
+}
+
+.grid-text {
+    margin-left: 20px;
+    float: left;
+}
+
+.coments {
+    overflow: auto;
+    height: 300px;
+    margin-bottom: 10px
+}
+
+.container {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.darker {
+    border-color: #ccc;
+    background-color: #ddd;
+}
+
+.container::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.container img {
+    float: left;
+    max-width: 60px;
+    width: 100%;
+    margin-right: 20px;
+    border-radius: 50%;
+}
+
+.container img.right {
+    float: right;
+    margin-left: 20px;
+    margin-right:0;
+}
+
+.time-right {
+    float: right;
+    color: #aaa;
+}
+
+.time-left {
+    float: left;
+    color: #999;
+}
+
+.comment {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+}
+
+
+footer {
+    text-align: center;
+    background: #37474f;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    padding-top: 3px;
+    width: 100%;
+    height: 30px;
+}
+
+footer a {
+    color: white;
+}
+
+.modal, .share, .confirmation, .addition{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.1);
+    transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+}
+
+.close-button {
+    float: right;
+    width: 1.5rem;
+    line-height: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    background-color: lightgray;
+}
+
+.close-button:hover {
+    background-color: darkgray;
+}
+
+.show-modal, .show-share, .show-confirmation, .show-addition {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1.0);
+    transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+
+.popup-share {
+    margin: 70px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    width: 40%;
+    position: relative;
+    transition: all 3s ease-in-out;
+    
+    overflow: auto;
+    max-height: 90vh;
+}
+
+.popup-share h2 {
+    margin-top: 0;
+    margin-left: 20%;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.resp-sharing-button__link,
+.resp-sharing-button__icon {
+    display: inline-block;
+}
+
+.resp-sharing-button__link {
+    text-decoration: none;
+    color: #fff;
+    margin: 0.5em;
+    margin-left: 5%;
+}
+
+.resp-sharing-button {
+    border-radius: 5px;
+    transition: 25ms ease-out;
+    padding: 0.5em 0.75em;
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
+.resp-sharing-button__icon svg {
+    width: 1em;
+    height: 1em;
+    margin-right: 0.4em;
+    vertical-align: top;
+}
+
+.resp-sharing-button--small svg {
+    margin: 0;
+    vertical-align: middle;
+}
+
+/* Non solid icons get a stroke */
+.resp-sharing-button__icon {
+    stroke: #fff;
+    fill: none;
+}
+
+/* Solid icons get a fill */
+.resp-sharing-button__icon--solid,
+.resp-sharing-button__icon--solidcircle {
+    fill: #fff;
+    stroke: none;
+}
+
+.resp-sharing-button--twitter {
+    background-color: #55acee;
+}
+
+.resp-sharing-button--twitter:hover {
+    background-color: #2795e9;
+}
+
+.resp-sharing-button--pinterest {
+    background-color: #bd081c;
+}
+
+.resp-sharing-button--pinterest:hover {
+    background-color: #8c0615;
+}
+
+.resp-sharing-button--email {
+    background-color: #777;
+}
+
+.resp-sharing-button--email:hover {
+    background-color: #5e5e5e;
+}
+
+.resp-sharing-button--twitter {
+    background-color: #55acee;
+    border-color: #55acee;
+}
+
+.resp-sharing-button--twitter:hover,
+.resp-sharing-button--twitter:active {
+    background-color: #2795e9;
+    border-color: #2795e9;
+}
+
+.resp-sharing-button--email {
+    background-color: #777777;
+    border-color: #777777;
+}
+
+.resp-sharing-button--email:hover,
+.resp-sharing-button--email:active {
+    background-color: #5e5e5e;
+    border-color: #5e5e5e;
+}
+
+.resp-sharing-button--pinterest {
+    background-color: #bd081c;
+    border-color: #bd081c;
+}
+
+.resp-sharing-button--pinterest:hover,
+.resp-sharing-button--pinterest:active {
+    background-color: #8c0615;
+    border-color: #8c0615;
+}
+
+.popup-conf {
+    margin: 70px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    width: 40%;
+    position: relative;
+    transition: all 3s ease-in-out;
+    
+    overflow: auto;
+    max-height: 90vh;
+}
+
+.popup-conf h2 {
+    margin-top: 0;
+    margin-left: 20%;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.popup-conf .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    transition: all 200ms;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+}
+
+.popup-conf .close:hover {
+    color: teal;
+}
+
+.popup-add {
+    margin: 70px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    width: 40%;
+    position: relative;
+    transition: all 3s ease-in-out;
+    
+    overflow: auto;
+    max-height: 90vh;
+}
+
+.popup-add h2 {
+    margin-top: 0;
+    margin-left: 20%;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.popup-add .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    transition: all 200ms;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+}
+
+.popup-add .close:hover {
+    color: teal;
+}
+
+#confirm {
+    display:inline-block;
+    padding:0.7em 1.4em;
+    margin-left: 5%;
+    border-radius:0.4em;
+    font-weight:400;
+    color:#FFFFFF;
+    background-color: teal;
+    text-align:center;
+    position:relative;
+    width: 15%;
+}
+
+#confirm:hover, #confirm:focus {
+    background-color: #00bcbc;
+}
+
+#confirm:after, #confirm:active:after{
+    top:0.1em;
+}
+
+#cancel {
+    display:inline-block;
+    padding:0.7em 1.4em;
+    margin-left: 32%;
+    border-radius:0.4em;
+    font-weight:400;
+    color:#FFFFFF;
+    background-color: #b1b1b1;
+    text-align:center;
+    position:relative;
+    width: 15%;
+}
+
+#cancel:hover, #cancel:focus {
+    background-color: #797979;
+}
+
+#confirm:after, #confirm:active:after{
+    top:0.1em;
+}
+
+#newText {
+    border: solid rgb(158, 157, 157) 1px;
+    margin-left: 22%;
+    width: 60%;
+    border-radius:0.2em;
+}
+
+#newImg {
+    border: solid rgb(158, 157, 157) 1px;
+    margin-left: 22%;
+    width: 60%;
+    border-radius:0.2em;
+}

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+    <html lang="en-US">
+    <head>
+        <link rel="stylesheet" href="style/styles.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
+        <script type="text/javascript" src=script/popup.js></script>
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+        <link rel="icon" href="images/favicon.ico">
+        <title>JATC</title>
+    </head>
+     
+    <body>
+        <header>
+            <div class="header-left">
+                <img src="images/logo_light-gray.png" class="logo" alt="Absolutely not GUL logo" width="50" height="40">
+                <a href="#default" class="name" title="For a lack of a better name">Just Another Trello Clone</a>
+            </div>
+            <div class="header-right">
+                <a class="active" href="#Mainclickyguy">Main clicky guy</a>
+                <a href="#contact">Contact</a>
+                <a href="#about">About</a>
+            </div>
+        </header>
+        
+        <!--Plantilla de tarjeta-->
+        <div class="row">
+            <div class="column">
+                <div class="card">
+                
+                    <div class="title" title="Section title">
+                        <p class="card-title"></p>
+                        <div class="dropdown">
+                            <input type="image" src="images/kebab.svg" alt="kebab" class="dropbtn" title="Menu">
+                            <div class="dropdown-content">
+                                <a class="archive">Archive</a>
+                                <a href="#option2">Option 2</a>
+                                <a href="#contact">Contact</a>
+                                <a href="#report">Report</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="inner">
+                        <button type="button" class="close" aria-label="Close" title="Close">
+                            <span aria-hidden="true">X</span>
+                        </button>
+
+                        <div class="trigger" title="More details">
+                            <img class="card-image" src="images/office.jpg" class="task-image" width="150" height="80">
+                            <p class="card-text"></p>
+                        </div>
+                        </a>
+                        
+                        <div class="card-actions">
+                            <div class="like_button">
+                                <input type="image" alt="like" id="lk" src="images/like.png" width="24" height="24" title="Show others you support this task">
+                            </div>
+                            <a href="#comment">
+                            <img src="images/comment.png" alt="comment" width="24" height="24" title="Comment yout opinnions about this task">
+                            </a>
+                            <div class="share_button">
+                                <input type="image" class="sharebtn" alt="share" src="images/share.png" width="24" height="24" title="Share with your companions this task">
+                            </div>
+                        </div>
+                        <p class="card-date" title="Deadline date"></p>
+                    </div>
+                </div>
+                
+                <button class="add-task-btn btn" title="Add another task to this section">Add a task</button>
+                
+            </div>
+        </div>
+
+        <!--Pop Up normal-->
+        <div id="popup2" class="modal">
+            <div class="popup">
+                <h2>Daily standup meeting</h2>
+                <a class="close-button" href="" title="Close popup">&times;</a>
+
+                <div class="card-content">
+                    <div class="popup-image">
+                        <img src="images/office.jpg" class="popup-image2" alt="Task-image">
+                    </div>
+                    <div class="popup-text">
+                        <p>
+                            Brief review of the ongoing project with the team </br>
+                            Isabel: Check the new look </br>
+                            John: Backend </br>
+                            Perico: Data base blocked </br>
+                            Matt: AWS budget</br>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="popup-actions">
+                    <div class="like_button">
+                        <input type="image" alt="like" id="lk" src="images/like.png" width="24" height="24" title="Show others you support this task">
+                    </div>
+                    <a href="#comment">
+                    <img src="images/comment.png" alt="comment" width="24" height="24" title="Comment yout opinnions about this task">
+                    </a>
+                    <div class="share_button">
+                        <input type="image" class="sharebtn" alt="share" src="images/share.png" width="24" height="24" title="Share with your companions this task">
+                    </div>
+                </div>
+                <p class="card-date" title="Deadline date">26-09-2019</p>
+                
+                <p>You have shared your task/event with:</p>
+                
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <div class="grid-image" title="User online">
+                            <img src="images/user-online.png" alt="user1" width="48" height="48">
+                        </div>
+                        <div class="grid-text">Isabel</div>
+                    </div>
+                    <div class="grid-item">
+                        <div class="grid-image" title="User offline">
+                            <img src="images/user-offline.png" alt="user2" width="48" height="48">
+                        </div>
+                        <div class="grid-text">Matt</div>
+                    </div>
+                    <div class="grid-item">
+                        <div class="grid-image" title="User online">
+                            <img src="images/user-online.png" alt="user3" width="48" height="48">
+                        </div>
+                        <div class="grid-text">John</div>
+                    </div>  
+                    <div class="grid-item">
+                        <div class="grid-image" title="User offline">
+                            <img src="images/user-offline.png" alt="user4" width="48" height="48">
+                        </div>
+                        <div class="grid-text">Martha</div>
+                    </div>
+                    <div class="grid-item">
+                        <div class="grid-image" title="User online">
+                            <img src="images/user-online.png" alt="user5" width="48" height="48">
+                        </div>
+                        <div class="grid-text">Perico</div>
+                    </div>
+                    <div class="grid-item">
+                        <div class="grid-image" title="Add a new user to this task">
+                            <img src="images/new-user.png" alt="add user" width="48" height="48">
+                        </div>
+                        <div class="grid-text">Add user</div>
+                    </div> 
+                </div>
+                
+                <div class="coments">
+                    <div class="container">
+                        <img src="images/user-offline.png" alt="Avatar" title="User avatar">
+                        <p>Can't wait!</p>
+                        <span class="time-right">11:00</span>
+                    </div>
+
+                    <div class="container darker">
+                        <img src="images/user-online.png" alt="Avatar" class="right" title="Your profile pick">
+                        <p>Might get there late, got a videoconference just before...</p>
+                        <span class="time-left">11:01</span>
+                    </div>
+
+                    <div class="container darker">
+                        <img src="images/user-online.png" alt="Avatar" class="right" title="Your profile pick">
+                        <p>Just saying we could go grab a coffe after that...</p>
+                        <span class="time-left">11:02</span>
+                    </div>
+                    
+                    <div class="container">
+                        <img src="images/user-offline.png" alt="Avatar" title="User avatar">
+                        <p>No Perico, alreday told you we have so much work to do!</p>
+                        <span class="time-right">11:05</span>
+                    </div>
+                </div>
+                
+                <form>
+                    <textarea class="comment">Type your comment here.</textarea>
+                    <input type="submit" name="submit" value="Send" title="Send your comment">
+                </form>
+                
+            </div>
+        </div>
+
+    <!-- Share popup -->
+        <div class="share">
+            <div class="popup-share">
+                <a class="close-button" href="" title="Close popup">&times;</a>
+                <h2>Whre do you want to share this task?</h2>
+                
+                <!-- Sharingbutton Twitter -->
+                <a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=Super%20fast%20and%20easy%20Social%20Media%20Sharing%20Buttons.%20No%20JavaScript.%20No%20tracking.&amp;url=http%3A%2F%2Fsharingbuttons.io" target="_blank" rel="noopener" aria-label="Share on Twitter">
+                <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--large"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
+                    </div>Share on Twitter</div>
+                </a>
+
+                <!-- Sharingbutton E-Mail -->
+                <a class="resp-sharing-button__link" href="mailto:?subject=Super%20fast%20and%20easy%20Social%20Media%20Sharing%20Buttons.%20No%20JavaScript.%20No%20tracking.&amp;body=http%3A%2F%2Fsharingbuttons.io" target="_self" rel="noopener" aria-label="Share by E-Mail">
+                <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--large"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 4H2C.9 4 0 4.9 0 6v12c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM7.25 14.43l-3.5 2c-.08.05-.17.07-.25.07-.17 0-.34-.1-.43-.25-.14-.24-.06-.55.18-.68l3.5-2c.24-.14.55-.06.68.18.14.24.06.55-.18.68zm4.75.07c-.1 0-.2-.03-.27-.08l-8.5-5.5c-.23-.15-.3-.46-.15-.7.15-.22.46-.3.7-.14L12 13.4l8.23-5.32c.23-.15.54-.08.7.15.14.23.07.54-.16.7l-8.5 5.5c-.08.04-.17.07-.27.07zm8.93 1.75c-.1.16-.26.25-.43.25-.08 0-.17-.02-.25-.07l-3.5-2c-.24-.13-.32-.44-.18-.68s.44-.32.68-.18l3.5 2c.24.13.32.44.18.68z"/></svg></div>Share by E-Mail</div>
+                </a>
+
+                <!-- Sharingbutton Pinterest -->
+                <a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=http%3A%2F%2Fsharingbuttons.io&amp;media=http%3A%2F%2Fsharingbuttons.io&amp;description=Super%20fast%20and%20easy%20Social%20Media%20Sharing%20Buttons.%20No%20JavaScript.%20No%20tracking." target="_blank" rel="noopener" aria-label="Share on Pinterest">
+                <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--large"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.14.5C5.86.5 2.7 5 2.7 8.75c0 2.27.86 4.3 2.7 5.05.3.12.57 0 .66-.33l.27-1.06c.1-.32.06-.44-.2-.73-.52-.62-.86-1.44-.86-2.6 0-3.33 2.5-6.32 6.5-6.32 3.55 0 5.5 2.17 5.5 5.07 0 3.8-1.7 7.02-4.2 7.02-1.37 0-2.4-1.14-2.07-2.54.4-1.68 1.16-3.48 1.16-4.7 0-1.07-.58-1.98-1.78-1.98-1.4 0-2.55 1.47-2.55 3.42 0 1.25.43 2.1.43 2.1l-1.7 7.2c-.5 2.13-.08 4.75-.04 5 .02.17.22.2.3.1.14-.18 1.82-2.26 2.4-4.33.16-.58.93-3.63.93-3.63.45.88 1.8 1.65 3.22 1.65 4.25 0 7.13-3.87 7.13-9.05C20.5 4.15 17.18.5 12.14.5z"/></svg>
+                    </div>Share on Pinterest</div>
+                </a>
+                
+            </div>
+        </div>
+        
+        
+        <!--Confirmation popup to remove card-->
+        <div class="confirmation">
+            <div class="popup-conf">
+                <a class="close-button" href="" title="Close popup">&times;</a>
+                <h2>Do you want to remove this task?</h2>
+                <button type="button" id="cancel">Cancel</button>
+                <button type="button" id="confirm"><strong>Confirm</strong></button>
+            </div>
+        </div>
+
+        <!--Form to add new card-->
+        <div class="addition">
+            <div class="popup-add">
+                <a class="close-button" href="" title="Close popup">&times;</a>
+                <h2>Please add the following information:</h2>
+                <form id="newData">
+                    <input id="newText" type="text" name="New Task" placeholder="Type the new task">
+                    <br />
+                    <input id="newImg" type="text" name="New Task_img" placeholder="Url to image">
+                </form>
+                <br />
+                <button type="button" id="cancel">Cancel</button>
+                <button type="button" id="confirm"><strong>Add</strong></button>
+            </div>
+        </div>
+        
+        <footer>
+            <a href="https://en.wikipedia.org/wiki/Copyleft" target="_blank">2019 Copyleft:</a>
+            <a href="https://gul.es" target="_blank">Two nice GUL members</a>
+            
+            <a href="https://github.com/guluc3m" target="_blank">
+                <img src="images/github.png" alt="github" width="15" height="15">
+            </a>
+        </footer>    
+    </body>
+
+</html>  
