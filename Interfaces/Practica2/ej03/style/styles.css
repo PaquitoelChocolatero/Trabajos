@@ -92,19 +92,12 @@ header a.active {
     margin-top: 30px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
     padding: 16px;
-    padding-bottom: 10px;
+    padding-bottom: 25px;
     text-align: left;
     background-color: #f9f9f9;
     
     overflow: auto;
     max-height: 70vh;
-}
-
-.card-actions {
-    margin-left: 5px;
-    margin-right: 5px;
-    display: flex;
-    align-items: center;
 }
 
 a {
@@ -184,6 +177,12 @@ a {
     margin-right: 10px;
 }
 
+.card-text {
+    float: right;
+    text-align: left;
+    margin-right: 20px;
+}
+
 .card-actions {
     margin-left: 5px;
     margin-right: 5px;
@@ -193,17 +192,20 @@ a {
 
 .drag-area {
     display: inline-block;
-    background: rgb(158, 211, 179);
-    width: 60px;
-    height: 40px;
+    background: lightgray;
+    width: 250px;
+    height: 7px;
     vertical-align: top;
-    float: right;
+    float: center;
     cursor: move;
+    margin-left: 25%;
+    margin-top: -4%;
+    border-radius: 7px;
 }
 
 .card-date {
     float: right;
-    margin-top: -30px;
+    margin-top: -25px;
 }
 
 .add-task-btn {
