@@ -60,11 +60,13 @@ a {
     height: 100px;
 }
 
-#options{
+.options{
     height: 10%;
+    width: 100%;
+    list-style: none;
 }
 
-#SI{
+.SI{
     float: left;
     width: 50%;
     padding-top: 3%;
@@ -76,7 +78,7 @@ a {
     color: white;
 }
 
-#SU{
+.SU{
     float: left;
     width: 50%;
     padding-top: 3%;
@@ -99,12 +101,18 @@ a {
     width: 100%;
 }
 
-#user{
-    background-image: url('images/user.png') no-repeat left 7px 7px;
+.name input{
+    display: table-cell;
+    float: left;
+    vertical-align:top;
 }
 
-#pass{
-    background-image: url('images/pass.png') no-repeat left 7px 7px;
+.name{
+    display: table;
+}
+
+.name:after{
+    clear: left;
 }
 
 .go{
