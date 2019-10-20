@@ -5,11 +5,27 @@
 body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
+    background-size: cover;
 }
 
 a {
     text-decoration: none;
     color: black;
+}
+
+.background{
+    height: 100%;
+    width: 100%;
+    z-index: -10;
+    margin:0;
+    padding:0;
+    display: block;
+    background-image: url('images/background.jpg');
+    filter: blur(1px);
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .central{
@@ -27,13 +43,12 @@ a {
 }
 
 .logo{
-    background-color: white;
-    margin-left: 12%;
+    margin-left: 12.5%;
     position: absolute;
     z-index: 100;    
     width: 5%;
     height: 5%;
-    top: 25%;
+    top: 14%;
 }
 
 #logoImg{
@@ -46,28 +61,69 @@ a {
 }
 
 #SI{
-    
+    float: left;
     width: 50%;
-    height: 5%;
+    padding-top: 3%;
+    padding-bottom: 3%;
+    background: transparent;
+    border: 1.5px solid lightgray;
+    border-top: none;
+    border-left: none;
+    color: white;
 }
 
 #SU{
+    float: left;
     width: 50%;
-    height: 5%;
-}
-
-#line{
-    color: #00bcbc;
-    border: 1.5px solid;
+    padding-top: 3%;
+    padding-bottom: 3%;
+    background: transparent;
+    border: 1.5px solid lightgray;
+    border-top: none;
+    border-right: none;
+    color: white;
 }
 
 #info{
+    padding-top: 15%;
     margin-left: 10%;
+    padding-bottom: 10%;
     width: 80%;
 }
 
 #info input{
     width: 100%;
+}
+
+#user{
+    background-image: url('images/user.png') no-repeat left 7px 7px;
+    padding-left:30px;
+}
+
+#pass{
+    background-image: url('images/pass.png') no-repeat left 7px 7px;
+    padding-left:30px;
+}
+
+.go{
+    color: white;
+    background-color: #2a9993;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 5px;
+    border: 1.5px solid lightgray;
+    width: 80%;
+    margin-top: 5%;
+    margin-left: 10%;
+}
+
+#forgotten{
+    position: relative;
+    text-decoration: underline;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    margin-left: 32%;
 }
 
 footer {
