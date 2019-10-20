@@ -73,7 +73,7 @@ $(document).ready(function(){
                     <label for='check'>Confirm you haven't read our terms and conditions</label>
                 </div>
                 <button type="button" id="cancel">Cancel</button>
-                <button type="button" id="confirm"><strong>Add</strong></button>
+                <button type="button" id="confirm"><strong>Sign Up</strong></button>
             </form>
         </div>        
         `);
