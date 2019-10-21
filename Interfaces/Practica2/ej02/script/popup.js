@@ -2,7 +2,6 @@ $(document).ready(function(){
     var modal = document.querySelector(".modal");
     var confirmation = document.querySelector(".confirmation");
     var addition = document.querySelector(".addition");
-    var dropdown = document.querySelector(".dropdown");
     var share = document.querySelector(".share");
 
 
@@ -177,7 +176,7 @@ $(document).ready(function(){
 
     //Dropdown User
     $('div.header').on('click', 'div.header-right', function() {
-        $(this).children('div.dropdown-content').toggle("show-dropdown");
+        $(this).children('div.dropdown-user').toggle("show-dropdown");
     });
     
     //Archive

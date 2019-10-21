@@ -47,6 +47,7 @@ header a:hover {
 .header-right {
     float: right;
     width: 20%;
+    cursor: pointer;
 }
 
 header a.active {
