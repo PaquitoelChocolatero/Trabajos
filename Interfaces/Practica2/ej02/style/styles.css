@@ -55,7 +55,7 @@ header a.active {
     color: white;
     font-weight: bold;
     float: right;
-    padding-right: 30%;
+    padding-right: 80%;
 }
 
 .dropdown-user {
@@ -63,6 +63,7 @@ header a.active {
     float: right;
     overflow: hidden;
     margin-top: -40px;
+    margin-right: -40px;
 }
 
 .dropdown-user .dropbtn-user {
@@ -70,7 +71,7 @@ header a.active {
     border: none;
     outline: none;
     color: white;
-    padding-left: 31px;
+    padding-left: 71px;
     padding-right: 40px;
     background-color: inherit;
     font-family: inherit;
