@@ -173,7 +173,11 @@ a {
 
 .dropdown a:hover {background-color: #ddd;}
 
+.dropdown-user a:hover {background-color: #ddd;}
+
 .show-dropdown {display: block;}
+
+.show-dropdown-user {display: block;}
 
 .inner {
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */

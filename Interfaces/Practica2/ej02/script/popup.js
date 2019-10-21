@@ -175,8 +175,8 @@ $(document).ready(function(){
     });
 
     //Dropdown User
-    $('div.header').on('click', 'div.header-right', function() {
-        $(this).children('div.dropdown-user').toggle("show-dropdown");
+    $('div.header-right').on('click', 'div.dropdown-user', function() {
+        $(this).children('div.dropdown-user').toggle("show-dropdown-user");
     });
     
     //Archive
