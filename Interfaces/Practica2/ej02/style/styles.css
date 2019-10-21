@@ -107,6 +107,7 @@ header a.active {
 
 .dropdown-content-user a:hover {
     background-color: #ddd;
+    color: black;
 }
 
 .dropdown-user:hover .dropdown-content-user {

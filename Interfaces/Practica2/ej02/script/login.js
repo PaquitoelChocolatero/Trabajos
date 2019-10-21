@@ -4,13 +4,30 @@ $(document).ready(function(){
         alert('   Too bad \n ¯\\_(•_•)_/¯');
     })
 
+    $('div.buttons').on('click', '.cancel', function(){
+        alert();  
+        $('#info').find(':input').each(function () {
+            switch (this.type) {
+                case 'text':
+                case 'password':
+                case 'email':
+                case 'date':  
+                    $(this).val('');
+                    break;
+                case 'checkbox':
+                    this.checked = false;
+                    break;
+            }
+        });
+    })
+
     $('div.options').on('click', '.SI', function(){
         $('div.Sign-Up').remove();
         $('div.Sign-In').remove();
         $('.central').append(`
         <div class='Sign-In'>
             <form id='info'>
-                <input id="user" type="text" placeholder="Email" required>
+                <input id="email" type="email" placeholder="Email" required>
                 <br />
                 <br />
                 <input id="pass" type="password" maxlength='8' pattern='[A-Za-z0-9]+' placeholder="Password" required>
@@ -72,8 +89,10 @@ $(document).ready(function(){
                     <input id="check" name='check' type="checkbox" value='accepted' required> 
                     <label for='check'>Confirm you haven't read our terms and conditions</label>
                 </div>
-                <button type="button" id="cancel">Cancel</button>
-                <button type="button" id="confirm"><strong>Sign Up</strong></button>
+                <div class='buttons'>
+                    <button type="button" class="cancel">Cancel</button>
+                    <button type="button" class="confirm"><strong>Sign Up</strong></button>
+                </div>
             </form>
         </div>        
         `);
