@@ -201,6 +201,11 @@ a {
     top:0.1em;
 }
 
+#check{
+    margin-left: 15%;
+    margin-bottom: -3%;
+}
+
 footer {
     text-align: center;
     background: #37474f;
