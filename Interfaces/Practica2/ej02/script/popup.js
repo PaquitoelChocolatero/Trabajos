@@ -174,10 +174,12 @@ $(document).ready(function(){
         $(this).children('div.dropdown-content').toggle("show-dropdown");
     });
 
+    /*
     //Dropdown User
     $('div.header-right').on('click', 'div.dropdown-user', function() {
         $(this).children('div.dropdown-user').toggle("show-dropdown-user");
     });
+    */
     
     //Archive
     $('div.title').on('click', 'a.archive', function() {

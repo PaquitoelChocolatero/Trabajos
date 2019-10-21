@@ -24,7 +24,7 @@ header .logo{
 }
 
 header a {
-    float: left;
+    float: right;
     color: white;
     text-align: left;
     padding: 12px;
@@ -46,7 +46,7 @@ header a:hover {
 
 .header-right {
     float: right;
-    width: 20%;
+    width: 30%;
     cursor: pointer;
 }
 
@@ -58,11 +58,65 @@ header a.active {
     padding-right: 30%;
 }
 
-#userImg{
-    height: 3%;
-    width: 2%;
+.dropdown-user {
+    padding-left: 10px;
+    float: right;
+    overflow: hidden;
+    margin-top: -40px;
+}
+
+.dropdown-user .dropbtn-user {
+    font-size: 16px;  
+    border: none;
+    outline: none;
+    color: white;
+    padding-left: 31px;
+    padding-right: 40px;
+    background-color: inherit;
+    font-family: inherit;
+    margin-top: 40px;
+}
+
+.dropdown-content-user {
+    display: none;
     position: absolute;
-    margin-left: 7%;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content-user a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content-user p {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content-user a:hover {
+    background-color: #ddd;
+}
+
+.dropdown-user:hover .dropdown-content-user {
+    display: block;
+}
+
+#userImg{
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    margin-left: 100px;
 }
 
 
@@ -153,31 +207,9 @@ a {
     display: block;
 }
 
-.dropdown-user {
-    display: none;
-    position: absolute;
-    background-color: #607d8b;
-    min-width: 160px;
-    overflow: auto;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    right: 0;
-    z-index: 1000;
-}
-
-.dropdown-user a {
-    color: white;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
 .dropdown a:hover {background-color: #ddd;}
 
-.dropdown-user a:hover {background-color: #ddd;}
-
 .show-dropdown {display: block;}
-
-.show-dropdown-user {display: block;}
 
 .inner {
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
