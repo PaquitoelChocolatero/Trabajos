@@ -174,6 +174,11 @@ $(document).ready(function(){
         current_task = $(this).parent().parent().parent();
         $(this).children('div.dropdown-content').toggle("show-dropdown");
     });
+
+    //Dropdown User
+    $('div.header').on('click', 'div.header-right', function() {
+        $(this).children('div.dropdown-content').toggle("show-dropdown");
+    });
     
     //Archive
     $('div.title').on('click', 'a.archive', function() {
