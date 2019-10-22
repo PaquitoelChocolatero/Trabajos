@@ -28,23 +28,23 @@ $(document).ready(function(){
         $('div.Sign-Up').remove();
         $('.central').append(`
         <div class='Sign-Up'>
-            <form id='info'>
-                <input id="user" type="text" placeholder="User" required>
+            <form id='info' name="signup">
+                <input id="user" type="text" name="username" placeholder="User" required>
                 <br />
                 <br />
-                <input id="pass" type="password" maxlength='8' pattern='[A-Za-z0-9]+' placeholder="Password" required>
+                <input id="pass" type="password" name="passwd" maxlength='8' pattern='[A-Za-z0-9]+' placeholder="Password" required>
                 <br />
                 <br />
                 <div class='name'>
-                    <div><input type="text" placeholder="Name" id='name' required></div>
+                    <div><input type="text" placeholder="Name" name="firstname" id='name'></div>
                     </t>
-                    <div><input type="text" placeholder="Last name" id='lastName' required></div>
+                    <div><input type="text" placeholder="Last name" name="lastname" id='lastName' required></div>
                 </div>
                 <br />
-                <input id="email" type="email" placeholder="Email" required>
+                <input id="email" type="email" name="mail" placeholder="Email" required>
                 <br />
                 <br />
-                <input id="birth" type="date" placeholder="Your birth date" required>
+                <input id="birth" type="date" name="birthdate" placeholder="Your birth date" required>
                 <br />
                 <br />
                 <select id='interest'>
@@ -111,5 +111,44 @@ $(document).ready(function(){
     function jump(){
         window.open('index.html', '_self');
     }
+    
+
+    $("form[name='signup']").validate({
+        // Specify validation rules
+        rules: {
+            // The key name on the left side is the name attribute
+            // of an input field. Validation rules are defined
+            // on the right side
+            username: "required",
+            firstname: "required",
+            lastname: "required",
+            mail: {
+            required: true,
+            // Specify that email should be validated
+            // by the built-in "email" rule
+            email: true
+            },
+            password: {
+            required: true,
+            minlength: 5
+            }
+        },
+        // Specify validation error messages
+        messages: {
+            username: "Please enter your user name",
+            firstname: "Please enter your firstname",
+            lastname: "Please enter your lastname",
+            password: {
+            required: "Please provide a password",
+            minlength: "Your password must be at least 5 characters long"
+            },
+            mail: "Please enter a valid email address"
+        },
+        // Make sure the form is submitted to the destination defined
+        // in the "action" attribute of the form when valid
+        submitHandler: function(form) {
+            form.submit();
+        }
+  });
 
 });
