@@ -119,7 +119,7 @@ a {
     text-align:right;
 }
 
-#interest{
+#interest, #language, #motivation{
     width: 100%;
 }
 

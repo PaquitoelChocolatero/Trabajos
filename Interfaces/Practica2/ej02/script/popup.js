@@ -4,7 +4,12 @@ $(document).ready(function(){
     var addition = document.querySelector(".addition");
     var share = document.querySelector(".share");
 
-
+    //Set cookie values
+    if(sessionStorage.getItem('user') != null){
+        $('.dropbtn-user a.active').html("<img src='images/user.png' id='userImg'></img>" + sessionStorage.getItem('user'));
+        $('p#Welcome').text('Welcome ' + sessionStorage.getItem('user') + '!');
+    }
+    
     //Todo el contenido en un array para que sea dinámico y poner añadir/borrar
     var cards = [  
         [
@@ -174,12 +179,11 @@ $(document).ready(function(){
         $(this).children('div.dropdown-content').toggle("show-dropdown");
     });
 
-    /*
-    //Dropdown User
-    $('div.header-right').on('click', 'div.dropdown-user', function() {
-        $(this).children('div.dropdown-user').toggle("show-dropdown-user");
+    $('a#SO').on('click', function() {
+        $('.dropbtn-user a.active').html("<img src='images/user.png' id='userImg'></img>" + 'Guest43636');
+        $('p#Welcome').text('Welcome Guest43636!');
+        window.open('login.html', '_self');
     });
-    */
     
     //Archive
     $('div.title').on('click', 'a.archive', function() {

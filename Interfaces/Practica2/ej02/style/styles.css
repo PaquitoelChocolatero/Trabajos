@@ -117,8 +117,8 @@ header a.active {
 #userImg{
     height: 25px;
     width: 25px;
-    position: absolute;
-    margin-left: 100px;
+    position: relative;
+    margin-right: 2%;
 }
 
 
