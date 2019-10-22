@@ -133,7 +133,7 @@ $(document).ready(function(){
     });
 
     //Cerrar el popup en la x
-    $('div.modal').on('click', 'div.close-button', function() {
+    $('div.popup').on('click', 'button.close-button', function() {
         modal.classList.toggle("show-modal");
     });
 
@@ -159,6 +159,11 @@ $(document).ready(function(){
         current_task.remove();
         confirmation.classList.toggle("show-confirmation");
     });
+    
+    //Cerrar el popup en la x
+    $('div.popup-conf').on('click', 'button.close-button-confirmation', function() {
+        confirmation.classList.toggle("show-confirmation");
+    });
 
     //Abrir el popup de adición desde cualquier add task
     $('button.btn').on('click', function() {
@@ -171,6 +176,16 @@ $(document).ready(function(){
         //Reset border
         $('#newText').css('border', 'solid rgb(158, 157, 157) 1px');
         addition.classList.toggle("show-addition");
+    });
+    
+    //Cerrar el popup en la x
+    $('div.popup-add').on('click', 'button.close-button-addition', function() {
+        addition.classList.toggle("show-addition");
+    });
+    
+    //Cerrar el popup en la x
+    $('div.popup-share').on('click', 'button.close-button-share', function() {
+        share.classList.toggle("show-share");
     });
     
     //Dropdown

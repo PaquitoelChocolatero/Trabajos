@@ -463,12 +463,23 @@ footer a {
 
 .close-button {
     float: right;
-    width: 1.5rem;
-    line-height: 1.5rem;
-    text-align: center;
-    cursor: pointer;
-    border-radius: 0.25rem;
-    background-color: lightgray;
+    margin-left: 90%;
+    margin-top: -4%;
+}
+
+.close-button-addition {
+    float: right;
+    margin-left: 90%;
+}
+
+.close-button-share {
+    float: right;
+    margin-left: 90%;
+}
+
+.close-button-confirmation {
+    float: right;
+    margin-left: 90%;
 }
 
 .close-button:hover {
