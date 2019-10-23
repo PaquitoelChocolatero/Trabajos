@@ -83,6 +83,31 @@ $(document).ready(function(){
         `);
     })
 
+    $('#info').validate({
+        // Specify validation rules
+        rules: {
+            username: "required",
+            firstname: "required",
+            lastname: "required",
+            mail: "required",
+            password: {
+                required: true,
+                minlength: 5
+            }
+        },
+        // Specify validation error messages
+        messages: {
+            username: "Please enter your user name",
+            firstname: "Please enter your firstname",
+            lastname: "Please enter your lastname",
+            password: {
+                required: "Please provide a password",
+                minlength: "Your password must be at least 5 characters long"
+            },
+            mail: "Please enter a valid email address"
+        },
+    });
+    
     $('.central').on('click', '.confirm', function(){
         if(localStorage.getItem('email') != $('#email').val()){
             localStorage.setItem('user', $('#user').val());
@@ -111,44 +136,5 @@ $(document).ready(function(){
     function jump(){
         window.open('index.html', '_self');
     }
-    
-
-    $("form[name='signup']").validate({
-        // Specify validation rules
-        rules: {
-            // The key name on the left side is the name attribute
-            // of an input field. Validation rules are defined
-            // on the right side
-            username: "required",
-            firstname: "required",
-            lastname: "required",
-            mail: {
-            required: true,
-            // Specify that email should be validated
-            // by the built-in "email" rule
-            email: true
-            },
-            password: {
-            required: true,
-            minlength: 5
-            }
-        },
-        // Specify validation error messages
-        messages: {
-            username: "Please enter your user name",
-            firstname: "Please enter your firstname",
-            lastname: "Please enter your lastname",
-            password: {
-            required: "Please provide a password",
-            minlength: "Your password must be at least 5 characters long"
-            },
-            mail: "Please enter a valid email address"
-        },
-        // Make sure the form is submitted to the destination defined
-        // in the "action" attribute of the form when valid
-        submitHandler: function(form) {
-            form.submit();
-        }
-  });
 
 });
