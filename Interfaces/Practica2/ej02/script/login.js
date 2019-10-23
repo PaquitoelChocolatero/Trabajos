@@ -1,7 +1,5 @@
 $(document).ready(function(){
     
-    tryMyCookieCookie = window.localStorage;
-
     $('#forgotten').on('click', function(){
         alert('   Too bad \n ¯\\_(•_•)_/¯');
     })
@@ -36,7 +34,7 @@ $(document).ready(function(){
                 <br />
                 <br />
                 <div class='name'>
-                    <div><input type="text" placeholder="Name" name="firstname" id='name'></div>
+                    <div><input type="text" placeholder="Name" name="firstname" id='name' required></div>
                     </t>
                     <div><input type="text" placeholder="Last name" name="lastname" id='lastName' required></div>
                 </div>
@@ -72,7 +70,7 @@ $(document).ready(function(){
                 <br />
                 <div class='checked'>
                     <input id="check" name='check' type="checkbox" value='accepted' required> 
-                    <label for='check'>Confirm you haven't read our terms and conditions</label>
+                    <label for='check' id='checkText'>Confirm you haven't read our terms and conditions</label>
                 </div>
                 <div class='buttons'>
                     <button type="reset" class="cancel">Cancel</button>
@@ -83,58 +81,70 @@ $(document).ready(function(){
         `);
     })
 
-    $('#info').validate({
-        // Specify validation rules
-        rules: {
-            username: "required",
-            firstname: "required",
-            lastname: "required",
-            mail: "required",
-            password: {
-                required: true,
-                minlength: 5
-            }
-        },
-        // Specify validation error messages
-        messages: {
-            username: "Please enter your user name",
-            firstname: "Please enter your firstname",
-            lastname: "Please enter your lastname",
-            password: {
-                required: "Please provide a password",
-                minlength: "Your password must be at least 5 characters long"
-            },
-            mail: "Please enter a valid email address"
-        },
-    });
-    
+    $('.central').on('click', '.cancel', function(){
+        $('#email').css('border', 'solid rgb(158, 157, 157) 1px');
+        $('#user').css('border', 'solid rgb(158, 157, 157) 1px');
+        $('#pass').css('border', 'solid rgb(158, 157, 157) 1px');
+        $('#name').css('border', 'solid rgb(158, 157, 157) 1px');
+        $('#lastName').css('border', 'solid rgb(158, 157, 157) 1px');
+        $('#birth').css('border', 'solid rgb(158, 157, 157) 1px');
+        $('#checkText').css('color', 'white');
+    })
+
     $('.central').on('click', '.confirm', function(){
-        if(localStorage.getItem('email') != $('#email').val()){
-            localStorage.setItem('user', $('#user').val());
-            localStorage.setItem('pass', $('#pass').val());
-            localStorage.setItem('name', $('#name').val());
-            localStorage.setItem('lastName', $('#lastName').val());
-            localStorage.setItem('email', $('#email').val());
-            localStorage.setItem('birth', $('#birth').val());
-            localStorage.setItem('interest', $('#interest').val());
-            localStorage.setItem('language', $('#language').val());
-            localStorage.setItem('motivation', $('#motivation').val());
-            jump();
-        }else{
-            alert('There is already an account with the current email');
+        if($('#email').val() == '' || $('#email').val() == undefined){
+            $('#email').css('border', 'solid red 2px');
+        }
+        if($('#user').val() == '' || $('#user').val() == undefined){
+            $('#user').css('border', 'solid red 2px');
+        }
+        if($('#pass').val() == '' || $('#pass').val() == undefined){
+            $('#pass').css('border', 'solid red 2px');
+        }
+        if($('#name').val() == '' || $('#name').val() == undefined){
+            $('#name').css('border', 'solid red 2px');
+        }
+        if($('#lastName').val() == '' || $('#lastName').val() == undefined){
+            $('#lastName').css('border', 'solid red 2px');
+        }
+        if($('#birth').val() == '' || $('#birth').val() == undefined){
+            $('#birth').css('border', 'solid red 2px');
+        }
+        if(!$('#check').checked){
+            $('#checkText').css('color', 'red');
+        }
+        if(!($('#email').val() == '' || $('#email').val() == undefined) && !($('#user').val() == '' || $('#user').val() == undefined) && !($('#pass').val() == '' || $('#pass').val() == undefined) && !($('#name').val() == '' || $('#name').val() == undefined) && !($('#lastName').val() == '' || $('#lastName').val() == undefined) && !($('#birth').val() == '' || $('#birth').val() == undefined) && $('#check').checked){
+            $('#email').css('border', 'solid rgb(158, 157, 157) 1px');
+            $('#user').css('border', 'solid rgb(158, 157, 157) 1px');
+            $('#pass').css('border', 'solid rgb(158, 157, 157) 1px');
+            $('#name').css('border', 'solid rgb(158, 157, 157) 1px');
+            $('#lastName').css('border', 'solid rgb(158, 157, 157) 1px');
+            $('#birth').css('border', 'solid rgb(158, 157, 157) 1px');
+            $('#checkText').css('color', 'white');
+            
+            if(localStorage.getItem('email') != $('#email').val()){
+                localStorage.setItem('user', $('#user').val());
+                localStorage.setItem('pass', $('#pass').val());
+                localStorage.setItem('name', $('#name').val());
+                localStorage.setItem('lastName', $('#lastName').val());
+                localStorage.setItem('email', $('#email').val());
+                localStorage.setItem('birth', $('#birth').val());
+                localStorage.setItem('interest', $('#interest').val());
+                localStorage.setItem('language', $('#language').val());
+                localStorage.setItem('motivation', $('#motivation').val());
+                window.open('index.html', '_self');
+            }else{
+                alert('There is already an account with the current email');
+            }
         }
     })
 
     $('.central').on('click', '.go', function(){
         if(localStorage.getItem('email') == $('#email').val() && localStorage.getItem('pass') == $('#pass').val()){
-            jump();
+            window.open('index.html', '_self');
         }else{
             alert('Email or Password incorrects');
         }
     })
-
-    function jump(){
-        window.open('index.html', '_self');
-    }
 
 });

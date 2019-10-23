@@ -5,9 +5,9 @@ $(document).ready(function(){
     var share = document.querySelector(".share");
 
     //Set cookie values
-    if(sessionStorage.getItem('user') != null){
-        $('.dropbtn-user a.active').html("<img src='images/user.png' id='userImg'></img>" + sessionStorage.getItem('user'));
-        $('p#Welcome').text('Welcome ' + sessionStorage.getItem('user') + '!');
+    if(localStorage.getItem('user') != null){
+        $('.dropbtn-user a.active').html("<img src='images/user.png' id='userImg'></img>" + localStorage.getItem('user'));
+        $('p#Welcome').text('Welcome ' + localStorage.getItem('user') + '!');
     }
     
     //Todo el contenido en un array para que sea dinámico y poner añadir/borrar
