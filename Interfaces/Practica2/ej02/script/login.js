@@ -1,9 +1,11 @@
 $(document).ready(function(){
     
+    //Bad luck if you forget your password
     $('#forgotten').on('click', function(){
         alert('   Too bad \n ¯\\_(•_•)_/¯');
     })
 
+    //Change to signin tab
     $('div.options').on('click', '.SI', function(){
         $('div.Sign-Up').remove();
         $('div.Sign-In').remove();
@@ -20,7 +22,7 @@ $(document).ready(function(){
         </div>        
         `);
     })
-
+    //Change to signup tab
     $('div.options').on('click', '.SU', function(){
         $('div.Sign-In').remove();
         $('div.Sign-Up').remove();
@@ -81,6 +83,7 @@ $(document).ready(function(){
         `);
     })
 
+    //Fields react to content
     $('.central').on('click', '.cancel', function(){
         $('#email').css('border', 'solid rgb(158, 157, 157) 1px');
         $('#user').css('border', 'solid rgb(158, 157, 157) 1px');
@@ -91,28 +94,51 @@ $(document).ready(function(){
         $('#checkText').css('color', 'white');
     })
 
+    //Fields changes border color depending on inserted information
     $('.central').on('click', '.confirm', function(){
         if($('#email').val() == '' || $('#email').val() == undefined){
             $('#email').css('border', 'solid red 2px');
+        }else{
+            $('#email').css('border', 'solid rgb(158, 157, 157) 1px');
         }
+
         if($('#user').val() == '' || $('#user').val() == undefined){
             $('#user').css('border', 'solid red 2px');
+        }else{
+            $('#user').css('border', 'solid rgb(158, 157, 157) 1px');
         }
+
         if($('#pass').val() == '' || $('#pass').val() == undefined){
             $('#pass').css('border', 'solid red 2px');
+        }else{
+            $('#pass').css('border', 'solid rgb(158, 157, 157) 1px');
         }
+
         if($('#name').val() == '' || $('#name').val() == undefined){
             $('#name').css('border', 'solid red 2px');
+        }else{
+            $('#name').css('border', 'solid rgb(158, 157, 157) 1px');
         }
+
         if($('#lastName').val() == '' || $('#lastName').val() == undefined){
             $('#lastName').css('border', 'solid red 2px');
+        }else{
+            $('#lastName').css('border', 'solid rgb(158, 157, 157) 1px');
         }
+
         if($('#birth').val() == '' || $('#birth').val() == undefined){
             $('#birth').css('border', 'solid red 2px');
+        }else{
+            $('#birth').css('border', 'solid rgb(158, 157, 157) 1px');
         }
+
         if(!$('#check').checked){
             $('#checkText').css('color', 'red');
+        }else{
+            $('#checkText').css('color', 'white');
         }
+
+        //If required fields are ok, change its border
         if(!($('#email').val() == '' || $('#email').val() == undefined) && !($('#user').val() == '' || $('#user').val() == undefined) && !($('#pass').val() == '' || $('#pass').val() == undefined) && !($('#name').val() == '' || $('#name').val() == undefined) && !($('#lastName').val() == '' || $('#lastName').val() == undefined) && !($('#birth').val() == '' || $('#birth').val() == undefined) && $('#check').checked){
             $('#email').css('border', 'solid rgb(158, 157, 157) 1px');
             $('#user').css('border', 'solid rgb(158, 157, 157) 1px');
@@ -122,6 +148,7 @@ $(document).ready(function(){
             $('#birth').css('border', 'solid rgb(158, 157, 157) 1px');
             $('#checkText').css('color', 'white');
             
+            //Check if the inserted email is on localstorage
             if(localStorage.getItem('email') != $('#email').val()){
                 localStorage.setItem('user', $('#user').val());
                 localStorage.setItem('pass', $('#pass').val());
@@ -139,12 +166,18 @@ $(document).ready(function(){
         }
     })
 
+    //Check log in parameters
     $('.central').on('click', '.go', function(){
         if(localStorage.getItem('email') == $('#email').val() && localStorage.getItem('pass') == $('#pass').val()){
             window.open('index.html', '_self');
         }else{
             alert('Email or Password incorrects');
         }
+    })
+
+    //If you click on logo you go back to index
+    $('.central').on('click', '.logo', function(){
+        window.open('index.html', '_self');
     })
 
 });

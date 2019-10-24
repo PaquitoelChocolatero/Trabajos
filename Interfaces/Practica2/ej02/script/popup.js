@@ -71,9 +71,9 @@ $(document).ready(function(){
         ]
     ];
 
-    //Añadimos 1 a todo para obviar la columna auxiliar
+    //Función para pintar todas las tarjetitas
     $(function(){
-        var it = 1;
+        var it = 1;//Añadimos 1 a todo para obviar la columna auxiliar
         for(i=0; i<cards.length; i++){
             //Creamos una columna
             $('.column:first').clone(true, true).appendTo('.row');
@@ -91,15 +91,16 @@ $(document).ready(function(){
                 it++;
             }
         }
-    //Borramos la columna auxiliar
+        //Ocultamos la columna auxiliar
         $('.column:first').hide();
     });
 
-    //Borrar la tarjeta en la x
+    //Abrimos popup de borrar tarjeta
     $('div.inner').on('click', 'div.close', function() {
         modal.classList.toggle("show-modal");
     });
 
+    //Funciones para abrir los popups
     function popup() {
         modal.classList.toggle("show-modal");
     };
@@ -116,6 +117,7 @@ $(document).ready(function(){
         share.classList.toggle("show-share");
     };
 
+    //Seleccionamos el popup que queremos abrir
     function windowOnClick(event) {
         if (event.target === modal) popup();
         else if (event.target === confirmation) popup2();
@@ -127,29 +129,29 @@ $(document).ready(function(){
         }
     }
 
-    //Abrir el popup desde cualquier tarjeta
+    //Abrir el popup de informacion desde cualquier tarjeta
     $('div.inner').on('click', 'div.trigger', function() {
         modal.classList.toggle("show-modal");
     });
 
-    //Cerrar el popup en la x
+    //Cerrar el popup de informacion en la x
     $('div.popup').on('click', 'button.close-button', function() {
         modal.classList.toggle("show-modal");
     });
 
-    //Para clicar fuera del pop up
+    //Para clicar fuera del pop up y que se cierre
     window.addEventListener("click", windowOnClick);
 
     //Capture task that has been clicked
     var current_task;
 
-    //Abrir el popup desde cualquier x
+    //Abrir el popup de confirmación desde cualquier x
     $('div.inner').on('click', 'button.close', function() {
         current_task = $(this).parent();
         confirmation.classList.toggle("show-confirmation");
     });
 
-    //Cerrar el popup en cancel
+    //Cerrar el popup de confirmación en cancel
     $('div.confirmation').on('click', '#cancel', function() {
         confirmation.classList.toggle("show-confirmation");
     });
@@ -160,7 +162,7 @@ $(document).ready(function(){
         confirmation.classList.toggle("show-confirmation");
     });
     
-    //Cerrar el popup en la x
+    //Cerrar el popup de confirmación en la x
     $('div.popup-conf').on('click', 'button.close-button-confirmation', function() {
         confirmation.classList.toggle("show-confirmation");
     });
@@ -171,47 +173,48 @@ $(document).ready(function(){
         addition.classList.toggle("show-addition");
     });
 
-    //Cerrar el popup en cancel
+    //Cerrar el popup de adición en cancel
     $('div.addition').on('click', '#cancel', function() {
         //Reset border
         $('#newText').css('border', 'solid rgb(158, 157, 157) 1px');
         addition.classList.toggle("show-addition");
     });
     
-    //Cerrar el popup en la x
+    //Cerrar el popup de adición en la x
     $('div.popup-add').on('click', 'button.close-button-addition', function() {
         addition.classList.toggle("show-addition");
     });
     
-    //Cerrar el popup en la x
+    //Cerrar el popup de compartir en la x
     $('div.popup-share').on('click', 'button.close-button-share', function() {
         share.classList.toggle("show-share");
     });
     
-    //Dropdown
+    //Dropdown de las columnas
     $('div.title').on('click', 'div.dropdown', function() {
         current_task = $(this).parent().parent().parent();
         $(this).children('div.dropdown-content').toggle("show-dropdown");
     });
 
+    //Dropdown de usuario
     $('a#SO').on('click', function() {
         $('.dropbtn-user a.active').html("<img src='images/user.png' id='userImg'></img>" + 'Guest43636');
         $('p#Welcome').text('Welcome Guest43636!');
         window.open('login.html', '_self');
     });
     
-    //Archive
+    //Función para archivar las columnas
     $('div.title').on('click', 'a.archive', function() {
         current_task.remove();
     });
     
-    //Share
+    //Abrir el popup de compartir
     $('div.inner').on('click', 'div.share_button', function() {
         current_task = $(this).parent().parent();
         share.classList.toggle("show-share");
     });
 
-    //Like
+    //Al hacer like la iamgen se cambia
     $('div.inner').on('click', 'div.like_button', function() {
         /*
         if ($(this).attr('src') == 'images/like.svg'){
