@@ -1,0 +1,23 @@
+Mapa inicial:
+    P1  P2  P3  P4  P5
+P1  --   8  --  --  20
+P2   8  --  10  --  --
+P3  --  10  --   3  --
+P4  --  --   3  --  15
+P5  20  --  --  15  --
+C1: P3; C2: P4
+P2: 1 C1, 1 C2
+B: P1 5
+
+Solución:
+El autobús empieza en P1
+El autobús se mueve a P2
+En la parada P2 sube un alumno del colegio C1
+En la parada P2 sube un alumno del colegio C2
+El autobús se mueve a P3
+El autobús deja a un niño en el colegio C1 en la parada P3
+El autobús se mueve a P4
+El autobús deja a un niño en el colegio C2 en la parada P4
+El autobús se mueve a P3
+El autobús se mueve a P2
+El autobús se mueve a P1
