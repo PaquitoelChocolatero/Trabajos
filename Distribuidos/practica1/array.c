@@ -62,16 +62,10 @@ int set (char *nombre, int i, int valor)
     {
         if(strcmp(linkedList->name, nombre) == 0) //Si encuentra el vector, lo recorre
         {
-            
-            for(int j=0; j<linkedList->Nelem; j++)
-            {
-                if(j==i) 
-                {
-                    //Cuando llega a la posicion i del vector le da el valor
-                    linkedList->vector[j]=valor;
-                    return 0;
-                }
-            }
+         
+            //Cuando llega a la posicion i del vector le da el valor
+            linkedList->vector[i]=valor;
+            return 0;
         }
     }
     return -1;
@@ -84,17 +78,8 @@ int get (char *nombre, int i, int *valor)
     {
         if(strcmp(linkedList->name, nombre) == 0) //Si encuentra el vector, lo recorre
         {
-            for(int j=0; j<linkedList->Nelem; j++)
-            {
-                if(j==i) 
-                {
-                    //Cuando llega a la posicion i del vector lo almacena en la direccion de valor
-                    *valor = linkedList->vector[j];
-                    return 0;
-                   
-                }
-
-            }
+            *valor = linkedList->vector[i];
+            return 0;
         }
     }
     return -1;
