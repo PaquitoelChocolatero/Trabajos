@@ -1,8 +1,11 @@
 #include "lista.h"
 
-//Inicializamos la lista enlazada
-Lista = NULL; //header
 
+//Funcion para inicializar lista enlazada
+void InicializarLista(){
+    pthread_mutex_init(&listamutex, NULL);
+    Lista=NULL;
+}
 
 //Función que añade nodos a la lista enlazada
 int Init (char *nombre, int N)
@@ -37,7 +40,7 @@ int Set (char *nombre, int i, int valor)
                 return -1;
             } 
             p->vector[i]= valor;
-            return 1;  
+            return 0;  
         }
         
 
@@ -55,7 +58,7 @@ int Get (char *nombre, int i, int *valor)
                 return -1;
             } 
             *valor = p->vector[i];
-            return 1;  
+            return 0;  
         }
         
 
@@ -73,6 +76,7 @@ int Destroy (char *nombre)
         aux->next = NULL;
         free(aux->vector);
         free(aux);
+        return 1;
     }
     nodeList *p = Lista;
     while(p->next != NULL){
@@ -82,6 +86,7 @@ int Destroy (char *nombre)
             aux->next= NULL;
             free(aux->vector);
             free(aux);
+            return 1;
         }
         p=p->next;
     }

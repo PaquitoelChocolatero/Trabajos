@@ -11,8 +11,12 @@ typedef struct node {
     struct node *next;
 } nodeList;
 
+pthread_mutex_t listamutex;
 nodeList *Lista;
 
+//Funcion para inicializar lista 
+void InicializarLista();
+   
 int Init (char *nombre, int N);
 int Set (char *nombre, int i, int valor);
 int Get (char *nombre, int i, int *valor);

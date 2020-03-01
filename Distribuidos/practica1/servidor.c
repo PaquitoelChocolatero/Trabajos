@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <pthread.h>
+#include "mensaje.h"
 
 #define MAX_MESSAGES 10
 #define MAX_THREADS 10
@@ -27,7 +28,7 @@ int main(void)
     struct peticion mess; /* mensaje a recibir */
     struct mq_attr atr; /* atributos de la cola */
     atr.mq_maxmsg = MAX_MESSAGES;
-    atr.mq_msgsize = sizeof(struct peticion); //HABRA QUE CAMBIARLO POR INT TAL VEZ
+    atr.mq_msgsize = sizeof(struct peticion); 
 
     pthread_attr_t t_attr; /* atributos de los threads */
     pthread_t thid[MAX_THREADS];
@@ -61,7 +62,7 @@ int main(void)
     while (true) 
     {
         error = mq_receive(serverQueue, (char *) &mess, sizeof(struct peticion), 0);    //HABRA QUE CAMBIARLO POR INT TAL VEZ
-        if (error == -1 ) break;
+        if (error == -1 || mess.op == 4) break;
         pthread_mutex_lock(&mutex);
         while (n_elementos == MAX_PETICIONES) pthread_cond_wait(&no_lleno, &mutex);
         buffer_peticiones[pos] = mess;
@@ -97,6 +98,7 @@ void servicio(void ){
     struct peticion mensaje; /* mensaje local */
     mqd_t q_cliente; /* cola del cliente */
     int resultado; /* resultado de la operación */
+    int valor;  //auxiliar para almacenar funcion get
     for(;;){
         pthread_mutex_lock(&mutex);
         while (n_elementos == 0) {
@@ -115,9 +117,24 @@ void servicio(void ){
         pthread_mutex_unlock(&mutex);
         /* procesa la peticion */
         /* ejecutar la petición del cliente y preparar respuesta */
-        //AQUI ES DONDE HAY QUE HACER LAS LLAMADAS CREO
-        if (mensaje.op ==0) resultado = mensaje.a + mensaje.b;
-        else resultado = mensaje.a - mensaje.b;
+        //AQUI ES DONDE HAY QUE HACER LAS LLAMADAS
+        if (mensaje.op ==0){
+            //INIT
+            resultado=Init(mensaje.v_name, mensaje.par1);
+        }
+        else if (mensaje.op ==1){
+            //SET
+            resultado=Set(mensaje.v_name, mensaje.par1, mensaje.par2);
+        }
+        else if (mensaje.op ==2){
+            //GET
+            resultado=Get(mensaje.v_name, mensaje.par1, &valor);
+        }
+        else if (mensaje.op ==3){
+            //DESTROY
+            resultado=Destroy(mensaje.v_name);
+        }
+        
         /* Se devuelve el resultado al cliente */
         /* Para ello se envía el resultado a su cola */
         q_cliente = mq_open(mensaje.q_name, O_WRONLY);
@@ -125,6 +142,8 @@ void servicio(void ){
         perror("No se puede abrir la cola del cliente");
         else {
             mq_send(q_cliente, (const char *) &resultado, sizeof(int), 0);
+            //Para la funcion Get, hay que enviar tambien el valor
+            if(mensaje.op == 2 && resultado==0)  mq_send(q_cliente, (const char *) &valor, sizeof(int), 0); 
             mq_close(q_cliente);
         }
     } // FOR
