@@ -21,6 +21,7 @@ pthread_cond_t no_vacio;
 
 pthread_mutex_t mfin;
 int fin=false;
+void servicio(void);
 
 int main(void)
 {
@@ -37,7 +38,7 @@ int main(void)
     int pos = 0;
     
 
-    if ( serverQueue = mq_open("/SERVIDOR", O_CREAT|O_RDONLY, 0700, &atr)==-1) 
+    if ((serverQueue = mq_open("/SERVIDOR", O_CREAT|O_RDONLY, 0700, &atr))==-1) 
     {
         perror("No se puede crear la cola de servidor");
         return 1;
@@ -94,7 +95,7 @@ int main(void)
     return 0;
 } /* Fin main */
 
-void servicio(void ){
+void servicio(void){
     struct peticion mensaje; /* mensaje local */
     mqd_t q_cliente; /* cola del cliente */
     int resultado; /* resultado de la operación */
