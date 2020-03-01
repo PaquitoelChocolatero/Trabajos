@@ -23,20 +23,20 @@ int fin=false;
 
 int main(void)
 {
-    mqd_t serverQueue; /* cola del servidor */
-    struct peticion mess; /* mensaje a recibir */
-    struct mq_attr atr; /* atributos de la cola */
+    mqd_t serverQueue;
+    struct peticion mensaje; //Mensaje a recibir
+    struct mq_attr atr; //Atributos de la cola
     atr.mq_maxmsg = MAX_MESSAGES;
     atr.mq_msgsize = sizeof(struct peticion); //HABRA QUE CAMBIARLO POR INT TAL VEZ
 
-    pthread_attr_t t_attr; /* atributos de los threads */
+    pthread_attr_t t_attr; //Atributos de los hilos
     pthread_t thid[MAX_THREADS];
     
     int error;
     int pos = 0;
     
 
-    if ( serverQueue = mq_open("/SERVIDOR", O_CREAT|O_RDONLY, 0700, &atr)==-1) 
+    if ( serverQueue = mq_open("/SERVIDOR", O_CREAT|O_RDONLY, 0700, &atr) == -1 ) 
     {
         perror("No se puede crear la cola de servidor");
         return 1;
@@ -50,26 +50,25 @@ int main(void)
     pthread_attr_init(&t_attr);
 
     for (int i = 0; i < MAX_THREADS; i++){
-        if (pthread_create(&thid[i], NULL, servicio, NULL) !=0)
+        if (pthread_create(&thid[i], NULL, servicio, NULL) != 0) //Que coño es servicio
         {
             perror("Error creando el pool de threads\n");
             return 0;
         }
     }
-    
 
     while (true) 
     {
-        error = mq_receive(serverQueue, (char *) &mess, sizeof(struct peticion), 0);    //HABRA QUE CAMBIARLO POR INT TAL VEZ
-        if (error == -1 ) break;
+        error = mq_receive(serverQueue, (char *) &mensaje, sizeof(struct peticion), 0);    //HABRA QUE CAMBIARLO POR INT TAL VEZ
+        if (error == -1) break;
         pthread_mutex_lock(&mutex);
         while (n_elementos == MAX_PETICIONES) pthread_cond_wait(&no_lleno, &mutex);
-        buffer_peticiones[pos] = mess;
+        buffer_peticiones[pos] = mensaje;
         pos = (pos+1) % MAX_PETICIONES;
         n_elementos++;
         pthread_cond_signal(&no_vacio);
         pthread_mutex_unlock(&mutex);
-    } /* FIN while */
+    }
 
     pthread_mutex_lock(&mfin);
 
@@ -80,10 +79,7 @@ int main(void)
     pthread_cond_broadcast(&no_vacio);
     pthread_mutex_unlock(&mutex);
 
-    for (int i=0;i<MAX_THREADS;i++)
-    {
-        pthread_join(thid[i],NULL);
-    }
+    for (int i=0 ; i<MAX_THREADS ; i++) pthread_join(thid[i],NULL);
     
     pthread_mutex_destroy(&mutex);
     pthread_cond_destroy(&no_lleno);
@@ -91,9 +87,9 @@ int main(void)
     pthread_mutex_destroy(&mfin);
     
     return 0;
-} /* Fin main */
+}
 
-void servicio(void ){
+void servicio(void){
     struct peticion mensaje; /* mensaje local */
     mqd_t q_cliente; /* cola del cliente */
     int resultado; /* resultado de la operación */
@@ -127,6 +123,6 @@ void servicio(void ){
             mq_send(q_cliente, (const char *) &resultado, sizeof(int), 0);
             mq_close(q_cliente);
         }
-    } // FOR
+    }
     pthread_exit(0);
-} // servicio
+}
