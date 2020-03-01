@@ -21,7 +21,7 @@ pthread_cond_t no_vacio;
 
 pthread_mutex_t mfin;
 int fin=false;
-void servicio(void);
+void *servicio();
 
 int main(void)
 {
@@ -95,7 +95,7 @@ int main(void)
     return 0;
 } /* Fin main */
 
-void servicio(void){
+void *servicio(){
     struct peticion mensaje; /* mensaje local */
     mqd_t q_cliente; /* cola del cliente */
     int resultado; /* resultado de la operación */
