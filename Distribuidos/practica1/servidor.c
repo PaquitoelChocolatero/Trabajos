@@ -62,7 +62,7 @@ int main(void)
 
     while (true) 
     {
-        error = mq_receive(serverQueue, (char *) &mess, sizeof(struct peticion), 0);    //HABRA QUE CAMBIARLO POR INT TAL VEZ
+        error = mq_receive(serverQueue, (char *) &mess, sizeof(struct peticion), 0);    
         if (error == -1 || mess.op == 4) break;
         pthread_mutex_lock(&mutex);
         while (n_elementos == MAX_PETICIONES) pthread_cond_wait(&no_lleno, &mutex);
@@ -92,6 +92,10 @@ int main(void)
     pthread_cond_destroy(&no_vacio);
     pthread_mutex_destroy(&mfin);
     
+    //cerrar colas
+    mq_close(serverQueue);
+    mq_unlink("/SERVIDOR");
+
     return 0;
 } /* Fin main */
 
@@ -142,6 +146,7 @@ void *servicio(){
         if (q_cliente == -1)
         perror("No se puede abrir la cola del cliente");
         else {
+            printf("SERVIDOR> Respondiendo a %s:\n", mensaje.q_name); 
             mq_send(q_cliente, (const char *) &resultado, sizeof(int), 0);
             //Para la funcion Get, hay que enviar tambien el valor
             if(mensaje.op == 2 && resultado==0)  mq_send(q_cliente, (const char *) &valor, sizeof(int), 0); 
