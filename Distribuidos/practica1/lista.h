@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <pthread.h>
 
 //Lista enlazada de vectores
 typedef struct node {
