@@ -14,10 +14,9 @@ typedef struct node {
 pthread_mutex_t listamutex;
 nodeList *Lista;
 
-//Funcion para inicializar lista 
-void InicializarLista();
+void inicializarLista();
    
-int Init (char *nombre, int N);
-int Set (char *nombre, int i, int valor);
-int Get (char *nombre, int i, int *valor);
-int Destroy (char *nombre);
+int init(char *nombre, int N);
+int set(char *nombre, int i, int valor);
+int get(char *nombre, int i, int *valor);
+int destroy(char *nombre);

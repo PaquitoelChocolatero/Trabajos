@@ -123,22 +123,10 @@ void *servicio(){
         /* procesa la peticion */
         /* ejecutar la petición del cliente y preparar respuesta */
         //AQUI ES DONDE HAY QUE HACER LAS LLAMADAS
-        if (mensaje.op ==0){
-            //INIT
-            resultado=Init(mensaje.v_name, mensaje.par1);
-        }
-        else if (mensaje.op ==1){
-            //SET
-            resultado=Set(mensaje.v_name, mensaje.par1, mensaje.par2);
-        }
-        else if (mensaje.op ==2){
-            //GET
-            resultado=Get(mensaje.v_name, mensaje.par1, &valor);
-        }
-        else if (mensaje.op ==3){
-            //DESTROY
-            resultado=Destroy(mensaje.v_name);
-        }
+        if (mensaje.op ==0) resultado=init(mensaje.v_name, mensaje.par1);
+        else if (mensaje.op ==1) resultado=set(mensaje.v_name, mensaje.par1, mensaje.par2);
+        else if (mensaje.op ==2) resultado=get(mensaje.v_name, mensaje.par1, &valor);
+        else if (mensaje.op ==3) resultado=destroy(mensaje.v_name);
         
         /* Se devuelve el resultado al cliente */
         /* Para ello se envía el resultado a su cola */
@@ -148,7 +136,7 @@ void *servicio(){
         else {
             printf("SERVIDOR> Respondiendo a %s:\n", mensaje.q_name); 
             mq_send(q_cliente, (const char *) &resultado, sizeof(int), 0);
-            //Para la funcion Get, hay que enviar tambien el valor
+            //Para la funcion get, hay que enviar tambien el valor
             if(mensaje.op == 2 && resultado==0)  mq_send(q_cliente, (const char *) &valor, sizeof(int), 0); 
             mq_close(q_cliente);
         }

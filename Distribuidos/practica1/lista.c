@@ -1,8 +1,6 @@
 #include "lista.h"
 
-
-//Funcion para inicializar lista enlazada
-void InicializarLista(){
+void inicializarLista(){
     pthread_mutex_init(&listamutex, NULL);
     Lista=NULL;
 }

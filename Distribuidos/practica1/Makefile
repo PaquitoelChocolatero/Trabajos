@@ -1,15 +1,15 @@
-all: server client
+all: list server client
 
 lib:
 
 server:
-	gcc –o servidor servidor.c –lrt -lpthread
+	gcc -Wall -o servidor servidor.c -lrt -lpthread
 client:
-	gcc –o cliente cliente.c –lrt -lpthread
+	gcc -Wall -o cliente cliente.c -lrt -lpthread
 array:
 
 list:
-
+	gcc -Wall -c lista.c -lrt -lpthread
 clean:
 	@echo "Cleaning up..."
-	rm -rfv *.o
+	@rm -rfv *.o
