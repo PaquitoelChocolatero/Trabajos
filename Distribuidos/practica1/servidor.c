@@ -99,8 +99,10 @@ int main(void)
     return 0;
 } /* Fin main */
 
+
 void *servicio(){
     struct peticion mensaje; /* mensaje local */
+    struct respuesta res;
     mqd_t q_cliente; /* cola del cliente */
     int resultado; /* resultado de la operación */
     int valor;  //auxiliar para almacenar funcion get
@@ -123,10 +125,10 @@ void *servicio(){
         /* procesa la peticion */
         /* ejecutar la petición del cliente y preparar respuesta */
         //AQUI ES DONDE HAY QUE HACER LAS LLAMADAS
-        if (mensaje.op ==0) resultado = Init(mensaje.v_name, mensaje.par1);
-        else if (mensaje.op ==1) resultado = Set(mensaje.v_name, mensaje.par1, mensaje.par2);
-        else if (mensaje.op ==2) resultado = Get(mensaje.v_name, mensaje.par1, &valor);
-        else if (mensaje.op ==3) resultado = Destroy(mensaje.v_name);
+        if (mensaje.op ==0) res.codigo = Init(mensaje.v_name, mensaje.par1);
+        else if (mensaje.op ==1) res.codigo = Set(mensaje.v_name, mensaje.par1, mensaje.par2);
+        else if (mensaje.op ==2) res.codigo = Get(mensaje.v_name, mensaje.par1, &res.valor);
+        else if (mensaje.op ==3) res.codigo = Destroy(mensaje.v_name);
         
         /* Se devuelve el resultado al cliente */
         /* Para ello se envía el resultado a su cola */
@@ -135,9 +137,7 @@ void *servicio(){
         perror("No se puede abrir la cola del cliente");
         else {
             printf("SERVIDOR> Respondiendo a %s:\n", mensaje.q_name); 
-            mq_send(q_cliente, (const char *) &resultado, sizeof(int), 0);
-            //Para la funcion get, hay que enviar tambien el valor
-            if(mensaje.op == 2 && resultado==0)  mq_send(q_cliente, (const char *) &valor, sizeof(int), 0); 
+            mq_send(q_cliente, (const char *) &res, sizeof(struct respuesta), 0);
             mq_close(q_cliente);
         }
     } // FOR

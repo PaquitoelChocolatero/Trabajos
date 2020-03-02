@@ -1,4 +1,19 @@
 #include "lista.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <pthread.h>
+
+//Lista enlazada de vectores
+typedef struct node {
+    char *name;
+    int *vector;
+    int Nelem;
+    struct node *next;
+} nodeList;
+
+pthread_mutex_t listamutex;
+nodeList *Lista;
 
 void inicializarLista(){
     pthread_mutex_init(&listamutex, NULL);

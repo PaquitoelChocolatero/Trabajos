@@ -7,3 +7,8 @@ struct peticion{
     int par2;   //parametro 2
     char q_name[MAXSIZE];   //nombre de la cola del cliente
 };
+
+struct respuesta{
+    int codigo; //entero que indica al cliente si se ha realizado correctamente
+    int valor;  //entero con el valor extraido en la funcion get
+};
