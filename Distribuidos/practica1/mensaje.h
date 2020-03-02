@@ -1,7 +1,7 @@
 #define MAXSIZE 256
 
 struct peticion{
-    int op; //codigo de la llamada (0 init) (1 set) (2 get) (4 terminar)
+    int op; //codigo de la llamada (0 init) (1 set) (2 get) (3 destroy)
     char v_name[MAXSIZE];   //nombre del vector 
     int par1;   //parametro 1
     int par2;   //parametro 2

@@ -123,10 +123,10 @@ void *servicio(){
         /* procesa la peticion */
         /* ejecutar la petición del cliente y preparar respuesta */
         //AQUI ES DONDE HAY QUE HACER LAS LLAMADAS
-        if (mensaje.op ==0) resultado=init(mensaje.v_name, mensaje.par1);
-        else if (mensaje.op ==1) resultado=set(mensaje.v_name, mensaje.par1, mensaje.par2);
-        else if (mensaje.op ==2) resultado=get(mensaje.v_name, mensaje.par1, &valor);
-        else if (mensaje.op ==3) resultado=destroy(mensaje.v_name);
+        if (mensaje.op ==0) resultado = Init(mensaje.v_name, mensaje.par1);
+        else if (mensaje.op ==1) resultado = Set(mensaje.v_name, mensaje.par1, mensaje.par2);
+        else if (mensaje.op ==2) resultado = Get(mensaje.v_name, mensaje.par1, &valor);
+        else if (mensaje.op ==3) resultado = Destroy(mensaje.v_name);
         
         /* Se devuelve el resultado al cliente */
         /* Para ello se envía el resultado a su cola */

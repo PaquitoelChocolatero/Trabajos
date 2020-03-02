@@ -1,4 +1,14 @@
 #include "array.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <mqueue.h>
+#include "mensaje.h"
+
+mqd_t q_servidor;
+mqd_t q_cliente;
+char queuename[MAXSIZE];
+
 
 void iniciarColas(){
     struct mq_attr attr;
@@ -16,6 +26,7 @@ void cerrarColas(){
 }
 
 int init(char *nombre, int N){
+    iniciarColas();
     int res;    //respuesta del servidor 
     struct peticion pet;
     /* se rellena la petición */
@@ -26,40 +37,49 @@ int init(char *nombre, int N){
     printf("CLIENTE-%d> Enviando mensaje: Init(%s, %d)\n", getpid(), nombre, N);
     mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
     mq_receive(q_cliente, (char*) &res, sizeof(int), 0);
+    if(res == -1) printf("ERROR EN LA FUNCION INIT DEL CLIENTE-%d", getpid());
+    cerrarColas();
     return res;
+    
 }
 int set (char *nombre, int i, int valor){
+    iniciarColas();
     int res;    //respuesta del servidor 
     struct peticion pet;
     /* se rellena la petición */
     pet.op  = 1;
     pet.par1 = i;
-    pet.par2 = valor:
+    pet.par2 = valor;
     strcpy(pet.v_name, nombre);
     strcpy(pet.q_name, queuename);
     printf("CLIENTE-%d> Enviando mensaje: Set(%s, %d)\n", getpid(), nombre, i, valor);
     mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
     mq_receive(q_cliente, (char*) &res, sizeof(int), 0);
+    if(res == -1) printf("ERROR EN LA FUNCION SET DEL CLIENTE-%d", getpid());
+    cerrarColas();
     return res;
 }
 int get (char *nombre, int i, int *valor){
+    iniciarColas();
     int res;    //respuesta del servidor 
     struct peticion pet;
     /* se rellena la petición */
     pet.op  = 2;
     pet.par1 = i;
-    pet.par2 = *valor:
     strcpy(pet.v_name, nombre);
     strcpy(pet.q_name, queuename);
     printf("CLIENTE-%d> Enviando mensaje: Set(%s, %d)\n", getpid(), nombre, i, valor);
     mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
     mq_receive(q_cliente, (char*) &res, sizeof(int), 0);
-    if(res == 0){
+    if(res == -1) printf("ERROR EN LA FUNCION GET DEL CLIENTE-%d", getpid());
+    else{
         mq_receive(q_cliente,(char*) &valor, sizeof(int), 0);
     }
+    cerrarColas();
     return res;
 }
 int destroy (char *nombre){
+    iniciarColas();
     int res;    //respuesta del servidor 
     struct peticion pet;
     /* se rellena la petición */
@@ -69,13 +89,7 @@ int destroy (char *nombre){
     printf("CLIENTE-%d> Enviando mensaje: Destroy(%s, %d)\n", getpid(), nombre);
     mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
     mq_receive(q_cliente, (char*) &res, sizeof(int), 0);
+    if(res == -1) printf("ERROR EN LA FUNCION DESTROY DEL CLIENTE-%d", getpid());
+    cerrarColas();
     return res;
-}
-void cerrarserver(){
-    struct peticion pet;
-    /* se rellena la petición */
-    pet.op  = 4;
-    
-    printf("CLIENTE-%d>  Closing server", getpid());
-    mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
 }
