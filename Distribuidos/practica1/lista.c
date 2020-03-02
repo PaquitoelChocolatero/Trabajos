@@ -8,7 +8,7 @@ void InicializarLista(){
 }
 
 //Función que añade nodos a la lista enlazada
-int Init (char *nombre, int N)
+int init(char *nombre, int N)
 {
     pthread_mutex_lock(&listamutex);
     nodeList *p = Lista; //puntero para recorrer la lista y comprobar si ya hay un nodo con el mismo nombre
@@ -35,7 +35,7 @@ int Init (char *nombre, int N)
 
 }
 
-int Set (char *nombre, int i, int valor)
+int set(char *nombre, int i, int valor)
 {
     pthread_mutex_lock(&listamutex);
     nodeList *p = Lista;
@@ -57,7 +57,7 @@ int Set (char *nombre, int i, int valor)
     return -1;
 }
 
-int Get (char *nombre, int i, int *valor)
+int get(char *nombre, int i, int *valor)
 {
     pthread_mutex_lock(&listamutex);
     nodeList *p = Lista;
@@ -79,7 +79,7 @@ int Get (char *nombre, int i, int *valor)
     return -1;
 }
 
-int Destroy (char *nombre) 
+int destroy(char *nombre) 
 {
     pthread_mutex_lock(&listamutex);
     if(Lista==NULL) return -1;
