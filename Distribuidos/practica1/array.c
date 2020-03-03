@@ -6,6 +6,11 @@
 #include "array.h"
 #include "mensaje.h"
 
+#define INIT_OP 0
+#define SET_OP  1
+#define GET_OP  2
+#define DESTROY_OP  3
+
 mqd_t q_servidor;
 mqd_t q_cliente;
 char queuename[MAXSIZE];
@@ -32,7 +37,7 @@ int init(char *nombre, int N){
     struct respuesta res; 
     struct peticion pet;
     /* se rellena la petición */
-    pet.op  = 0;
+    pet.op  = INIT_OP;
     pet.par1 = N;
     strcpy(pet.v_name, nombre);
     strcpy(pet.q_name, queuename);
@@ -40,6 +45,7 @@ int init(char *nombre, int N){
     mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
     mq_receive(q_cliente, (char*) &res, sizeof(struct respuesta), 0);
     if(res.codigo == -1) printf("ERROR EN LA FUNCION INIT DEL CLIENTE-%d", getpid());
+    else if(res.codigo == 0) printf("EL VECTOR YA ESTÁ CREADO CON EL MISMO N DE COMPONENTES DEL CLIENTE-%d", getpid());
     cerrarColas();
     return res.codigo;
     
@@ -49,7 +55,7 @@ int set (char *nombre, int i, int valor){
     struct respuesta res;     //respuesta del servidor 
     struct peticion pet;
     /* se rellena la petición */
-    pet.op  = 1;
+    pet.op  = SET_OP;
     pet.par1 = i;
     pet.par2 = valor;
     strcpy(pet.v_name, nombre);
@@ -66,7 +72,7 @@ int get (char *nombre, int i, int *valor){
     struct respuesta res;     //respuesta del servidor 
     struct peticion pet;
     /* se rellena la petición */
-    pet.op  = 2;
+    pet.op  = GET_OP;
     pet.par1 = i;
     strcpy(pet.v_name, nombre);
     strcpy(pet.q_name, queuename);
@@ -76,6 +82,7 @@ int get (char *nombre, int i, int *valor){
     if(res.codigo == -1) printf("ERROR EN LA FUNCION GET DEL CLIENTE-%d", getpid());
     else{
         printf("El valor extraido de la lista por el cliente-%d es %d", getpid(), res.valor);
+        *valor=res.valor;
     }
     cerrarColas();
     return res.codigo;
@@ -85,7 +92,7 @@ int destroy (char *nombre){
     struct respuesta res;    //respuesta del servidor 
     struct peticion pet;
     /* se rellena la petición */
-    pet.op  = 3;
+    pet.op  = DESTROY_OP;
     strcpy(pet.v_name, nombre);
     strcpy(pet.q_name, queuename);
     printf("CLIENTE-%d> Enviando mensaje: Destroy(%s)\n", getpid(), nombre);
