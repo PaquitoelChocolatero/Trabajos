@@ -8,7 +8,7 @@
 #include "mensaje.h"
 
 #define MAX_MESSAGES 10
-#define MAX_THREADS 10
+#define MAX_THREADS 40
 #define MAX_PETICIONES 256
 
 struct peticion buffer_peticiones[MAX_PETICIONES];
