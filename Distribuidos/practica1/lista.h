@@ -1,6 +1,4 @@
-
-   
-int init(char *nombre, int N);
-int set(char *nombre, int i, int valor);
-int get(char *nombre, int i, int *valor);
-int destroy(char *nombre);
+int Init(char *nombre, int N);
+int Set(char *nombre, int i, int valor);
+int Get(char *nombre, int i, int *valor);
+int Destroy(char *nombre);
