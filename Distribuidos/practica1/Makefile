@@ -7,7 +7,7 @@ server:
 client-comp:
 	gcc -Wall -c cliente.c -lrt -lpthread
 array:
-	gcc -Wall -fPic -o array.o -c array.c -lrt -lpthread
+	gcc -Wall -fPIC -o array.o -c array.c -lrt -lpthread
 list:
 	gcc -Wall -c lista.c -lrt -lpthread
 client-exec:
