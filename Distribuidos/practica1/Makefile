@@ -1,17 +1,26 @@
-all: list array lib server client-comp client-exec
+all:  servidor cliente libarray.so
 
-lib:
-	gcc -shared -fPIC -o libarray.so array.o
-server:
-	gcc -Wall -o servidor servidor.c lista.c array.c -lrt -lpthread
-client-comp:
+servidor: lista.o
+	gcc -Wall -o servidor servidor.c lista.o -lrt -lpthread
+
+cliente.o:
 	gcc -Wall -c cliente.c
-array:
-	gcc -Wall -fPIC -o array.o -c array.c -lrt -lpthread
-list:
-	gcc -Wall -c lista.c -lrt -lpthread
-client-exec:
-	gcc -o cliente cliente.o lista.c libarray.so -lrt
+
+cliente: cliente.o libarray.so
+	gcc -Wall -o cliente cliente.o libarray.so -lrt
+
+lista.o:
+	gcc -Wall -c lista.c 
+
+array.o:
+	gcc -Wall -fPIC -c array.c
+
+libarray.so: array.o
+	gcc -Wall -fPIC -shared -o libarray.so array.o
+
 clean:
 	@echo "Cleaning up..."
 	@rm -rfv *.o
+	@rm -rfv cliente
+	@rm -rfv servidor
+	@rm -rfv libarray.so

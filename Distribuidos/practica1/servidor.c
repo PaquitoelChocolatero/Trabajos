@@ -63,13 +63,14 @@ int main(void)
     while (true) 
     {
         error = mq_receive(serverQueue, (char *) &mess, sizeof(struct peticion), 0);    
-        if (error == -1 || mess.op == 4) break;
+        if (error == -1) break;
         pthread_mutex_lock(&mutex);
         while (n_elementos == MAX_PETICIONES) pthread_cond_wait(&no_lleno, &mutex);
         buffer_peticiones[pos] = mess;
+        printf("mensaje recibido y metido en el buffer %d del cliente: %s\n",mess.op, mess.q_name);
         pos = (pos+1) % MAX_PETICIONES;
         n_elementos++;
-        pthread_cond_signal(&no_vacio);
+        pthread_cond_broadcast(&no_vacio);
         pthread_mutex_unlock(&mutex);
     } /* FIN while */
 
@@ -100,11 +101,12 @@ int main(void)
 } /* Fin main */
 
 void *servicio(){
-    struct peticion mensaje; /* mensaje local */
-    struct respuesta res;
-    mqd_t q_cliente; /* cola del cliente */
-    for(;;){
-        pthread_mutex_lock(&mutex);
+        struct peticion mensaje; /* mensaje local */
+        struct respuesta res;
+        mqd_t q_cliente; /* cola del cliente */
+        printf("por aquis e va a amajduirr");
+        for(;;){
+            pthread_mutex_lock(&mutex);
         while (n_elementos == 0) {
             if (fin==true) 
             {
@@ -117,8 +119,9 @@ void *servicio(){
         mensaje = buffer_peticiones[pos_servicio];
         pos_servicio = (pos_servicio + 1) % MAX_PETICIONES;
         n_elementos --;
-        pthread_cond_signal(&no_lleno);
+        pthread_cond_broadcast(&no_lleno);
         pthread_mutex_unlock(&mutex);
+        printf("por aquis e va a amajduirr");
         /* procesa la peticion */
         /* ejecutar la petición del cliente y preparar respuesta */
         //AQUI ES DONDE HAY QUE HACER LAS LLAMADAS
