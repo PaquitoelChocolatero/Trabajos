@@ -99,13 +99,10 @@ int main(void)
     return 0;
 } /* Fin main */
 
-
 void *servicio(){
     struct peticion mensaje; /* mensaje local */
     struct respuesta res;
     mqd_t q_cliente; /* cola del cliente */
-    int resultado; /* resultado de la operación */
-    int valor;  //auxiliar para almacenar funcion get
     for(;;){
         pthread_mutex_lock(&mutex);
         while (n_elementos == 0) {
