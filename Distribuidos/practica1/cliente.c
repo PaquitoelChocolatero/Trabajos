@@ -12,7 +12,7 @@ int main(void)
 
     int valor;
     get("vector1", 0, &valor);
-
+    
     init("vector1", 20);
 
     destroy("vector1");

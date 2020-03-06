@@ -19,7 +19,7 @@ char queuename[MAXSIZE];
 void iniciarColas(){
     struct mq_attr attr;
     attr.mq_maxmsg = 1;
-    attr.mq_msgsize = sizeof(int);
+    attr.mq_msgsize = sizeof(struct peticion);
     sprintf(queuename, "/Cola-%d", getpid());
     q_cliente = mq_open(queuename, O_CREAT|O_RDONLY, 0700, &attr);
     q_servidor = mq_open("/SERVIDOR", O_WRONLY);
@@ -60,7 +60,7 @@ int set (char *nombre, int i, int valor){
     pet.par2 = valor;
     strcpy(pet.v_name, nombre);
     strcpy(pet.q_name, queuename);
-    printf("CLIENTE-%d> Enviando mensaje a %s: Set(%d, %d)\n", getpid(), nombre, i, valor);
+    printf("CLIENTE-%d> Enviando mensaje: Set(%s, %d, %d)\n", getpid(), nombre, i, valor);
     mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
     mq_receive(q_cliente, (char*) &res, sizeof(struct respuesta), 0);
     if(res.codigo == -1) printf("ERROR EN LA FUNCION SET DEL CLIENTE-%d", getpid());
@@ -76,7 +76,7 @@ int get (char *nombre, int i, int *valor){
     pet.par1 = i;
     strcpy(pet.v_name, nombre);
     strcpy(pet.q_name, queuename);
-    printf("CLIENTE-%d> Enviando mensaje a %s: Get(%d, %ls)\n", getpid(), nombre, i, valor);
+    printf("CLIENTE-%d> Enviando mensaje: Get(%s, %d)\n", getpid(), nombre, i);
     mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
     mq_receive(q_cliente, (char*) &res, sizeof(struct respuesta), 0);
     if(res.codigo == -1) printf("ERROR EN LA FUNCION GET DEL CLIENTE-%d", getpid());

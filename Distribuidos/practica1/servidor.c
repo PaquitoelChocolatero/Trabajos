@@ -8,11 +8,12 @@
 #include "mensaje.h"
 
 #define MAX_MESSAGES 10
-#define MAX_THREADS 40
+#define MAX_THREADS 1
 #define MAX_PETICIONES 256
 
 struct peticion buffer_peticiones[MAX_PETICIONES];
-    
+
+  
 int n_elementos; // elementos en el buffer de peticiones
 int pos_servicio = 0;
 pthread_mutex_t mutex;
@@ -37,6 +38,7 @@ int main(void)
     int error;
     int pos = 0;
     
+    inicializarLista();
 
     if ((serverQueue = mq_open("/SERVIDOR", O_CREAT|O_RDONLY, 0700, &atr))==-1) 
     {
@@ -44,6 +46,7 @@ int main(void)
         return 1;
     }
 
+    
     pthread_mutex_init(&mutex,NULL);
     pthread_cond_init(&no_lleno,NULL);  
     pthread_cond_init(&no_vacio,NULL);
@@ -58,11 +61,10 @@ int main(void)
             return 0;
         }
     }
-    
 
     while (true) 
     {
-        error = mq_receive(serverQueue, (char *) &mess, sizeof(struct peticion), 0);    
+        error = mq_timedreceive(serverQueue, (char *) &mess, sizeof(struct peticion), 0);    
         if (error == -1) break;
         pthread_mutex_lock(&mutex);
         while (n_elementos == MAX_PETICIONES) pthread_cond_wait(&no_lleno, &mutex);
@@ -70,9 +72,10 @@ int main(void)
         printf("mensaje recibido y metido en el buffer %d del cliente: %s\n",mess.op, mess.q_name);
         pos = (pos+1) % MAX_PETICIONES;
         n_elementos++;
-        pthread_cond_broadcast(&no_vacio);
+        pthread_cond_signal(&no_vacio);
         pthread_mutex_unlock(&mutex);
     } /* FIN while */
+    fprintf(stderr, "Cerrando servidor...\n");
 
     pthread_mutex_lock(&mfin);
 
@@ -96,7 +99,8 @@ int main(void)
     //cerrar colas
     mq_close(serverQueue);
     mq_unlink("/SERVIDOR");
-
+    
+    finalizarLista();
     return 0;
 } /* Fin main */
 
@@ -104,7 +108,6 @@ void *servicio(){
         struct peticion mensaje; /* mensaje local */
         struct respuesta res;
         mqd_t q_cliente; /* cola del cliente */
-        printf("por aquis e va a amajduirr");
         for(;;){
             pthread_mutex_lock(&mutex);
         while (n_elementos == 0) {
@@ -119,9 +122,8 @@ void *servicio(){
         mensaje = buffer_peticiones[pos_servicio];
         pos_servicio = (pos_servicio + 1) % MAX_PETICIONES;
         n_elementos --;
-        pthread_cond_broadcast(&no_lleno);
+        pthread_cond_signal(&no_lleno);
         pthread_mutex_unlock(&mutex);
-        printf("por aquis e va a amajduirr");
         /* procesa la peticion */
         /* ejecutar la petición del cliente y preparar respuesta */
         //AQUI ES DONDE HAY QUE HACER LAS LLAMADAS
@@ -129,7 +131,6 @@ void *servicio(){
         else if (mensaje.op ==1) res.codigo = Set(mensaje.v_name, mensaje.par1, mensaje.par2);
         else if (mensaje.op ==2) res.codigo = Get(mensaje.v_name, mensaje.par1, &res.valor);
         else if (mensaje.op ==3) res.codigo = Destroy(mensaje.v_name);
-        
         /* Se devuelve el resultado al cliente */
         /* Para ello se envía el resultado a su cola */
         q_cliente = mq_open(mensaje.q_name, O_WRONLY);
@@ -137,7 +138,10 @@ void *servicio(){
         perror("No se puede abrir la cola del cliente");
         else {
             printf("SERVIDOR> Respondiendo a %s:\n", mensaje.q_name); 
-            mq_send(q_cliente, (const char *) &res, sizeof(struct respuesta), 0);
+            int err = mq_send(q_cliente, (const char *) &res, sizeof(struct respuesta), 0);
+            //int prueba=5;
+            //int err = mq_send(q_cliente, (const char *) &prueba, sizeof(int), 0);
+            if(err==-1) fprintf(stderr, "error");
             mq_close(q_cliente);
         }
     } // FOR
