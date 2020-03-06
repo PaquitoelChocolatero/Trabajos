@@ -64,7 +64,7 @@ int main(void)
 
     while (true) 
     {
-        error = mq_timedreceive(serverQueue, (char *) &mess, sizeof(struct peticion), 0);    
+        error = mq_receive(serverQueue, (char *) &mess, sizeof(struct peticion), 0);    
         if (error == -1) break;
         pthread_mutex_lock(&mutex);
         while (n_elementos == MAX_PETICIONES) pthread_cond_wait(&no_lleno, &mutex);
@@ -139,8 +139,6 @@ void *servicio(){
         else {
             printf("SERVIDOR> Respondiendo a %s:\n", mensaje.q_name); 
             int err = mq_send(q_cliente, (const char *) &res, sizeof(struct respuesta), 0);
-            //int prueba=5;
-            //int err = mq_send(q_cliente, (const char *) &prueba, sizeof(int), 0);
             if(err==-1) fprintf(stderr, "error");
             mq_close(q_cliente);
         }
