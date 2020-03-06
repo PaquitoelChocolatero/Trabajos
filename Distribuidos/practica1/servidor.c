@@ -13,6 +13,7 @@
 
 struct peticion buffer_peticiones[MAX_PETICIONES];
 
+
   
 int n_elementos; // elementos en el buffer de peticiones
 int pos_servicio = 0;
@@ -69,7 +70,7 @@ int main(void)
         pthread_mutex_lock(&mutex);
         while (n_elementos == MAX_PETICIONES) pthread_cond_wait(&no_lleno, &mutex);
         buffer_peticiones[pos] = mess;
-        printf("mensaje recibido y metido en el buffer %d del cliente: %s\n",mess.op, mess.q_name);
+        printf("mensaje recibido y metido en el buffer %d del cliente: %s\n", mess.op, mess.q_name);
         pos = (pos+1) % MAX_PETICIONES;
         n_elementos++;
         pthread_cond_signal(&no_vacio);

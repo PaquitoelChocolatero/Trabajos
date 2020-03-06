@@ -18,8 +18,8 @@ char queuename[MAXSIZE];
 
 void iniciarColas(){
     struct mq_attr attr;
-    attr.mq_maxmsg = 1;
-    attr.mq_msgsize = sizeof(struct peticion);
+    attr.mq_maxmsg = 10;
+    attr.mq_msgsize = sizeof(struct respuesta);
     sprintf(queuename, "/Cola-%d", getpid());
     q_cliente = mq_open(queuename, O_CREAT|O_RDONLY, 0700, &attr);
     q_servidor = mq_open("/SERVIDOR", O_WRONLY);
@@ -46,6 +46,7 @@ int init(char *nombre, int N){
     mq_receive(q_cliente, (char*) &res, sizeof(struct respuesta), 0);
     if(res.codigo == -1) printf("ERROR EN LA FUNCION INIT DEL CLIENTE-%d\n", getpid());
     else if(res.codigo == 0) printf("EL VECTOR YA ESTÁ CREADO CON EL MISMO N DE COMPONENTES DEL CLIENTE-%d\n", getpid());
+    else printf("Funcion realizada con exito\n");
     cerrarColas();
     return res.codigo;
     
@@ -64,6 +65,7 @@ int set (char *nombre, int i, int valor){
     mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
     mq_receive(q_cliente, (char*) &res, sizeof(struct respuesta), 0);
     if(res.codigo == -1) printf("ERROR EN LA FUNCION SET DEL CLIENTE-%d\n", getpid());
+    else printf("Funcion realizada con exito\n");
     cerrarColas();
     return res.codigo;
 }
@@ -99,6 +101,7 @@ int destroy (char *nombre){
     mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
     mq_receive(q_cliente, (char*) &res, sizeof(int), 0);
     if(res.codigo == -1) printf("ERROR EN LA FUNCION DESTROY DEL CLIENTE-%d\n", getpid());
+    else printf("Funcion realizada con exito\n");
     cerrarColas();
     return res.codigo;
 }
