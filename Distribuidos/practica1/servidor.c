@@ -1,10 +1,11 @@
-#include "lista.h"
 #include <mqueue.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <pthread.h>
+#include <signal.h>
+#include "lista.h"
 #include "mensaje.h"
 
 #define MAX_MESSAGES 10
@@ -23,9 +24,13 @@ pthread_cond_t no_vacio;
 pthread_mutex_t mfin;
 int fin=false;
 void *servicio();
+void cerrarServidor();
 
 int main(void)
 {
+    printf("Para cerrar el servidor pulse: Ctrl+C\n");
+    signal(SIGINT, cerrarServidor); //Capturamos Ctrl+C para cerrar el servidor
+
     mqd_t serverQueue; /* cola del servidor */
     struct peticion mess; /* mensaje a recibir */
     struct mq_attr atr; /* atributos de la cola */
@@ -142,6 +147,10 @@ void *servicio(){
             if(err==-1) fprintf(stderr, "error");
             mq_close(q_cliente);
         }
-    } // FOR
+    }
     pthread_exit(0);
-} // servicio
+}
+
+void cerrarServidor() {
+    printf("\nTest\n");
+}
