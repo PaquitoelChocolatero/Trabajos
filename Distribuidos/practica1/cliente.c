@@ -2,13 +2,13 @@
 
 int main(void) 
 {
-    // init("vector1", 10);
+    init("vector1", 10);
 
-    // init("vector2", 20);
+    init("vector2", 20);
 
-    // set("vector1", 0, 44);
+    set("vector1", 0, 44);
 
-    // set("vector1", 12, 30);
+    set("vector1", 12, 30);
 
     int valor;
     get("vector1", 0, &valor);
@@ -17,8 +17,5 @@ int main(void)
 
     destroy("vector1");
 
-    destroy("vector");
-
-    destroy("vector2");
 
 }

@@ -13,7 +13,7 @@
 #define MAX_PETICIONES 256
 
 struct peticion buffer_peticiones[MAX_PETICIONES];
-
+mqd_t serverQueue; /* cola del servidor */
 
   
 int n_elementos; // elementos en el buffer de peticiones
@@ -29,10 +29,7 @@ void cerrarServidor();
 
 int main(void)
 {
-    printf("Para cerrar el servidor pulse: Ctrl+C\n");
-    signal(SIGINT, cerrarServidor); //Capturamos Ctrl+C para cerrar el servidor
-
-    mqd_t serverQueue; /* cola del servidor */
+    
     struct peticion mess; /* mensaje a recibir */
     struct mq_attr atr; /* atributos de la cola */
     atr.mq_maxmsg = MAX_MESSAGES;
@@ -43,6 +40,9 @@ int main(void)
     
     int error;
     int pos = 0;
+    
+    printf("Para cerrar el servidor pulse: Ctrl+C\n");
+    signal(SIGINT, cerrarServidor); //Capturamos Ctrl+C para cerrar el servidor
     
     inicializarLista();
 
@@ -153,5 +153,8 @@ void *servicio(){
 }
 
 void cerrarServidor() {
-    printf("\nTest\n");
+    mq_close(serverQueue);
+    mq_unlink("/SERVIDOR");
+    finalizarLista();
+    exit(1);
 }
