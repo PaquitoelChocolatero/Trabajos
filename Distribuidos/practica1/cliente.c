@@ -17,6 +17,9 @@ int main(void)
 
     destroy("vector1");
 
+    destroy("vector");
+
+    destroy("vector2");
 
     destroy("vector2");
 

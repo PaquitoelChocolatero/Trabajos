@@ -22,6 +22,7 @@ typedef struct node {
 
 
 struct peticion buffer_peticiones[MAX_PETICIONES];
+
 int n_elementos; // elementos en el buffer de peticiones
 int pos_servicio = 0;
 nodeList *Lista = NULL;
