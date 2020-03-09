@@ -11,15 +11,6 @@
 #define MAX_MESSAGES 10
 #define MAX_THREADS 10
 #define MAX_PETICIONES 256
-#define MAXSIZE 256
-
-typedef struct node {
-    char name[MAXSIZE];
-    int *vector;
-    int Nelem;
-    struct node *next;
-} nodeList;
-
 
 struct peticion buffer_peticiones[MAX_PETICIONES];
 
