@@ -9,43 +9,46 @@
 #include "mensaje.h"
 
 #define MAX_MESSAGES 10
-#define MAX_THREADS 1
+#define MAX_THREADS 10
 #define MAX_PETICIONES 256
 
 struct peticion buffer_peticiones[MAX_PETICIONES];
 
-
-  
 int n_elementos; // elementos en el buffer de peticiones
 int pos_servicio = 0;
+nodeList *Lista = NULL;
+pthread_mutex_t listamutex;
 pthread_mutex_t mutex;
 pthread_cond_t no_lleno;
 pthread_cond_t no_vacio;
 
 pthread_mutex_t mfin;
-int fin=false;
+int fin = false;
+pthread_t thid[MAX_THREADS];
+mqd_t serverQueue; /* cola del servidor */
+    
+
 void *servicio();
 void cerrarServidor();
+void ShowLista();
 
 int main(void)
 {
     printf("Para cerrar el servidor pulse: Ctrl+C\n");
     signal(SIGINT, cerrarServidor); //Capturamos Ctrl+C para cerrar el servidor
 
-    mqd_t serverQueue; /* cola del servidor */
     struct peticion mess; /* mensaje a recibir */
     struct mq_attr atr; /* atributos de la cola */
     atr.mq_maxmsg = MAX_MESSAGES;
     atr.mq_msgsize = sizeof(struct peticion); 
 
     pthread_attr_t t_attr; /* atributos de los threads */
-    pthread_t thid[MAX_THREADS];
     
     int error;
     int pos = 0;
     
-    inicializarLista();
-
+    pthread_mutex_init(&listamutex, NULL);
+    
     if ((serverQueue = mq_open("/SERVIDOR", O_CREAT|O_RDONLY, 0700, &atr))==-1) 
     {
         perror("No se puede crear la cola de servidor");
@@ -75,38 +78,15 @@ int main(void)
         pthread_mutex_lock(&mutex);
         while (n_elementos == MAX_PETICIONES) pthread_cond_wait(&no_lleno, &mutex);
         buffer_peticiones[pos] = mess;
-        printf("mensaje recibido y metido en el buffer %d del cliente: %s\n", mess.op, mess.q_name);
+        printf("SERVIDOR> Mensaje recibido (%d) del cliente %s y metido en el buffer\n", mess.op, mess.q_name);
         pos = (pos+1) % MAX_PETICIONES;
         n_elementos++;
         pthread_cond_signal(&no_vacio);
         pthread_mutex_unlock(&mutex);
     } /* FIN while */
-    fprintf(stderr, "Cerrando servidor...\n");
 
-    pthread_mutex_lock(&mfin);
-
-    fin=true;
-
-    pthread_mutex_unlock(&mfin);
-    pthread_mutex_lock(&mutex);
-    pthread_cond_broadcast(&no_vacio);
-    pthread_mutex_unlock(&mutex);
-
-    for (int i=0;i<MAX_THREADS;i++)
-    {
-        pthread_join(thid[i],NULL);
-    }
     
-    pthread_mutex_destroy(&mutex);
-    pthread_cond_destroy(&no_lleno);
-    pthread_cond_destroy(&no_vacio);
-    pthread_mutex_destroy(&mfin);
     
-    //cerrar colas
-    mq_close(serverQueue);
-    mq_unlink("/SERVIDOR");
-    
-    finalizarLista();
     return 0;
 } /* Fin main */
 
@@ -119,7 +99,7 @@ void *servicio(){
         while (n_elementos == 0) {
             if (fin==true) 
             {
-                fprintf(stderr,"Finalizando servicio\n");
+                fprintf(stderr,"Finalizando servicio %lu\n", (unsigned long int)pthread_self());
                 pthread_mutex_unlock(&mutex);
                 pthread_exit(0);
             }
@@ -133,10 +113,14 @@ void *servicio(){
         /* procesa la peticion */
         /* ejecutar la petición del cliente y preparar respuesta */
         //AQUI ES DONDE HAY QUE HACER LAS LLAMADAS
+        pthread_mutex_lock(&listamutex);
         if (mensaje.op ==0) res.codigo = Init(mensaje.v_name, mensaje.par1);
         else if (mensaje.op ==1) res.codigo = Set(mensaje.v_name, mensaje.par1, mensaje.par2);
         else if (mensaje.op ==2) res.codigo = Get(mensaje.v_name, mensaje.par1, &res.valor);
         else if (mensaje.op ==3) res.codigo = Destroy(mensaje.v_name);
+        printf("SERVIDOR> Mensaje tratado con respuesta %d\n", res.codigo); 
+        //ShowLista();            
+        pthread_mutex_unlock(&listamutex);                
         /* Se devuelve el resultado al cliente */
         /* Para ello se envía el resultado a su cola */
         q_cliente = mq_open(mensaje.q_name, O_WRONLY);
@@ -153,5 +137,38 @@ void *servicio(){
 }
 
 void cerrarServidor() {
-    printf("\nTest\n");
+    fprintf(stderr, "Cerrando servidor...\n");
+
+    pthread_mutex_lock(&mfin);
+    fin = true;
+    pthread_mutex_unlock(&mfin);
+
+    pthread_mutex_lock(&mutex);
+    pthread_cond_broadcast(&no_vacio);
+    pthread_mutex_unlock(&mutex);
+
+    for (int i=0;i<MAX_THREADS;i++) pthread_join(thid[i],NULL);
+    
+    pthread_mutex_destroy(&mutex);
+    pthread_cond_destroy(&no_lleno);
+    pthread_cond_destroy(&no_vacio);
+    pthread_mutex_destroy(&mfin);
+    pthread_mutex_destroy(&listamutex);
+    
+    mq_close(serverQueue);
+    mq_unlink("/SERVIDOR");
+}
+
+
+void ShowLista(){
+    printf("\n******LISTA******\n");
+    nodeList *p = Lista;
+    while(p != NULL){
+        printf("\nNombre: %s\n", p->name);
+        printf("Size: %d\n", p->Nelem);
+        for(int i = 0; i < p->Nelem; i++) printf("%d, ", p->vector[i]);
+
+        p = p->next;
+    }
+    printf("\n*****************\n");
 }

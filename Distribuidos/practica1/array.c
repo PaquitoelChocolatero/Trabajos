@@ -44,9 +44,9 @@ int init(char *nombre, int N){
     printf("CLIENTE-%d> Enviando mensaje: Init(%s, %d)\n", getpid(), nombre, N);
     mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
     mq_receive(q_cliente, (char*) &res, sizeof(struct respuesta), 0);
-    if(res.codigo == -1) printf("ERROR EN LA FUNCION INIT DEL CLIENTE-%d\n", getpid());
-    else if(res.codigo == 0) printf("EL VECTOR YA ESTÁ CREADO CON EL MISMO N DE COMPONENTES DEL CLIENTE-%d\n", getpid());
-    else printf("Funcion realizada con exito\n");
+    if(res.codigo == -1) printf("CLIENTE-%d> ERROR EN LA FUNCION INIT\n", getpid());
+    else if(res.codigo == 0) printf("CLIENTE-%d> EL VECTOR YA ESTÁ CREADO CON EL MISMO N DE COMPONENTES\n", getpid());
+    else printf("CLIENTE-%d> Funcion Init realizada con exito\n", getpid());
     cerrarColas();
     return res.codigo;
     
@@ -64,8 +64,8 @@ int set (char *nombre, int i, int valor){
     printf("CLIENTE-%d> Enviando mensaje: Set(%s, %d, %d)\n", getpid(), nombre, i, valor);
     mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
     mq_receive(q_cliente, (char*) &res, sizeof(struct respuesta), 0);
-    if(res.codigo == -1) printf("ERROR EN LA FUNCION SET DEL CLIENTE-%d\n", getpid());
-    else printf("Funcion realizada con exito\n");
+    if(res.codigo == -1) printf("CLIENTE-%d> ERROR EN LA FUNCION SET\n", getpid());
+    else printf("CLIENTE-%d> Funcion Set realizada con exito\n", getpid());
     cerrarColas();
     return res.codigo;
 }
@@ -81,9 +81,10 @@ int get (char *nombre, int i, int *valor){
     printf("CLIENTE-%d> Enviando mensaje: Get(%s, %d)\n", getpid(), nombre, i);
     mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
     mq_receive(q_cliente, (char*) &res, sizeof(struct respuesta), 0);
-    if(res.codigo == -1) printf("ERROR EN LA FUNCION GET DEL CLIENTE-%d\n", getpid());
+    if(res.codigo == -1) printf("CLIENTE-%d> ERROR EN LA FUNCION GET\n", getpid());
     else{
-        printf("El valor extraido de la lista por el cliente-%d es %d\n", getpid(), res.valor);
+        printf("CLIENTE-%d> Funcion get realizada con exito\n", getpid());
+        printf("CLIENTE-%d> El valor extraido de la lista es %d\n", getpid(), res.valor);
         *valor=res.valor;
     }
     cerrarColas();
@@ -99,9 +100,9 @@ int destroy (char *nombre){
     strcpy(pet.q_name, queuename);
     printf("CLIENTE-%d> Enviando mensaje: Destroy(%s)\n", getpid(), nombre);
     mq_send(q_servidor, (const char *) &pet, sizeof(struct peticion), 0);
-    mq_receive(q_cliente, (char*) &res, sizeof(int), 0);
-    if(res.codigo == -1) printf("ERROR EN LA FUNCION DESTROY DEL CLIENTE-%d\n", getpid());
-    else printf("Funcion realizada con exito\n");
+    mq_receive(q_cliente, (char*) &res, sizeof(struct respuesta), 0);
+    if(res.codigo == -1) printf("CLIENTE-%d> ERROR EN LA FUNCION DESTROY\n", getpid());
+    else printf("CLIENTE-%d> Funcion Destroy realizada con exito\n", getpid());
     cerrarColas();
     return res.codigo;
 }
