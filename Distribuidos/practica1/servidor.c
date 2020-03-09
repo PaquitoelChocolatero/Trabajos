@@ -13,7 +13,13 @@
 #define MAX_PETICIONES 256
 
 struct peticion buffer_peticiones[MAX_PETICIONES];
+<<<<<<< HEAD
 
+=======
+mqd_t serverQueue; /* cola del servidor */
+
+  
+>>>>>>> e108407c2d0002271c431af246096fe6445da061
 int n_elementos; // elementos en el buffer de peticiones
 int pos_servicio = 0;
 nodeList *Lista = NULL;
@@ -34,9 +40,13 @@ void ShowLista();
 
 int main(void)
 {
+<<<<<<< HEAD
     printf("Para cerrar el servidor pulse: Ctrl+C\n");
     signal(SIGINT, cerrarServidor); //Capturamos Ctrl+C para cerrar el servidor
 
+=======
+    
+>>>>>>> e108407c2d0002271c431af246096fe6445da061
     struct peticion mess; /* mensaje a recibir */
     struct mq_attr atr; /* atributos de la cola */
     atr.mq_maxmsg = MAX_MESSAGES;
@@ -47,8 +57,16 @@ int main(void)
     int error;
     int pos = 0;
     
+<<<<<<< HEAD
     pthread_mutex_init(&listamutex, NULL);
     
+=======
+    printf("Para cerrar el servidor pulse: Ctrl+C\n");
+    signal(SIGINT, cerrarServidor); //Capturamos Ctrl+C para cerrar el servidor
+    
+    inicializarLista();
+
+>>>>>>> e108407c2d0002271c431af246096fe6445da061
     if ((serverQueue = mq_open("/SERVIDOR", O_CREAT|O_RDONLY, 0700, &atr))==-1) 
     {
         perror("No se puede crear la cola de servidor");
@@ -137,6 +155,7 @@ void *servicio(){
 }
 
 void cerrarServidor() {
+<<<<<<< HEAD
     fprintf(stderr, "Cerrando servidor...\n");
 
     pthread_mutex_lock(&mfin);
@@ -171,4 +190,10 @@ void ShowLista(){
         p = p->next;
     }
     printf("\n*****************\n");
+=======
+    mq_close(serverQueue);
+    mq_unlink("/SERVIDOR");
+    finalizarLista();
+    exit(1);
+>>>>>>> e108407c2d0002271c431af246096fe6445da061
 }
