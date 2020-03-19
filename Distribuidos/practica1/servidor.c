@@ -96,14 +96,14 @@ void *servicio(){
         mqd_t q_cliente; /* cola del cliente */
         for(;;){
             pthread_mutex_lock(&mutex);
-        while (n_elementos == 0) {
-            if (fin==true) 
-            {
-                fprintf(stderr,"Finalizando servicio %lu\n", (unsigned long int)pthread_self());
-                pthread_mutex_unlock(&mutex);
-                pthread_exit(0);
-            }
-            pthread_cond_wait(&no_vacio, &mutex);
+            while (n_elementos == 0) {
+                if (fin==true) 
+                {
+                    fprintf(stderr,"Finalizando servicio %lu\n", (unsigned long int)pthread_self());
+                    pthread_mutex_unlock(&mutex);
+                    pthread_exit(0);
+                }
+                pthread_cond_wait(&no_vacio, &mutex);
         }
         mensaje = buffer_peticiones[pos_servicio];
         pos_servicio = (pos_servicio + 1) % MAX_PETICIONES;
@@ -112,7 +112,6 @@ void *servicio(){
         pthread_mutex_unlock(&mutex);
         /* procesa la peticion */
         /* ejecutar la petición del cliente y preparar respuesta */
-        //AQUI ES DONDE HAY QUE HACER LAS LLAMADAS
         pthread_mutex_lock(&listamutex);
         if (mensaje.op ==0) res.codigo = Init(mensaje.v_name, mensaje.par1);
         else if (mensaje.op ==1) res.codigo = Set(mensaje.v_name, mensaje.par1, mensaje.par2);
@@ -124,12 +123,11 @@ void *servicio(){
         /* Se devuelve el resultado al cliente */
         /* Para ello se envía el resultado a su cola */
         q_cliente = mq_open(mensaje.q_name, O_WRONLY);
-        if (q_cliente == -1)
-        perror("No se puede abrir la cola del cliente");
+        if (q_cliente == -1) perror("No se puede abrir la cola del cliente");
         else {
             printf("SERVIDOR> Respondiendo a %s:\n", mensaje.q_name); 
             int err = mq_send(q_cliente, (const char *) &res, sizeof(struct respuesta), 0);
-            if(err==-1) fprintf(stderr, "error");
+            if(err==-1) fprintf(stderr, "error al responder al cliente");
             mq_close(q_cliente);
         }
     }
