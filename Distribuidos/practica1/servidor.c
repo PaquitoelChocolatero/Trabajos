@@ -10,26 +10,27 @@
 
 //definicion de variables globales
 #define MAX_MESSAGES 10
-#define MAX_THREADS 10
+#define MAX_THREADS 40
 #define MAX_PETICIONES 256
 
-struct peticion buffer_peticiones[MAX_PETICIONES];  //creacion del buffer de peticiones
+struct peticion buffer_peticiones[MAX_PETICIONES];
 
-int n_elementos; // elementos en el buffer de peticiones
+int n_elementos; //Numero de elementos en el buffer de peticiones
 int pos_servicio = 0;
-nodeList *Lista = NULL; //inicialización
+
+nodeList *Lista = NULL; //inicialización de la lista enlazada
 
 //Declaracion de de los mutex
 pthread_mutex_t listamutex;
 pthread_mutex_t mutex;
 pthread_cond_t no_lleno;
 pthread_cond_t no_vacio;
-
 pthread_mutex_t mfin;
-int fin = false;
 pthread_t thid[MAX_THREADS];
 
-mqd_t serverQueue; //declaración de la cola del servidor
+int fin = false;    //Variable para controlar el final de los hilos
+
+mqd_t serverQueue; //Declaración de la cola del servidor
     
 //Declaración de los métodos
 void *servicio();
@@ -37,67 +38,71 @@ void cerrarServidor();
 
 int main(void)
 {
+    //Capturamos Ctrl+C para añadir funcionalidades
     printf("Para cerrar el servidor pulse: Ctrl+C\n");
-    signal(SIGINT, cerrarServidor); //metodo que al capturar Ctrl+C se llama a la funcion cerrarServidor
+    signal(SIGINT, cerrarServidor);
 
-    struct peticion mess; //mensaje a recibir
-    struct mq_attr atr; //atributos de la cola
+    struct peticion mess; //Mensaje a recibir
+
+    //Atributos de la cola
+    struct mq_attr atr;
     atr.mq_maxmsg = MAX_MESSAGES;
     atr.mq_msgsize = sizeof(struct peticion); 
 
-    pthread_attr_t t_attr; //atributos de los threads
+    pthread_attr_t t_attr; //Atributos de los hilos
     
-    int error;
-    int pos = 0;
+    int pos = 0;    //Posicion en el buffer
     
-    pthread_mutex_init(&listamutex, NULL);
-    
-    if ((serverQueue = mq_open("/SERVIDOR", O_CREAT|O_RDONLY, 0700, &atr))==-1) //error en caso de que no se pueda crear la cola del servidor
+    //Error en caso de que no se pueda crear la cola del servidor
+    if ((serverQueue = mq_open("/SERVIDOR", O_CREAT|O_RDONLY, 0700, &atr))==-1)
     {
         perror("No se puede crear la cola de servidor");
         return 1;
     }
 
-    
+    pthread_mutex_init(&listamutex, NULL);  //Iniciamos el mutex
+    pthread_mutex_init(&mfin,NULL);
     pthread_mutex_init(&mutex,NULL);
     pthread_cond_init(&no_lleno,NULL);  
     pthread_cond_init(&no_vacio,NULL);
-    pthread_mutex_init(&mfin,NULL);
-
     pthread_attr_init(&t_attr);
 
-    //creacion del pool de threads
+    //Creacion del pool de threads
     for (int i = 0; i < MAX_THREADS; i++){
         if (pthread_create(&thid[i], NULL, servicio, NULL) !=0)
         {
-            perror("Error creando el pool de threads\n");   //error en caso de que no se pueda crear el pool de threads
+            perror("Error creando el pool de threads\n");
             return 0;
         }
     }
     
-    while (true)    //Bucle para que el server reciba los mensajes enviados por el cliente
+    //El servidor queda a la espera de mensajes del cliente
+    while (true)
     {
-        error = mq_receive(serverQueue, (char *) &mess, sizeof(struct peticion), 0);    //error en caso de que el receieve sea -1 da error y sale del bucle
-        if (error == -1) break;
+        //En caso de que haya un error al recibir se sale del bucle
+        if(mq_receive(serverQueue, (char *) &mess, sizeof(struct peticion), 0) == -1) break; 
+        
         pthread_mutex_lock(&mutex);
-        while (n_elementos == MAX_PETICIONES) pthread_cond_wait(&no_lleno, &mutex); //La función queda en espera si el n elementos alcanza el número máximo de peticiones
+
+        //La función queda en espera si el n elementos alcanza el número máximo de peticiones
+        while (n_elementos == MAX_PETICIONES) pthread_cond_wait(&no_lleno, &mutex);
+
         buffer_peticiones[pos] = mess;
         printf("SERVIDOR> Mensaje recibido (%d) del cliente %s y metido en el buffer\n", mess.op, mess.q_name);
         pos = (pos+1) % MAX_PETICIONES;
         n_elementos++;
+        
         pthread_cond_signal(&no_vacio); 
         pthread_mutex_unlock(&mutex);
-    } /* FIN while */
-
-    
-    
+    }   
     return 0;
-} /* Fin main */
+}
 
 void *servicio(){
-        struct peticion mensaje; /* mensaje local */
+        struct peticion mensaje; //Mensaje local
         struct respuesta res;
-        mqd_t q_cliente; /* cola del cliente */
+        mqd_t q_cliente; //Cola del cliente
+
         for(;;){
             pthread_mutex_lock(&mutex);
             while (n_elementos == 0) {
@@ -109,22 +114,23 @@ void *servicio(){
                 }
                 pthread_cond_wait(&no_vacio, &mutex);
         }
+
         mensaje = buffer_peticiones[pos_servicio];
         pos_servicio = (pos_servicio + 1) % MAX_PETICIONES;
         n_elementos --;
         pthread_cond_signal(&no_lleno);
         pthread_mutex_unlock(&mutex);
-        /* procesa la peticion */
-        /* ejecutar la petición del cliente y preparar respuesta */
+        
+        //Procesa la peticion y guarda su estado
         pthread_mutex_lock(&listamutex);
         if (mensaje.op ==0) res.codigo = Init(mensaje.v_name, mensaje.par1);
         else if (mensaje.op ==1) res.codigo = Set(mensaje.v_name, mensaje.par1, mensaje.par2);
         else if (mensaje.op ==2) res.codigo = Get(mensaje.v_name, mensaje.par1, &res.valor);
         else if (mensaje.op ==3) res.codigo = Destroy(mensaje.v_name);
         printf("SERVIDOR> Mensaje tratado con respuesta %d\n", res.codigo);            
-        pthread_mutex_unlock(&listamutex);                
-        /* Se devuelve el resultado al cliente */
-        /* Para ello se envía el resultado a su cola */
+        pthread_mutex_unlock(&listamutex);
+
+        //Se devuelve el resultado a la cola del cliente
         q_cliente = mq_open(mensaje.q_name, O_WRONLY);
         if (q_cliente == -1) perror("No se puede abrir la cola del cliente");
         else {
@@ -137,7 +143,8 @@ void *servicio(){
     pthread_exit(0);
 }
 
-void cerrarServidor() { //Función para cerrar todos los elementos (colas, hilos y mutex)
+//Antes de cerrar el proceso cerramos todos los elementos: colas, hilos y mutex
+void cerrarServidor() {
     fprintf(stderr, "\nCerrando servidor...\n");
 
     pthread_mutex_lock(&mfin);
@@ -151,12 +158,11 @@ void cerrarServidor() { //Función para cerrar todos los elementos (colas, hilos
     for (int i=0;i<MAX_THREADS;i++) pthread_join(thid[i],NULL);
     
     pthread_mutex_destroy(&mutex);
-    pthread_cond_destroy(&no_lleno);
-    pthread_cond_destroy(&no_vacio);
     pthread_mutex_destroy(&mfin);
     pthread_mutex_destroy(&listamutex);
+    pthread_cond_destroy(&no_lleno);
+    pthread_cond_destroy(&no_vacio);
     
     mq_close(serverQueue);
     mq_unlink("/SERVIDOR");
 }
-

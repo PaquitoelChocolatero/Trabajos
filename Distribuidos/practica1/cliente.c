@@ -1,4 +1,5 @@
 #include "array.h"
+#include <unistd.h>
 
 int main(void) 
 {
@@ -7,6 +8,8 @@ int main(void)
     init("vector2", 20);
 
     set("vector1", 0, 44);
+
+    sleep(2);
 
     set("vector1", 12, 30);
 
