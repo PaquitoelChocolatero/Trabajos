@@ -8,15 +8,18 @@
 #include "lista.h"
 #include "mensaje.h"
 
+//definicion de variables globales
 #define MAX_MESSAGES 10
 #define MAX_THREADS 10
 #define MAX_PETICIONES 256
 
-struct peticion buffer_peticiones[MAX_PETICIONES];
+struct peticion buffer_peticiones[MAX_PETICIONES];  //creacion del buffer de peticiones
 
 int n_elementos; // elementos en el buffer de peticiones
 int pos_servicio = 0;
-nodeList *Lista = NULL;
+nodeList *Lista = NULL; //inicialización
+
+//Declaracion de de los mutex
 pthread_mutex_t listamutex;
 pthread_mutex_t mutex;
 pthread_cond_t no_lleno;
@@ -25,31 +28,31 @@ pthread_cond_t no_vacio;
 pthread_mutex_t mfin;
 int fin = false;
 pthread_t thid[MAX_THREADS];
-mqd_t serverQueue; /* cola del servidor */
-    
 
+mqd_t serverQueue; //declaración de la cola del servidor
+    
+//Declaración de los métodos
 void *servicio();
 void cerrarServidor();
-void ShowLista();
 
 int main(void)
 {
     printf("Para cerrar el servidor pulse: Ctrl+C\n");
-    signal(SIGINT, cerrarServidor); //Capturamos Ctrl+C para cerrar el servidor
+    signal(SIGINT, cerrarServidor); //metodo que al capturar Ctrl+C se llama a la funcion cerrarServidor
 
-    struct peticion mess; /* mensaje a recibir */
-    struct mq_attr atr; /* atributos de la cola */
+    struct peticion mess; //mensaje a recibir
+    struct mq_attr atr; //atributos de la cola
     atr.mq_maxmsg = MAX_MESSAGES;
     atr.mq_msgsize = sizeof(struct peticion); 
 
-    pthread_attr_t t_attr; /* atributos de los threads */
+    pthread_attr_t t_attr; //atributos de los threads
     
     int error;
     int pos = 0;
     
     pthread_mutex_init(&listamutex, NULL);
     
-    if ((serverQueue = mq_open("/SERVIDOR", O_CREAT|O_RDONLY, 0700, &atr))==-1) 
+    if ((serverQueue = mq_open("/SERVIDOR", O_CREAT|O_RDONLY, 0700, &atr))==-1) //error en caso de que no se pueda crear la cola del servidor
     {
         perror("No se puede crear la cola de servidor");
         return 1;
@@ -63,25 +66,26 @@ int main(void)
 
     pthread_attr_init(&t_attr);
 
+    //creacion del pool de threads
     for (int i = 0; i < MAX_THREADS; i++){
         if (pthread_create(&thid[i], NULL, servicio, NULL) !=0)
         {
-            perror("Error creando el pool de threads\n");
+            perror("Error creando el pool de threads\n");   //error en caso de que no se pueda crear el pool de threads
             return 0;
         }
     }
-
-    while (true) 
+    
+    while (true)    //Bucle para que el server reciba los mensajes enviados por el cliente
     {
-        error = mq_receive(serverQueue, (char *) &mess, sizeof(struct peticion), 0);    
+        error = mq_receive(serverQueue, (char *) &mess, sizeof(struct peticion), 0);    //error en caso de que el receieve sea -1 da error y sale del bucle
         if (error == -1) break;
         pthread_mutex_lock(&mutex);
-        while (n_elementos == MAX_PETICIONES) pthread_cond_wait(&no_lleno, &mutex);
+        while (n_elementos == MAX_PETICIONES) pthread_cond_wait(&no_lleno, &mutex); //La función queda en espera si el n elementos alcanza el número máximo de peticiones
         buffer_peticiones[pos] = mess;
         printf("SERVIDOR> Mensaje recibido (%d) del cliente %s y metido en el buffer\n", mess.op, mess.q_name);
         pos = (pos+1) % MAX_PETICIONES;
         n_elementos++;
-        pthread_cond_signal(&no_vacio);
+        pthread_cond_signal(&no_vacio); 
         pthread_mutex_unlock(&mutex);
     } /* FIN while */
 
@@ -117,8 +121,7 @@ void *servicio(){
         else if (mensaje.op ==1) res.codigo = Set(mensaje.v_name, mensaje.par1, mensaje.par2);
         else if (mensaje.op ==2) res.codigo = Get(mensaje.v_name, mensaje.par1, &res.valor);
         else if (mensaje.op ==3) res.codigo = Destroy(mensaje.v_name);
-        printf("SERVIDOR> Mensaje tratado con respuesta %d\n", res.codigo); 
-        //ShowLista();            
+        printf("SERVIDOR> Mensaje tratado con respuesta %d\n", res.codigo);            
         pthread_mutex_unlock(&listamutex);                
         /* Se devuelve el resultado al cliente */
         /* Para ello se envía el resultado a su cola */
@@ -134,7 +137,7 @@ void *servicio(){
     pthread_exit(0);
 }
 
-void cerrarServidor() {
+void cerrarServidor() { //Función para cerrar todos los elementos (colas, hilos y mutex)
     fprintf(stderr, "\nCerrando servidor...\n");
 
     pthread_mutex_lock(&mfin);
@@ -157,16 +160,3 @@ void cerrarServidor() {
     mq_unlink("/SERVIDOR");
 }
 
-
-void ShowLista(){
-    printf("\n******LISTA******\n");
-    nodeList *p = Lista;
-    while(p != NULL){
-        printf("\nNombre: %s\n", p->name);
-        printf("Size: %d\n", p->Nelem);
-        for(int i = 0; i < p->Nelem; i++) printf("%d, ", p->vector[i]);
-
-        p = p->next;
-    }
-    printf("\n*****************\n");
-}

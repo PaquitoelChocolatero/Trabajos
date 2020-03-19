@@ -26,7 +26,7 @@ int Init(char *nombre, int N)
     for(int i=0; i<N; i++) nuevoNodo->vector[i] = 0;
     nuevoNodo->next = Lista;    
     Lista = nuevoNodo;
-    return 1;
+    return 1;   
 }
 
 int Set(char *nombre, int i, int valor)
@@ -41,7 +41,7 @@ int Set(char *nombre, int i, int valor)
         }
         p = p->next;
     }
-    return -1;
+    return -1;  //en caso de no encontrar el vector, devuelve -1
 }
 
 int Get(char *nombre, int i, int *valor)
@@ -57,7 +57,7 @@ int Get(char *nombre, int i, int *valor)
         }
         p = p->next;
     }
-    return -1;
+    return -1;  //en caso de no encontrar el vector, devuelve -1
 }
 
 int Destroy(char *nombre) 
