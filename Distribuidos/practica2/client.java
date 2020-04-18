@@ -1,9 +1,81 @@
 import java.io.*;
+import java.net.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import gnu.getopt.Getopt;
 
+class serverthread extends Thread{
+	private ServerSocket sc;
+	
+	public serverthread(ServerSocket ss){
+		sc = ss;
+	}
+	public void run(){
+		try{
+			while(true){
+				Socket sh = sc.accept();
+				DataOutputStream os = new DataOutputStream(sh.getOutputStream());
+				DataInputStream in = new DataInputStream(sh.getInputStream());
+			
+				String mensaje = leer(in);
+				if(!mensaje.equals("GET_FILE")){
+					System.out.println("Error");
+					sc.close();
+					sh.close();	
+					return;
+				}
+				String rmt_file = leer(in);
+				File f = new File(rmt_file);
+				if(f.exists() && f.isFile()){
+					escribir(os, "0");
+					InputStream inp = new FileInputStream(rmt_file);
+					DataInputStream inputfile = new DataInputStream(inp);
+
+					copy.copyFile(inputfile, os);
+					inp.close();
+				}
+
+			}
+		}
+		catch(Exception e){
+			System.err.println("excepcion "+ e.toString());
+			e.printStackTrace();
+		}
+	}
+	
+}
 
 class client {
 	
+	/*********FUNCIONES AUXILIARES*********************/
+	public static String leer(DataInputStream in){
+    	byte[] ch = new byte[1];
+    	String output = new String();
+    	try {
+        	do {
+            	ch[0] = in.readByte();
+            	if (ch[0] != '\0'){
+               		String d = new String(ch);
+               		output = output + d;
+            	}
+         	}while(ch[0] != '\0');
+      	}
+      	catch (Exception e) {
+        	System.err.println("excepcion " + e.toString() );
+      	}
+      	return output;
+   	}
+	public static void escribir(DataOutputStream os, String salida){
+		try{
+			os.writeBytes(salida);
+			os.write("\0");
+		}
+		catch(Exception e){
+			System.err.println("excepcion " + e.toString());
+		}
+	}
 	
 	/******************* ATTRIBUTES *******************/
 	
@@ -22,7 +94,34 @@ class client {
 	{
 		// Write your code here
 		System.out.println("REGISTER " + user);
-		return 0;
+		try{
+			socket sc = new socket(_server, _port);
+			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
+			DataInputStream in = new DataInputStream(sc.getInputStream());
+
+			escribir(os, "REGISTER");
+			escribir(os, user);
+
+			String respuesta = leer(in);
+			int result = Integer.parseInt(respuesta);
+
+			sc.close();
+		}
+		catch(Exception e){
+			System.err.println("excepcion " + e.toString());
+			result = 2;
+		}
+		if(result = 0){
+			System.out.println("c> REGISTER OK");
+		}
+		else if(result = 1){
+			System.out.println("c> USERNAME IN USE");
+		}
+		else {
+			System.out.println("c> REGISTER FAIL");
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -34,7 +133,34 @@ class client {
 	{
 		// Write your code here
 		System.out.println("UNREGISTER " + user);
-		return 0;
+		try{
+			socket sc = new socket(_server, _port);
+			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
+			DataInputStream in = new DataInputStream(sc.getInputStream());
+
+			escribir(os, "UNREGISTER");
+			escribir(os, user);
+
+			String respuesta = leer(in);
+			int result = Integer.parseInt(respuesta);
+			
+			sc.close();
+			
+		}
+		catch(Exception e){
+			System.err.println("excepcion " + e.toString());
+			result = 2;
+		}
+		if(result = 0){
+			System.out.println("c> UNREGISTER OK");
+		}
+		else if(result = 1){
+			System.out.println("c> USER DOES NOT EXIST");
+		}
+		else {
+			System.out.println("c> UNREGISTER FAIL");
+		}
+		return result;
 	}
 	
     	/**
@@ -46,7 +172,39 @@ class client {
 	{
 		// Write your code here
 		System.out.println("CONNECT " + user);
-		return 0;
+		try{
+			socket sc = new socket(_server, _port);
+			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
+			DataInputStream in = new DataInputStream(sc.getInputStream());
+
+			ServerSocket serverclient = new ServerSocket(0);
+			int port = serverclient.getLocalPort();
+			escribir(os, "CONNECT");
+			escribir(os, user);
+			escribir(os, port.toString());
+
+			String respuesta = leer(in);
+			int result = Integer.parseInt(respuesta);
+			
+			sc.close();
+		}
+		catch(Exception e){
+			System.err.println("excepcion " + e.toString());
+			result = 3;
+		}
+		if(result = 0){
+			System.out.println("c> CONNECT OK");
+		}
+		else if(result = 1){
+			System.out.println("c> CONNECT FAIL, USER DOES NOT EXIST");
+		}
+		else if(result = 2){
+			System.out.println("c> USER ALREADY CONNECTED");
+		}
+		else {
+			System.out.println("c> CONNECT FAIL");
+		}
+		return result;
 	}
 	
 	 /**
