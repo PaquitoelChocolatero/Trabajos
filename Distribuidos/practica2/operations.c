@@ -22,7 +22,7 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
 }
 
 static int tableExists(void *NotUsed, int argc, char **argv, char **azColName) {
-   if(argc>0) exists = 1;
+   if(argc>1) exists = 1;
    else exists = 0;
 
    return 0;
@@ -37,8 +37,7 @@ void checkError(){
 
 int registerUser(char *user)
 {
-    printf("holi");
-	//Abrir la base de datos de registrados
+    //Abrir la base de datos de registrados
     registered_rc = sqlite3_open("registered.db", &registered_db);
 
 	if(registered_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(registered_db));
@@ -48,9 +47,11 @@ int registerUser(char *user)
 
     registered_rc = sqlite3_exec(registered_db, sql_op, tableExists, 0, &err);
     checkError();   //Comprobar errores
+    printf("%d", exists);
 
     //Si la tabla de usuarios no existe la creamos
     if(exists == 0){
+        printf("test");
         sql_op = "CREATE TABLE USERS(USER TEXT PRIMARY KEY);";  //Creamos la tabla de usuarios
 
         registered_rc = sqlite3_exec(registered_db, sql_op, callback, 0, &err);
@@ -66,14 +67,14 @@ int registerUser(char *user)
         checkError();   //Comprobar errores
     }
 
-    sql_op = strcat("INSERT INTO USERS(USER) " \
-             "VALUES(", user);
-    sql_op = strcat(sql_op, ");");
+    // sql_op = strcat("INSERT INTO USERS(USER) " \
+    //          "VALUES(", user);
+    // sql_op = strcat(sql_op, ");");
 
-    registered_rc = sqlite3_exec(registered_db, sql_op, callback, 0, &err);
-    checkError();   //Comprobar errores
+    // registered_rc = sqlite3_exec(registered_db, sql_op, callback, 0, &err);
+    // checkError();   //Comprobar errores
 
-	sqlite3_close(registered_db); //Cerramos la base de datos //SEGMENTATION FAULT AQUI----------------------------------------------------------------------
+    sqlite3_close(registered_db); //Cerramos la base de datos
     return 1;
 }
 
