@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 
 	// printf("Port: %s\n", port);
 
-	registerUser("test");
+	registerUser("test45");
 	
 	return 0;
 }

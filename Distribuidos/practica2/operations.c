@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include <sqlite3.h>
 #include "operations.h"
@@ -22,9 +23,8 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
 }
 
 static int tableExists(void *NotUsed, int argc, char **argv, char **azColName) {
-   if(argc>1) exists = 1;
+   if(argc>0) exists = 1;
    else exists = 0;
-
    return 0;
 }
 
@@ -42,37 +42,51 @@ int registerUser(char *user)
 
 	if(registered_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(registered_db));
 
-    //Creamos la tabla de usuarios
-    sql_op = "SELECT name FROM sqlite_master WHERE type='table' AND name='USERS';";
-
+    //Comprobar si la tabla usuarios existe
+    sql_op = "SELECT * FROM sqlite_master WHERE type='table' AND name='USERS';";
     registered_rc = sqlite3_exec(registered_db, sql_op, tableExists, 0, &err);
     checkError();   //Comprobar errores
-    printf("%d", exists);
 
     //Si la tabla de usuarios no existe la creamos
     if(exists == 0){
-        printf("test");
-        sql_op = "CREATE TABLE USERS(USER TEXT PRIMARY KEY);";  //Creamos la tabla de usuarios
+        sql_op = "CREATE TABLE USERS(USER TEXT PRIMARY KEY NOT NULL);";  //Creamos la tabla de usuarios
 
         registered_rc = sqlite3_exec(registered_db, sql_op, callback, 0, &err);
         checkError();   //Comprobar errores
 
         //Si la tabla de usuarios no existía asumimos que la de archivos tampoco
-        sql_op = "CREATE TABLE FILES("  \
-                 "USER TEXT PRIMARY KEY     NOT NULL," \
-                 "NAME           TEXT    NOT NULL," \
-                 "DESCRIPTION           TEXT    NOT NULL);";
+        sql_op = "CREATE TABLE FILES("                              \
+                 "USER           TEXT   PRIMARY KEY     NOT NULL,"  \
+                 "NAME           TEXT                   NOT NULL,"  \
+                 "DESCRIPTION    TEXT                   NOT NULL);";
 
         registered_rc = sqlite3_exec(registered_db, sql_op, callback, 0, &err);
         checkError();   //Comprobar errores
     }
+    exists=0;
 
-    // sql_op = strcat("INSERT INTO USERS(USER) " \
-    //          "VALUES(", user);
-    // sql_op = strcat(sql_op, ");");
+    //Comprobar si el usuario existe
+    char concat_sql_op[80];
+    strcpy(concat_sql_op, "SELECT * FROM USERS WHERE user='");
+    strcat(concat_sql_op, user);
+    strcat(concat_sql_op, "';");
+    registered_rc = sqlite3_exec(registered_db, concat_sql_op, tableExists, 0, &err);
+    checkError();   //Comprobar errores
 
-    // registered_rc = sqlite3_exec(registered_db, sql_op, callback, 0, &err);
-    // checkError();   //Comprobar errores
+    //Si el usuario no existe le podemos registrar
+    if(exists == 0){
+        //Concatenamos la instrucción con el usuario deseado
+        strcpy(concat_sql_op, "INSERT INTO USERS VALUES('");
+        strcat(concat_sql_op, user);
+        strcat(concat_sql_op, "');");
+
+        registered_rc = sqlite3_exec(registered_db, concat_sql_op, callback, 0, &err);
+        checkError();   //Comprobar errores
+    }else{
+        printf("User already exists!\n");
+        return -1;
+    }
+    exists=0;
 
     sqlite3_close(registered_db); //Cerramos la base de datos
     return 1;
@@ -167,7 +181,7 @@ int list_users()
     return -1;
 }
 
-int lsit_content()
+int list_content()
 {
     //Abrir la base de datos de activos
     active_rc = sqlite3_open("active.db", &active_db);
