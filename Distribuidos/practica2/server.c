@@ -36,11 +36,13 @@ int main(int argc, char *argv[]) {
 
 	//connectUser("test", "128.160.46.1", 88);
 
-	//publishFile("128.160.46.1", "awesome.pdf", "Best essay in the world!");
+	publishFile("128.160.46.1", "awesome.pdf", "Best essay in the world!");
 
 	//deleteFile("128.160.46.1", "test.txt");
 
 	//disconnectUser("128.160.46.1");
+
+	//unregisterUser("test");
 	
 	return 0;
 }

@@ -1,5 +1,6 @@
 void startServer();
 int registerUser(char *localUser);
+int unregisterUser(char *localUser);
 int connectUser(char *localUser, char *ip, int port);
 int disconnectUser(char *ip);
 int publishFile(char *ip, char *file, char *description);
