@@ -30,8 +30,10 @@ int main(int argc, char *argv[]) {
 
 	// printf("Port: %s\n", port);
 
-	registerUser("test5");
-	connectUser("test5", "128.160.46.1", 88);
+	startServer();
+
+	registerUser("test");
+	connectUser("test", "128.160.46.1", 88);
 	
 	return 0;
 }

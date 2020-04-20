@@ -1,3 +1,4 @@
+void startServer();
 int registerUser(char *user);
 int connectUser(char *user, char *ip, int port);
 int disconnectUser();

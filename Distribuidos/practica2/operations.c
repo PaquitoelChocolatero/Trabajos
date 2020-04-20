@@ -5,20 +5,22 @@
 #include <sqlite3.h>
 #include "operations.h"
 
-sqlite3 *registered_db;		//Base de datos de usuarios registrados
-sqlite3 *active_db;			//Base de datos de usuarios activos
+sqlite3 *registered_db, *active_db;		//Base de datos de usuarios registrados y usuarios activos
+int registered_rc, active_rc;
 char *err = 0;				//Variable de control
-int registered_rc;
-int active_rc;
 char *sql_op;   //BORRAR
 int exists = 0;
-//LISTA DE STRINGS
+char selected_items[42][100];   // 42/3 (campos por fichero) = 14 archivos por usuario
+
+
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
    int i;
    char user[4] = "USER";
    for(i = 0; i<argc; i++) {
-        if(strcmp(azColName[i],user)!=0)printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");  //Solo nos interesan las columnas que no son 'USER'
+        if(strcmp(azColName[i],user)!=0){   //Solo nos interesan las columnas que no son 'USER'
+            sprintf(selected_items[i], "%s = %s", azColName[i], argv[i] ? argv[i] : "NULL");
+        }
    }
    printf("\n");
    return 0;
@@ -37,10 +39,12 @@ void checkError(){
     }
 }
 
+
+
 /*
-*   REGISTER USER
+*   GENERATE DATABASES
 */
-int registerUser(char *user)
+void startServer()
 {
     //Abrir la base de datos de registrados
     registered_rc = sqlite3_open("registered.db", &registered_db);
@@ -54,7 +58,11 @@ int registerUser(char *user)
 
     //Si la tabla de usuarios no existe la creamos
     if(exists == 0){
-        sql_op = "CREATE TABLE USERS(USER TEXT PRIMARY KEY NOT NULL);";  //Creamos la tabla de usuarios
+        //Creamos la tabla de usuarios
+        sql_op = "CREATE TABLE USERS("                              \
+                 "USER           TEXT   PRIMARY KEY     NOT NULL,"  \
+                 "IP             TEXT                   NOT NULL,"  \
+                 "PORT           INT                    NOT NULL);";
 
         registered_rc = sqlite3_exec(registered_db, sql_op, callback, 0, &err);
         checkError();   //Comprobar errores
@@ -70,6 +78,56 @@ int registerUser(char *user)
         checkError();   //Comprobar errores
     }
     exists=0;
+
+    sqlite3_close(registered_db); //Cerramos la base de datos
+
+    //Abrir la base de datos de activos
+    active_rc = sqlite3_open("active.db", &active_db);
+	if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
+    exists=0;
+
+    //Comprobar si la tabla usuarios existe
+    sql_op = "SELECT * FROM sqlite_master WHERE type='table' AND name='USERS';";
+    active_rc = sqlite3_exec(active_db, sql_op, tableExists, 0, &err);
+    checkError();   //Comprobar errores
+
+    //Si la tabla de usuarios no existe la creamos
+    if(exists == 0){
+        //Creamos la tabla de usuarios
+        sql_op = "CREATE TABLE USERS("                              \
+                 "USER           TEXT   PRIMARY KEY     NOT NULL,"  \
+                 "IP             TEXT                   NOT NULL,"  \
+                 "PORT           INT                    NOT NULL);";
+
+        active_rc = sqlite3_exec(active_db, sql_op, callback, 0, &err);
+        checkError();   //Comprobar errores
+
+        //Si la tabla de usuarios no existía asumimos que la de archivos tampoco
+        sql_op = "CREATE TABLE FILES("                              \
+                 "USER           TEXT   NOT NULL,"  \
+                 "NAME           TEXT   NOT NULL,"  \
+                 "DESCRIPTION    TEXT   NOT NULL,"  \
+                 "PRIMARY KEY(USER, NAME));";
+
+        active_rc = sqlite3_exec(active_db, sql_op, callback, 0, &err);
+        checkError();   //Comprobar errores
+    }
+    exists=0;
+
+    sqlite3_close(active_db); //Cerramos la base de datos
+}
+
+
+
+/*
+*   REGISTER USER
+*/
+int registerUser(char *user)
+{
+    //Abrir la base de datos de registrados
+    registered_rc = sqlite3_open("registered.db", &registered_db);
+
+	if(registered_rc) fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(registered_db));
 
     //Comprobar si el usuario existe
     char concat_sql_op[80];
@@ -98,12 +156,14 @@ int registerUser(char *user)
     return 1;
 }
 
+
+
 /*
 *   CONNECT USER IP PORT
 */
 int connectUser(char *user, char *ip, int port)
 {
-	//Abrir la base de datos de registrados
+    //Abrir la base de datos de registrados
     registered_rc = sqlite3_open("registered.db", &registered_db);
 	if(registered_rc) fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(registered_db));
 
@@ -121,34 +181,6 @@ int connectUser(char *user, char *ip, int port)
         //Abrir la base de datos de activos
         active_rc = sqlite3_open("active.db", &active_db);
 	    if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
-        exists=0;
-
-        //Comprobar si la tabla usuarios existe
-        sql_op = "SELECT * FROM sqlite_master WHERE type='table' AND name='USERS';";
-        active_rc = sqlite3_exec(active_db, sql_op, tableExists, 0, &err);
-        checkError();   //Comprobar errores
-
-        //Si la tabla de usuarios no existe la creamos
-        if(exists == 0){
-            //Creamos la tabla de usuarios
-            sql_op = "CREATE TABLE USERS("                              \
-                     "USER           TEXT   PRIMARY KEY     NOT NULL,"  \
-                     "IP             TEXT                   NOT NULL,"  \
-                     "PORT           INT                   NOT NULL);";
-
-            active_rc = sqlite3_exec(active_db, sql_op, callback, 0, &err);
-            checkError();   //Comprobar errores
-
-            //Si la tabla de usuarios no existía asumimos que la de archivos tampoco
-            sql_op = "CREATE TABLE FILES("                              \
-                     "USER           TEXT   NOT NULL,"  \
-                     "NAME           TEXT   NOT NULL,"  \
-                     "DESCRIPTION    TEXT   NOT NULL,"  \
-                     "PRIMARY KEY(USER, NAME));";
-
-            active_rc = sqlite3_exec(active_db, sql_op, callback, 0, &err);
-            checkError();   //Comprobar errores
-        }
         exists=0;
 
         //Comprobar si el usuario existe
@@ -173,8 +205,13 @@ int connectUser(char *user, char *ip, int port)
             active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
             checkError();   //Comprobar errores
 
-            //Extraemos todos los archivos del usuario de la base de datos de registrados
-            strcpy(concat_sql_op, "SELECT * FROM FILES WHERE user='");
+            //Linkeamos la base de usuarios activos a la de registrados
+            sql_op = "ATTACH 'active.db' AS active;";
+            registered_rc = sqlite3_exec(registered_db, sql_op, callback, 0, &err);
+            checkError();   //Comprobar errores
+
+            //Volcamos los datos del usuario en la tabla FICHEROS de los usuarios activos
+            strcpy(concat_sql_op, "INSERT INTO active.FILES SELECT * FROM main.FILES WHERE user='");
             strcat(concat_sql_op, user);
             strcat(concat_sql_op, "';");
             registered_rc = sqlite3_exec(registered_db, concat_sql_op, callback, 0, &err);
@@ -198,6 +235,11 @@ int connectUser(char *user, char *ip, int port)
     return -1;
 }
 
+
+
+/*
+*   FUNCTION
+*/
 int disconnectUser()
 {
     //Abrir la base de datos de registrados
@@ -214,6 +256,11 @@ int disconnectUser()
     return -1;
 }
 
+
+
+/*
+*   FUNCTION
+*/
 int publishFile()
 {
     //Abrir la base de datos de activos
@@ -225,6 +272,11 @@ int publishFile()
     return -1;
 }
 
+
+
+/*
+*   FUNCTION
+*/
 int deleteFile()
 {
     //Abrir la base de datos de activos
@@ -236,6 +288,11 @@ int deleteFile()
     return -1;
 }
 
+
+
+/*
+*   FUNCTION
+*/
 int list_users()
 {
     //Abrir la base de datos de activos
@@ -247,6 +304,11 @@ int list_users()
     return -1;
 }
 
+
+
+/*
+*   FUNCTION
+*/
 int list_content()
 {
     //Abrir la base de datos de activos
