@@ -1,8 +1,8 @@
 void startServer();
-int registerUser(char *user);
-int connectUser(char *user, char *ip, int port);
-int disconnectUser();
-int publishFile();
-int deleteFile();
+int registerUser(char *localUser);
+int connectUser(char *localUser, char *ip, int port);
+int disconnectUser(char *ip);
+int publishFile(char *ip, char *file, char *description);
+int deleteFile(char *ip, char *file);
 int list_users();
-int list_content();
+int list_content(char *localUser);
