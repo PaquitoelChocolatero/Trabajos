@@ -8,6 +8,7 @@
 sqlite3 *registered_db, *active_db;		//Base de datos de usuarios registrados y usuarios activos
 int registered_rc, active_rc;
 char *err = 0;				//Variable de control
+char concat_sql_op[80];
 char *sql_op;   //BORRAR
 int exists = 0;
 char selected_items[42][100];   // 42/3 (campos por fichero) = 14 archivos por usuario
@@ -60,9 +61,7 @@ void startServer()
     if(exists == 0){
         //Creamos la tabla de usuarios
         sql_op = "CREATE TABLE USERS("                              \
-                 "USER           TEXT   PRIMARY KEY     NOT NULL,"  \
-                 "IP             TEXT                   NOT NULL,"  \
-                 "PORT           INT                    NOT NULL);";
+                 "USER           TEXT   PRIMARY KEY     NOT NULL);";
 
         registered_rc = sqlite3_exec(registered_db, sql_op, callback, 0, &err);
         checkError();   //Comprobar errores
@@ -126,11 +125,9 @@ int registerUser(char *user)
 {
     //Abrir la base de datos de registrados
     registered_rc = sqlite3_open("registered.db", &registered_db);
-
 	if(registered_rc) fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(registered_db));
 
     //Comprobar si el usuario existe
-    char concat_sql_op[80];
     strcpy(concat_sql_op, "SELECT * FROM USERS WHERE user='");
     strcat(concat_sql_op, user);
     strcat(concat_sql_op, "';");
@@ -143,7 +140,6 @@ int registerUser(char *user)
         strcpy(concat_sql_op, "INSERT INTO USERS VALUES('");
         strcat(concat_sql_op, user);
         strcat(concat_sql_op, "');");
-
         registered_rc = sqlite3_exec(registered_db, concat_sql_op, callback, 0, &err);
         checkError();   //Comprobar errores
     }else{
