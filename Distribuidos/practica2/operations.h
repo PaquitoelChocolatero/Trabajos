@@ -1,5 +1,5 @@
 int registerUser(char *user);
-int connectUser();
+int connectUser(char *user, char *ip, int port);
 int disconnectUser();
 int publishFile();
 int deleteFile();
