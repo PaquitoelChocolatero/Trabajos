@@ -287,7 +287,7 @@ int deleteFile()
 
 
 /*
-*   FUNCTION
+*   LIST_USERS
 */
 int list_users()
 {
@@ -295,6 +295,10 @@ int list_users()
     active_rc = sqlite3_open("active.db", &active_db);
 	if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
 
+    //Listar usuarios
+    strcpy(concat_sql_op, "SELECT * FROM USERS;");
+    active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+    checkError();   //Comprobar errores
 
 	sqlite3_close(active_db); //Cerramos la base de datos
     return -1;
@@ -303,14 +307,20 @@ int list_users()
 
 
 /*
-*   FUNCTION
+*   LIST_CONTENT USER
 */
-int list_content()
+int list_content(char *user)
 {
     //Abrir la base de datos de activos
     active_rc = sqlite3_open("active.db", &active_db);
 	if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
 
+    //Listar archivos del usuario
+    strcpy(concat_sql_op, "SELECT * FROM FILES WHERE user='");
+    strcat(concat_sql_op, user);
+    strcat(concat_sql_op, "';");
+    active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+    checkError();   //Comprobar errores
 
 	sqlite3_close(active_db); //Cerramos la base de datos
     return -1;
