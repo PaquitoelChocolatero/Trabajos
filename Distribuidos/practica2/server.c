@@ -33,7 +33,12 @@ int main(int argc, char *argv[]) {
 	//startServer();
 
 	//registerUser("test");
+
 	//connectUser("test", "128.160.46.1", 88);
+
+	//publishFile("128.160.46.1", "awesome.pdf", "Best essay in the world!");
+
+	//deleteFile("128.160.46.1", "test.txt");
 
 	//disconnectUser("128.160.46.1");
 	

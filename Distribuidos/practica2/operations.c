@@ -8,7 +8,7 @@
 sqlite3 *registered_db, *active_db;		//Base de datos de usuarios registrados y usuarios activos
 int registered_rc, active_rc;
 char *err = 0;				//Variable de control
-char concat_sql_op[80];
+char concat_sql_op[1000];
 char *sql_op;   //BORRAR
 int exists = 0;
 char selected_items[42][100];   // 42/3 (campos por fichero) = 14 archivos por usuario
@@ -242,7 +242,7 @@ int connectUser(char *user, char *ip, int port)
     //Cerramos las bases de datos
 	sqlite3_close(registered_db);
 	sqlite3_close(active_db);
-    return -1;
+    return 1;
 }
 
 
@@ -291,11 +291,13 @@ int disconnectUser(char *ip)
         strcat(concat_sql_op, "';");
         active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
         checkError();
+        exists=0;
 
     }else{
         printf("User is not connected!\n");
         return -1;
     }
+    exists=0;
     
 	sqlite3_close(active_db);
     return -1;
@@ -310,11 +312,35 @@ int publishFile(char *ip, char *file, char *description)
 {
     //Abrir la base de datos de activos
     active_rc = sqlite3_open("active.db", &active_db);
-	if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
+	if(active_rc) fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
 
+    //Comprobar si el usuario está conectado
+    strcpy(concat_sql_op, "SELECT * FROM USERS WHERE ip='");
+    strcat(concat_sql_op, ip);
+    strcat(concat_sql_op, "';");
+    active_rc = sqlite3_exec(active_db, concat_sql_op, ip2user, 0, &err);
+    checkError();
 
+    //Si el usuario está conectado
+    if(exists == 1){
+        //Insertamos el archivo
+        strcpy(concat_sql_op, "INSERT INTO FILES (USER,NAME,DESCRIPTION) VALUES('");
+        strcat(concat_sql_op, userIP);
+        strcat(concat_sql_op, "','");
+        strcat(concat_sql_op, file);
+        strcat(concat_sql_op, "','");
+        strcat(concat_sql_op, description);
+        strcat(concat_sql_op, "');");
+        active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+        checkError();
+        exists=0;
+    }else{
+        printf("User is not connected!\n");
+        return -1;
+    }
+    exists=0;
 	sqlite3_close(active_db); //Cerramos la base de datos
-    return -1;
+    return 1;
 }
 
 
@@ -328,9 +354,46 @@ int deleteFile(char *ip, char *file)
     active_rc = sqlite3_open("active.db", &active_db);
 	if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
 
+    //Comprobar si el usuario está conectado
+    strcpy(concat_sql_op, "SELECT * FROM USERS WHERE ip='");
+    strcat(concat_sql_op, ip);
+    strcat(concat_sql_op, "';");
+    active_rc = sqlite3_exec(active_db, concat_sql_op, ip2user, 0, &err);
+    checkError();
 
+    //Si el usuario está conectado
+    if(exists == 1){
+        //Comprobar si el archivo existe
+        strcpy(concat_sql_op, "SELECT * FROM FILES WHERE user='");
+        strcat(concat_sql_op, userIP);
+        strcat(concat_sql_op, "' AND name='");
+        strcat(concat_sql_op, file);
+        strcat(concat_sql_op, "';");
+        active_rc = sqlite3_exec(active_db, concat_sql_op, ip2user, 0, &err);
+        checkError();
+
+        if(exists == 1){
+            //Borramos el archivo
+            strcpy(concat_sql_op, "DELETE FROM FILES WHERE user='");
+            strcat(concat_sql_op, userIP);
+            strcat(concat_sql_op, "' AND name='");
+            strcat(concat_sql_op, file);
+            strcat(concat_sql_op, "';");
+            active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+            checkError();
+            exists=0;
+        }else{
+            printf("File doesn't exist!\n");
+            return -1;
+        }
+        exists=0;
+    }else{
+        printf("User is not connected!\n");
+        return -1;
+    }
+    exists=0;
 	sqlite3_close(active_db); //Cerramos la base de datos
-    return -1;
+    return 1;
 }
 
 
@@ -350,7 +413,7 @@ int list_users()
     checkError();   //Comprobar errores
 
 	sqlite3_close(active_db); //Cerramos la base de datos
-    return -1;
+    return 1;
 }
 
 
@@ -372,5 +435,5 @@ int list_content(char *user)
     checkError();   //Comprobar errores
 
 	sqlite3_close(active_db); //Cerramos la base de datos
-    return -1;
+    return 1;
 }
