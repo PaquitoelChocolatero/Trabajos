@@ -9,9 +9,9 @@ sqlite3 *registered_db, *active_db;		//Base de datos de usuarios registrados y u
 int registered_rc, active_rc;
 char *err = 0;				//Variable de control
 char concat_sql_op[1000];
-char *sql_op;   //BORRAR
+char *sql_op;
 int exists = 0;
-char selected_items[42][100];   // 42/3 (campos por fichero) = 14 archivos por usuario
+char selected_items[42][1000];   // 42/3 (campos por fichero) = 14 archivos por usuario
 char *userIP; //User extracted from ip
 
 
@@ -86,7 +86,8 @@ void startServer()
                  "USER           TEXT   NOT NULL,"  \
                  "NAME           TEXT   NOT NULL,"  \
                  "DESCRIPTION    TEXT   NOT NULL,"  \
-                 "PRIMARY KEY(USER, NAME));";
+                 "PRIMARY KEY(USER, NAME),"         \
+                 "FOREIGN KEY(USER) REFERENCES USERS(USER) ON DELETE CASCADE);";
 
         registered_rc = sqlite3_exec(registered_db, sql_op, callback, 0, &err);
         checkError();
@@ -116,7 +117,8 @@ void startServer()
                  "USER           TEXT   NOT NULL,"  \
                  "NAME           TEXT   NOT NULL,"  \
                  "DESCRIPTION    TEXT   NOT NULL,"  \
-                 "PRIMARY KEY(USER, NAME));";
+                 "PRIMARY KEY(USER, NAME),"         \
+                 "FOREIGN KEY(USER) REFERENCES USERS(USER) ON DELETE CASCADE);";
 
         active_rc = sqlite3_exec(active_db, sql_op, callback, 0, &err);
         checkError();
@@ -193,19 +195,12 @@ int unregisterUser(char *user)
         //Si el usuario está conectado
         if(exists == 1){
 
-            //Borramos los datos de active
-            strcpy(concat_sql_op, "DELETE FROM FILES WHERE user='");
-            strcat(concat_sql_op, userIP);
-            strcat(concat_sql_op, "';");
-            active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
-            checkError();
-
-            //Borramos al usuario de active
-            strcpy(concat_sql_op, "DELETE FROM USERS WHERE user='");
-            strcat(concat_sql_op, userIP);
-            strcat(concat_sql_op, "';");
-            active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
-            checkError();
+            // //Borramos al usuario de active
+            // strcpy(concat_sql_op, "DELETE FROM USERS WHERE user='");
+            // strcat(concat_sql_op, userIP);
+            // strcat(concat_sql_op, "';");
+            // active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+            // checkError();
 
             //Borramos al usuario de registered
             strcpy(concat_sql_op, "DELETE FROM registered.USERS WHERE user='");
@@ -329,13 +324,6 @@ int disconnectUser(char *ip)
 
         //Volcamos los datos del usuario en la tabla FICHEROS de los usuarios activos
         strcpy(concat_sql_op, "INSERT INTO registered.FILES SELECT * FROM main.FILES WHERE user='");
-        strcat(concat_sql_op, userIP);
-        strcat(concat_sql_op, "';");
-        active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
-        checkError();
-
-        //Borramos los datos de active
-        strcpy(concat_sql_op, "DELETE FROM FILES WHERE user='");
         strcat(concat_sql_op, userIP);
         strcat(concat_sql_op, "';");
         active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
