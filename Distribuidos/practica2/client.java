@@ -1,10 +1,11 @@
 import java.io.*;
 import java.net.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+//import java.nio.file.Files;
+//import java.nio.file.Path;
+//import java.nio.file.Paths;
 import java.util.ArrayList;
 import gnu.getopt.Getopt;
+
 
 class serverthread extends Thread{
 	private ServerSocket sc;
@@ -34,9 +35,12 @@ class serverthread extends Thread{
 					DataInputStream inputfile = new DataInputStream(inp);
 
 					copy.copyFile(inputfile, os);
-					inp.close();
+					inputfile.close();
 				}
-
+				else{
+					escribir(os, "1");
+				}
+				sh.close();	
 			}
 		}
 		catch(Exception e){
@@ -44,7 +48,55 @@ class serverthread extends Thread{
 			e.printStackTrace();
 		}
 	}
+	public void Stop(){
+		try{
+			sc.close();
+		}
+		catch(Exception e){
+			System.err.println("excepcion "+ e.toString());
+			e.printStackTrace();
+		}
+	}
+
+	public static String leer(DataInputStream in){
+    	byte[] ch = new byte[1];
+    	String output = new String();
+    	try {
+        	do {
+            	ch[0] = in.readByte();
+            	if (ch[0] != '\0'){
+               		String d = new String(ch);
+               		output = output + d;
+            	}
+         	}while(ch[0] != '\0');
+      	}
+      	catch (Exception e) {
+        	System.err.println("excepcion " + e.toString() );
+      	}
+      	return output;
+   	}
+	public static void escribir(DataOutputStream os, String salida){
+		try{
+			os.writeBytes(salida);
+			os.write('\0');
+		}
+		catch(Exception e){
+			System.err.println("excepcion " + e.toString());
+		}
+	}
 	
+}
+
+class userInfo{
+	String username;
+	String ipadress;
+	int port;
+
+	public userInfo (String user, String ip, int pt){
+		username = user;
+		ipadress = ip;
+		port = pt;
+	}
 }
 
 class client {
@@ -70,7 +122,7 @@ class client {
 	public static void escribir(DataOutputStream os, String salida){
 		try{
 			os.writeBytes(salida);
-			os.write("\0");
+			os.write('\0');
 		}
 		catch(Exception e){
 			System.err.println("excepcion " + e.toString());
@@ -81,7 +133,9 @@ class client {
 	
 	private static String _server   = null;
 	private static int _port = -1;
-		
+	private static serverthread _serverthread = null;
+	private static String _connecteduser = "";
+	private static ArrayList<userInfo> _connectedusers;
 	
 	/********************* METHODS ********************/
 	
@@ -94,8 +148,9 @@ class client {
 	{
 		// Write your code here
 		System.out.println("REGISTER " + user);
+		int result = 0;
 		try{
-			socket sc = new socket(_server, _port);
+			Socket sc = new Socket(_server, _port);
 			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
 			DataInputStream in = new DataInputStream(sc.getInputStream());
 
@@ -103,7 +158,7 @@ class client {
 			escribir(os, user);
 
 			String respuesta = leer(in);
-			int result = Integer.parseInt(respuesta);
+			result = Integer.parseInt(respuesta);
 
 			sc.close();
 		}
@@ -111,10 +166,10 @@ class client {
 			System.err.println("excepcion " + e.toString());
 			result = 2;
 		}
-		if(result = 0){
+		if(result == 0){
 			System.out.println("c> REGISTER OK");
 		}
-		else if(result = 1){
+		else if(result == 1){
 			System.out.println("c> USERNAME IN USE");
 		}
 		else {
@@ -133,8 +188,9 @@ class client {
 	{
 		// Write your code here
 		System.out.println("UNREGISTER " + user);
+		int result=0;
 		try{
-			socket sc = new socket(_server, _port);
+			Socket sc = new Socket(_server, _port);
 			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
 			DataInputStream in = new DataInputStream(sc.getInputStream());
 
@@ -142,7 +198,7 @@ class client {
 			escribir(os, user);
 
 			String respuesta = leer(in);
-			int result = Integer.parseInt(respuesta);
+			result = Integer.parseInt(respuesta);
 			
 			sc.close();
 			
@@ -151,10 +207,10 @@ class client {
 			System.err.println("excepcion " + e.toString());
 			result = 2;
 		}
-		if(result = 0){
+		if(result == 0){
 			System.out.println("c> UNREGISTER OK");
 		}
-		else if(result = 1){
+		else if(result == 1){
 			System.out.println("c> USER DOES NOT EXIST");
 		}
 		else {
@@ -172,8 +228,9 @@ class client {
 	{
 		// Write your code here
 		System.out.println("CONNECT " + user);
+		int result=0;
 		try{
-			socket sc = new socket(_server, _port);
+			Socket sc = new Socket(_server, _port);
 			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
 			DataInputStream in = new DataInputStream(sc.getInputStream());
 
@@ -181,24 +238,30 @@ class client {
 			int port = serverclient.getLocalPort();
 			escribir(os, "CONNECT");
 			escribir(os, user);
-			escribir(os, port.toString());
+			escribir(os, Integer.toString(port));
 
 			String respuesta = leer(in);
-			int result = Integer.parseInt(respuesta);
+			result = Integer.parseInt(respuesta);
 			
 			sc.close();
+			if (result==0){
+				_serverthread = new serverthread(serverclient);
+				_serverthread.start();
+				_connecteduser = user;
+			}
+
 		}
 		catch(Exception e){
 			System.err.println("excepcion " + e.toString());
 			result = 3;
 		}
-		if(result = 0){
+		if(result == 0){
 			System.out.println("c> CONNECT OK");
 		}
-		else if(result = 1){
+		else if(result == 1){
 			System.out.println("c> CONNECT FAIL, USER DOES NOT EXIST");
 		}
-		else if(result = 2){
+		else if(result == 2){
 			System.out.println("c> USER ALREADY CONNECTED");
 		}
 		else {
@@ -214,22 +277,102 @@ class client {
 	 */
 	static int disconnect(String user) 
 	{
-		// Write your code here
 		System.out.println("DISCONNECT " + user);
-		return 0;
-	}
+		int result=0;
+		try{
+			if(!user.equals(_connecteduser)){
+				result = 2;
+			}
+			else{
+				Socket sc = new Socket(_server, _port);
+				DataOutputStream os = new DataOutputStream(sc.getOutputStream());
+				DataInputStream in = new DataInputStream(sc.getInputStream());
 
-	 /**
-	 * @param file_name    - file name
-	 * @param description - descrition
-	 * 
-	 * @return ERROR CODE
-	 */
+				escribir(os, "DISCONNECT");
+				escribir(os, user);
+
+				String respuesta = leer(in);
+				result = Integer.parseInt(respuesta);
+			
+				sc.close();
+				_connectedusers.clear();
+			}
+
+		}
+		catch(Exception e){
+			System.err.println("excepcion " + e.toString());
+			_connectedusers.clear();
+			result = 3;
+			if(_serverthread == null){
+				_serverthread.Stop();
+				_serverthread = null;
+				_connecteduser = "";
+			}
+		}
+		if(result == 0){
+			_serverthread.Stop();
+			_serverthread = null;
+			_connecteduser = "";
+			System.out.println("c> DISCONNECT OK");
+		}
+		else if(result == 1){
+			System.out.println("c> DOSCONNECT FAIL / USER DOES NOT EXIST");
+		}
+		else if(result == 2){
+			System.out.println("c> DISCONNECT FAIL / USER NOT CONNECTED");
+		}
+		else {
+			System.out.println("c> DISCONNECT FAIL");
+		}
+		return result;
+	}
 	static int publish(String file_name, String description) 
 	{
-		// Write your code here
 		System.out.println("PUBLISH " + file_name + " " + description);
-		return 0;
+		int result=0;
+		try{
+			if(_serverthread == null){
+				result = 2;
+			}
+			else{
+				Socket sc = new Socket(_server, _port);
+				DataOutputStream os = new DataOutputStream(sc.getOutputStream());
+				DataInputStream in = new DataInputStream(sc.getInputStream());
+
+				escribir(os, "PUBLISH");
+				escribir(os, _connecteduser);
+
+				escribir(os, file_name);
+				escribir(os, description);
+
+				String respuesta = leer(in);
+				result = Integer.parseInt(respuesta);
+
+				sc.close();
+			}
+			
+		}
+		catch(Exception e){
+			System.err.println("excepcion " + e.toString());
+			result = 4;
+		}
+		if(result == 0){
+			System.out.println("c> PUBLISH OK");
+		}
+		else if(result == 1){
+			System.out.println("c> PUBLISH FAIL, USER DOES NOT EXIST");
+		}
+		else if(result == 2){
+			System.out.println("c> PUBLISH FAIL, USER NOT CONNECTED");
+		}
+		else if(result == 3){
+			System.out.println("c> PUBLISH FAIL, CONTENT ALREADY PUBLISHED");
+		}
+		else{
+			System.out.println("c> PUBLISH FAIL");
+		}
+		
+		return result;
 	}
 
 	 /**
@@ -239,9 +382,50 @@ class client {
 	 */
 	static int delete(String file_name)
 	{
-		// Write your code here
 		System.out.println("DELETE " + file_name);
-		return 0;
+		int result = 0;
+		try{
+			if(_serverthread == null){
+				result = 2;
+			}
+			else{
+				Socket sc = new Socket(_server, _port);
+				DataOutputStream os = new DataOutputStream(sc.getOutputStream());
+				DataInputStream in = new DataInputStream(sc.getInputStream());
+
+				escribir(os, "DELETE");
+				escribir(os, _connecteduser);
+
+				escribir(os, file_name);
+
+				String respuesta = leer(in);
+				result = Integer.parseInt(respuesta);
+
+				sc.close();
+			}
+			
+		}
+		catch(Exception e){
+			System.err.println("excepcion " + e.toString());
+			result = 4;
+		}
+		if(result == 0){
+			System.out.println("c> DELETE OK");
+		}
+		else if(result == 1){
+			System.out.println("c> DELETE FAIL, USER DOES NOT EXIST");
+		}
+		else if(result == 2){
+			System.out.println("c> DELETE FAIL, USER NOT CONNECTED");
+		}
+		else if(result == 3){
+			System.out.println("c> DELETE FAIL, CONTENT NOT PUBLISHED");
+		}
+		else{
+			System.out.println("c> DELETE FAIL");
+		}
+		
+		return result;
 	}
 
 	 /**
@@ -278,7 +462,67 @@ class client {
 	{
 		// Write your code here
 		System.out.println("GET_FILE " + user_name + " "  + remote_file_name + " " + local_file_name);
-		return 0;
+		int result = 0;
+		try{
+			if(_connectedusers == null|| _connectedusers.isEmpty()){
+				result = 2;
+			}
+			else{
+				int i = 0;
+				while(i < _connectedusers.size()){
+					if(_connectedusers.get(i).username.equals(user_name)){
+						break;
+					}
+					else{
+						i++;
+					}
+				}
+
+				if(_connectedusers.size() == i){
+					System.out.println("c> DELETE FAIL, USER NOT CONNECTED");
+					return 2;
+				}
+				String ip = _connectedusers.get(i).ipadress;
+				int puerto = _connectedusers.get(i).port;
+
+				Socket sc = new Socket(ip, puerto);
+				DataOutputStream os = new DataOutputStream(sc.getOutputStream());
+				DataInputStream in = new DataInputStream(sc.getInputStream());
+
+				escribir(os, "GET_FILE");
+				escribir(os, remote_file_name);
+
+				Thread.sleep(500);
+
+				String respuesta = leer(in);
+				result = Integer.parseInt(respuesta);
+				
+				if(result == 0){
+					Thread.sleep(500);
+					OutputStream out = new FileOutputStream(local_file_name);
+					DataOutputStream outputfile = new DataOutputStream(out);
+					copy.copyFile(in,outputfile);
+					outputfile.close();
+				}
+				sc.close();
+			}
+			
+		}
+		catch(Exception e){
+			System.err.println("excepcion " + e.toString());
+			result = 2;
+		}
+		if(result == 0){
+			System.out.println("c> GET_FILE OK");
+		}
+		else if(result == 1){
+			System.out.println("c> GET_FILE FAIL, FILE NOT EXIST");
+		}
+		else{
+			System.out.println("c> GET_FILE FAIL");
+		}
+		
+		return result;
 	}
 
 	

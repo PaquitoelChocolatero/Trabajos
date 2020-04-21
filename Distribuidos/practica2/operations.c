@@ -158,7 +158,7 @@ int registerUser(char *user)
     }else{
         exists = 0;
         printf("USERNAME IN USE\n");
-        return -1;
+        return -1; 
     }
     printf("REGISTER OK\n");
     sqlite3_close(registered_db); //Cerramos la base de datos
