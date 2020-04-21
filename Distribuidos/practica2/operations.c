@@ -87,7 +87,10 @@ void startServer()
                  "NAME           TEXT   NOT NULL,"  \
                  "DESCRIPTION    TEXT   NOT NULL,"  \
                  "PRIMARY KEY(USER, NAME),"         \
-                 "FOREIGN KEY(USER) REFERENCES USERS(USER) ON DELETE CASCADE);";
+                 "CONSTRAINT fk_user"               \
+                 "FOREIGN KEY(USER) "               \
+                 "REFERENCES USERS(USER) "          \
+                 "ON DELETE CASCADE);";
 
         registered_rc = sqlite3_exec(registered_db, sql_op, callback, 0, &err);
         checkError();
@@ -118,7 +121,10 @@ void startServer()
                  "NAME           TEXT   NOT NULL,"  \
                  "DESCRIPTION    TEXT   NOT NULL,"  \
                  "PRIMARY KEY(USER, NAME),"         \
-                 "FOREIGN KEY(USER) REFERENCES USERS(USER) ON DELETE CASCADE);";
+                 "CONSTRAINT fk_user"               \
+                 "FOREIGN KEY(USER) "               \
+                 "REFERENCES USERS(USER) "          \
+                 "ON DELETE CASCADE);";
 
         active_rc = sqlite3_exec(active_db, sql_op, callback, 0, &err);
         checkError();
@@ -195,16 +201,21 @@ int unregisterUser(char *user)
         //Si el usuario está conectado
         if(exists == 1){
 
-            // //Borramos al usuario de active
-            // strcpy(concat_sql_op, "DELETE FROM USERS WHERE user='");
-            // strcat(concat_sql_op, userIP);
-            // strcat(concat_sql_op, "';");
-            // active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
-            // checkError();
+            //Activamos las claves ajenas
+            sql_op = "PRAGMA foreign_keys=on;";
+            active_rc = sqlite3_exec(active_db, sql_op, elementExists, 0, &err);
+            checkError();
 
-            //Borramos al usuario de registered
+            //Borramos al usuario de active con todos sus ficheros
+            strcpy(concat_sql_op, "DELETE FROM USERS WHERE user='");
+            strcat(concat_sql_op, user);
+            strcat(concat_sql_op, "';");
+            active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+            checkError();
+
+            //Borramos al usuario de registered con todos sus ficheros
             strcpy(concat_sql_op, "DELETE FROM registered.USERS WHERE user='");
-            strcat(concat_sql_op, userIP);
+            strcat(concat_sql_op, user);
             strcat(concat_sql_op, "';");
             active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
             checkError();
@@ -320,6 +331,11 @@ int disconnectUser(char *ip)
         //Linkeamos la base de usuarios activos a la de registrados
         sql_op = "ATTACH 'registered.db' AS registered;";
         active_rc = sqlite3_exec(active_db, sql_op, callback, 0, &err);
+        checkError();
+
+        //Activamos las claves ajenas
+        sql_op = "PRAGMA foreign_keys=on;";
+        active_rc = sqlite3_exec(active_db, sql_op, elementExists, 0, &err);
         checkError();
 
         //Volcamos los datos del usuario en la tabla FICHEROS de los usuarios activos
