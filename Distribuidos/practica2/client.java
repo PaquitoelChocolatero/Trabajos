@@ -340,7 +340,6 @@ class client {
 				DataInputStream in = new DataInputStream(sc.getInputStream());
 
 				escribir(os, "PUBLISH");
-				escribir(os, _connecteduser);
 
 				escribir(os, file_name);
 				escribir(os, description);
