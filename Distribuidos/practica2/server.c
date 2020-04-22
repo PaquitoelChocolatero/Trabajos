@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 
 	// printf("Port: %s\n", port);
 
-	//startServer();
+	startServer();
 
 	//registerUser("test");
 	//Antes de hacer el conect insertar un archivo en registered.db -> INSERT INSERT INTO FILES (USER,NAME, DESCRIPTION) VALUES('test', 'test.mp3', 'Best song ever!');
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 
 	//disconnectUser("128.160.46.1");
 
-	unregisterUser("test");
+	//unregisterUser("test");
 	
 	return 0;
 }
