@@ -12,7 +12,9 @@ char concat_sql_op[1000];
 char *sql_op;
 int exists = 0;
 char selected_items[42][1000];   // 42/3 (campos por fichero) = 14 archivos por usuario
+char **active_users;   // Puede haber 1000 usuarios conectados de 100 caracteres máximo
 char *userIP; //User extracted from ip
+int results=0;
 
 
 
@@ -25,6 +27,13 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
         }
    }
    printf("\n");
+   return 0;
+}
+
+static int activeUsers(void *NotUsed, int argc, char **argv, char **azColName) {
+   char user[4] = "USER";
+   results ++;
+   for(int i = 0; i<argc; i++) if(strcmp(azColName[i],user)==0) strcpy(active_users[i], argv[i]);
    return 0;
 }
 
@@ -131,6 +140,62 @@ void startServer()
 
 
 /*
+*   EMPTY ACTIVE DATABASE
+*/
+void stopServer()
+{
+    //Abrir la base de datos de activos
+    active_rc = sqlite3_open("active.db", &active_db);
+	if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
+
+    //Linkeamos la base de usuarios activos a la de registrados
+    sql_op = "ATTACH 'registered.db' AS registered;";
+    active_rc = sqlite3_exec(active_db, sql_op, callback, 0, &err);
+    checkError();
+
+    //Activamos las claves ajenas
+    sql_op = "PRAGMA foreign_keys=on;";
+    active_rc = sqlite3_exec(active_db, sql_op, elementExists, 0, &err);
+    checkError();
+
+    //Extraer todos los usuarios activos
+    sql_op = "SELECT * FROM USERS;";
+    active_rc = sqlite3_exec(active_db, sql_op, activeUsers, 0, &err);
+    checkError();
+
+    
+    for(int i = 0; i<sizeof(active_users); i++)
+    {
+        printf("%ld\n", sizeof(active_users));
+        printf("%s\n", active_users[i]);
+    }
+    
+
+    // int i = 0;
+    // while(strcmp(active_users[i], "")!=0){
+    //     strcpy(concat_sql_op, "INSERT INTO registered.FILES SELECT * FROM main.FILES WHERE user='");
+    //     strcat(concat_sql_op, active_users[i]);
+    //     strcat(concat_sql_op, "';");
+    //     active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+    //     checkError();
+
+    //     //Borramos al usuario de active con todos sus ficheros
+    //     strcpy(concat_sql_op, "DELETE FROM USERS WHERE user='");
+    //     strcat(concat_sql_op, active_users[i]);
+    //     strcat(concat_sql_op, "';");
+    //     active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+    //     checkError();
+
+    //     i++;
+    // }
+
+    printf("CLOSING SERVER...\n");
+	sqlite3_close(active_db);
+}
+
+
+
+/*
 *   REGISTER USER
 */
 int registerUser(char *user)
@@ -177,6 +242,11 @@ int unregisterUser(char *user)
     //Linkeamos la base de usuarios activos a la de registrados
     sql_op = "ATTACH 'registered.db' AS registered;";
     active_rc = sqlite3_exec(active_db, sql_op, callback, 0, &err);
+    checkError();
+
+    //Activamos las claves ajenas
+    sql_op = "PRAGMA foreign_keys=on;";
+    active_rc = sqlite3_exec(active_db, sql_op, elementExists, 0, &err);
     checkError();
 
     //Comprobar si el usuario existe
@@ -246,7 +316,7 @@ int connectUser(char *user, char *ip, int port)
         
         //Comprobar si el usuario está conectado
         strcpy(concat_sql_op, "SELECT * FROM active.USERS WHERE user='");
-        strcat(concat_sql_op, "test");
+        strcat(concat_sql_op, user);
         strcat(concat_sql_op, "';");
         registered_rc = sqlite3_exec(registered_db, concat_sql_op, elementExists, 0, &err);
         checkError();
@@ -255,6 +325,7 @@ int connectUser(char *user, char *ip, int port)
         if(exists == 0){
             char str_port[3];
             sprintf(str_port,"%d",port);
+
             //Concatenamos la instrucción con el usuario deseado
             strcpy(concat_sql_op, "INSERT INTO active.USERS (USER,IP,PORT) VALUES('");
             strcat(concat_sql_op, user);

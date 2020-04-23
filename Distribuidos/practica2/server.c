@@ -10,6 +10,7 @@ void print_usage() {
 }
 
 int main(int argc, char *argv[]) {
+
 	// int  option = 0;
 	// char port[256]= "";
 
@@ -29,21 +30,32 @@ int main(int argc, char *argv[]) {
 	// }
 
 	// printf("Port: %s\n", port);
-
 	startServer();
+	
+	stopServer();
 
-	//registerUser("test");
+
+	// registerUser("test");
+	// registerUser("test2");
+	// registerUser("test3");
 	//Antes de hacer el conect insertar un archivo en registered.db -> INSERT INSERT INTO FILES (USER,NAME, DESCRIPTION) VALUES('test', 'test.mp3', 'Best song ever!');
 
-	//connectUser("test", "128.160.46.1", 88);
+	// connectUser("test", "128.160.46.1", 88);
+	// connectUser("test2", "128.160.46.2", 89);
+	// connectUser("test3", "128.160.46.3", 45);
 
-	//publishFile("128.160.46.1", "test.txt", "This is a test");
+	// publishFile("128.160.46.1", "test.txt", "This is a test");
+	// publishFile("128.160.46.1", "paquito.docs", "This is a test");
+	// publishFile("128.160.46.2", "saray.raw", "un bebé");
+	// publishFile("128.160.46.3", "alex.py", "yo mismo");
+	// publishFile("128.160.46.3", "test.c", "This is a test");
 
 	//deleteFile("128.160.46.1", "test.txt");
 
 	//disconnectUser("128.160.46.1");
 
-	//unregisterUser("test");
+	//unregisterUser("test2");
+	//unregisterUser("test3");
 	
 	return 0;
 }

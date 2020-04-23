@@ -1,4 +1,5 @@
 void startServer();
+void stopServer();
 int registerUser(char *localUser);
 int unregisterUser(char *localUser);
 int connectUser(char *localUser, char *ip, int port);
