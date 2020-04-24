@@ -12,7 +12,7 @@ char concat_sql_op[1000];
 char *sql_op;
 int exists = 0;
 char selected_items[42][1000];   // 42/3 (campos por fichero) = 14 archivos por usuario
-char **active_users;   // Puede haber 1000 usuarios conectados de 100 caracteres máximo
+char *active_users;
 char *userIP; //User extracted from ip
 int results=0;
 
@@ -32,8 +32,7 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
 
 static int activeUsers(void *NotUsed, int argc, char **argv, char **azColName) {
    char user[4] = "USER";
-   results ++;
-   for(int i = 0; i<argc; i++) if(strcmp(azColName[i],user)==0) strcpy(active_users[i], argv[i]);
+   strcpy(active_users, argv[0]);
    return 0;
 }
 
@@ -171,23 +170,23 @@ void stopServer()
     }
     
 
-    // int i = 0;
-    // while(strcmp(active_users[i], "")!=0){
-    //     strcpy(concat_sql_op, "INSERT INTO registered.FILES SELECT * FROM main.FILES WHERE user='");
-    //     strcat(concat_sql_op, active_users[i]);
-    //     strcat(concat_sql_op, "';");
-    //     active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
-    //     checkError();
+    int i = 0;
+    while(strcmp(active_users[i], "")!=0){
+        strcpy(concat_sql_op, "INSERT INTO registered.FILES SELECT * FROM main.FILES WHERE user='");
+        strcat(concat_sql_op, active_users[i]);
+        strcat(concat_sql_op, "';");
+        active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+        checkError();
 
-    //     //Borramos al usuario de active con todos sus ficheros
-    //     strcpy(concat_sql_op, "DELETE FROM USERS WHERE user='");
-    //     strcat(concat_sql_op, active_users[i]);
-    //     strcat(concat_sql_op, "';");
-    //     active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
-    //     checkError();
+        //Borramos al usuario de active con todos sus ficheros
+        strcpy(concat_sql_op, "DELETE FROM USERS WHERE user='");
+        strcat(concat_sql_op, active_users[i]);
+        strcat(concat_sql_op, "';");
+        active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+        checkError();
 
-    //     i++;
-    // }
+        i++;
+    }
 
     printf("CLOSING SERVER...\n");
 	sqlite3_close(active_db);
