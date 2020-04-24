@@ -24,6 +24,7 @@ pthread_cond_t no_lleno;
 pthread_cond_t no_vacio;
 pthread_mutex_t mfin;
 pthread_t thid[MAX_THREADS];
+pthread_attr_t t_attr; //Atributos de los hilos
 
 const int MAX_LEN = 1024;
 int fin = false;    //Variable para controlar el final de los hilos
@@ -38,38 +39,39 @@ void print_usage() {
 
 int main(int argc, char *argv[]) {
 
-	// int sd;
-	// int newsd;
-	// int val;
-	// int err;
-	// char buff [MAX_LEN];
-	// struct sockaddr_in server_addr, client_addr;
+	int sd;
+	int newsd;
+	int val;
+	int err;
+	char buff [MAX_LEN];
+	struct sockaddr_in server_addr, client_addr;
 
-	// int  option = 0;
-	// char port[256]= "";
+	int  option = 0;
+	char port[256]= "";
 
-	// while ((option = getopt(argc, argv,"p:")) != -1) {
-	// 	switch (option) {
-	// 	    	case 'p' : 
-	// 				strcpy(port, optarg);
-	// 	    		break;
-	// 	    	default: 
-	// 				print_usage(); 
-	// 	    		exit(-1);
-	// 	    }
-	// }
-	// if (strcmp(port,"")==0){
-	// 	print_usage(); 
-	// 	exit(-1);
-	// }
+	while ((option = getopt(argc, argv,"p:")) != -1) {
+		switch (option) {
+			case 'p' : 
+				strcpy(port, optarg);
+		    	break;
+		    default: 
+				print_usage(); 
+		    	exit(-1);
+		}
+	}
+	if (strcmp(port,"")==0){
+		print_usage(); 
+		exit(-1);
+	}
 
-	// printf("Port: %s\n", port);
+	printf("Port: %s\n", port);
 
+	//Iniciamos las bases de datos
 	startServer();
 
-	// //Capturamos Ctrl+C para añadir funcionalidades
-    // printf("Para cerrar el servidor pulse: Ctrl+C\n");
-    // signal(SIGINT, cerrarServidor);
+	//Capturamos Ctrl+C para añadir funcionalidades
+    printf("Para cerrar el servidor pulse: Ctrl+C\n");
+    signal(SIGINT, cerrarServidor);
 
     // //Creación del socket
     // sd =  socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -84,8 +86,6 @@ int main(int argc, char *argv[]) {
     //     perror("Error en option");
     //     exit(1);
     // }
-
-    // pthread_attr_t t_attr; //Atributos de los hilos
     
     // int pos = 0;    //Posicion en el buffer
 

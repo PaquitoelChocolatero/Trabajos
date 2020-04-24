@@ -150,26 +150,14 @@ void stopServer()
     //Extraer todos los usuarios activos
     sql_op = "SELECT * FROM USERS;";
     active_rc = sqlite3_prepare_v2(active_db, sql_op, -1, &res, 0);
-    checkError();
+    checkError();    
 
-    // content = (char **) calloc(0, sizeof(char));
-    
-    // active_rc = sqlite3_step(res);
-    
-    // int i = 0;
-    // while(active_rc == SQLITE_ROW) {
-    //     content = (char **) realloc(*(&content + 100*i), sizeof(char)*100);    //Cada usuario puede tener 100 caracteres
-    //     printf("%s\n", sqlite3_column_text(res, 0));
-    //     active_rc = sqlite3_step(res);
-    //     i++;
-    // }
-    
-
+    //Vamos iterando en las respuestas de la bbdd
     int i = 0;
     active_rc = sqlite3_step(res);
     while(active_rc == SQLITE_ROW){
         strcpy(concat_sql_op, "INSERT INTO registered.FILES SELECT * FROM main.FILES WHERE user='");
-        strcat(concat_sql_op, (char *)sqlite3_column_text(res, 0));
+        strcat(concat_sql_op, (char *)sqlite3_column_text(res, 0));     //Utilizamos solo la columna user
         strcat(concat_sql_op, "';");
         active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
         checkError();
@@ -560,8 +548,10 @@ int list_users()
     
     active_rc = sqlite3_step(res);
     
+    //Iteramos las respuestas de la bbdd
     int i = 0;
     while(active_rc == SQLITE_ROW) {
+        //Añadimos espacio en el array para la nueva posición
         content = (char **) realloc(content, (results+1) * sizeof(*content));
         ++results;
         content[results-1] = malloc(254 * sizeof(char*));
