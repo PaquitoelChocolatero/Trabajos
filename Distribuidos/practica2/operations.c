@@ -13,7 +13,6 @@ char *sql_op;
 int exists = 0;
 char ** content;
 int results = 1;
-char *userIP; //User extracted from ip
 sqlite3_stmt *res;
 
 
@@ -28,17 +27,6 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
 
 int elementExists(void *NotUsed, int argc, char **argv, char **azColName) {
     exists = 1;
-    return 0;
-}
-
-int ip2user(void *NotUsed, int argc, char **argv, char **azColName) {
-    if(argc>0){
-        exists = 1;
-        size_t length = strlen(argv[0])+1;
-        userIP = malloc(length);
-        memcpy(userIP, argv[0], length);
-    }
-    else exists = 0;
     return 0;
 }
 
@@ -393,14 +381,14 @@ int disconnectUser(char *user)
 
             //Volcamos los datos del usuario en la tabla FICHEROS de los usuarios activos
             strcpy(concat_sql_op, "INSERT INTO registered.FILES SELECT * FROM main.FILES WHERE user='");
-            strcat(concat_sql_op, userIP);
+            strcat(concat_sql_op, user);
             strcat(concat_sql_op, "';");
             active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
             checkError();
 
             //Borramos al usuario de active
             strcpy(concat_sql_op, "DELETE FROM USERS WHERE user='");
-            strcat(concat_sql_op, userIP);
+            strcat(concat_sql_op, user);
             strcat(concat_sql_op, "';");
             active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
             checkError();
@@ -420,19 +408,19 @@ int disconnectUser(char *user)
 
 
 /*
-*   PUBLISH FILE DESCRIPTION
+*   PUBLISH USER FILE DESCRIPTION
 */
-int publishFile(char *ip, char *file, char *description)
+int publishFile(char *user, char *file, char *description)
 {
     //Abrir la base de datos de activos
     active_rc = sqlite3_open("active.db", &active_db);
 	if(active_rc) fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
 
     //Comprobar si el usuario está conectado
-    strcpy(concat_sql_op, "SELECT * FROM USERS WHERE ip='");
-    strcat(concat_sql_op, ip);
+    strcpy(concat_sql_op, "SELECT * FROM USERS WHERE user='");
+    strcat(concat_sql_op, user);
     strcat(concat_sql_op, "';");
-    active_rc = sqlite3_exec(active_db, concat_sql_op, ip2user, 0, &err);
+    active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
     checkError();
 
     //Si el usuario está conectado
@@ -441,7 +429,7 @@ int publishFile(char *ip, char *file, char *description)
 
         //Comprobar si el archivo ya existe
         strcpy(concat_sql_op, "SELECT * FROM FILES WHERE user='");
-        strcat(concat_sql_op, userIP);
+        strcat(concat_sql_op, user);
         strcat(concat_sql_op, "' AND name=';");
         strcat(concat_sql_op, file);
         strcat(concat_sql_op, "';");
@@ -451,7 +439,7 @@ int publishFile(char *ip, char *file, char *description)
         if(exists == 0){
             //Insertamos el archivo
             strcpy(concat_sql_op, "INSERT INTO FILES (USER,NAME,DESCRIPTION) VALUES('");
-            strcat(concat_sql_op, userIP);
+            strcat(concat_sql_op, user);
             strcat(concat_sql_op, "','");
             strcat(concat_sql_op, file);
             strcat(concat_sql_op, "','");
@@ -478,17 +466,17 @@ int publishFile(char *ip, char *file, char *description)
 /*
 *   DELETE FILE
 */
-int deleteFile(char *ip, char *file)
+int deleteFile(char *user, char *file)
 {
     //Abrir la base de datos de activos
     active_rc = sqlite3_open("active.db", &active_db);
 	if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
 
     //Comprobar si el usuario está conectado
-    strcpy(concat_sql_op, "SELECT * FROM USERS WHERE ip='");
-    strcat(concat_sql_op, ip);
+    strcpy(concat_sql_op, "SELECT * FROM USERS WHERE user='");
+    strcat(concat_sql_op, user);
     strcat(concat_sql_op, "';");
-    active_rc = sqlite3_exec(active_db, concat_sql_op, ip2user, 0, &err);
+    active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
     checkError();
 
     //Si el usuario está conectado
@@ -497,11 +485,11 @@ int deleteFile(char *ip, char *file)
 
         //Comprobar si el archivo existe
         strcpy(concat_sql_op, "SELECT * FROM FILES WHERE user='");
-        strcat(concat_sql_op, userIP);
+        strcat(concat_sql_op, user);
         strcat(concat_sql_op, "' AND name='");
         strcat(concat_sql_op, file);
         strcat(concat_sql_op, "';");
-        active_rc = sqlite3_exec(active_db, concat_sql_op, ip2user, 0, &err);
+        active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
         checkError();
 
         if(exists == 1){
@@ -509,7 +497,7 @@ int deleteFile(char *ip, char *file)
 
             //Borramos el archivo
             strcpy(concat_sql_op, "DELETE FROM FILES WHERE user='");
-            strcat(concat_sql_op, userIP);
+            strcat(concat_sql_op, user);
             strcat(concat_sql_op, "' AND name='");
             strcat(concat_sql_op, file);
             strcat(concat_sql_op, "';");

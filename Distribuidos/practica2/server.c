@@ -146,6 +146,7 @@ int main(int argc, char *argv[]) {
     // }   
     // close(sd);
     // return 0;
+    publishFile("test", "test.txt", "test");
 	
 	return 0;
 }
