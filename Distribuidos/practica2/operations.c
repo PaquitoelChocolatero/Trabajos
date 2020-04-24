@@ -11,28 +11,18 @@ char *err = 0;				            //Variable de control
 char concat_sql_op[1000];
 char *sql_op;
 int exists = 0;
-char selected_items[42][1000];   // 42/3 (campos por fichero) = 14 archivos por usuario
-char *active_users;
+char ** content;
+int results = 1;
 char *userIP; //User extracted from ip
-int results=0;
-
+sqlite3_stmt *res;
 
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
    int i;
-   char user[4] = "USER";
    for(i = 0; i<argc; i++) {
-        if(strcmp(azColName[i],user)!=0){   //Solo nos interesan las columnas que no son 'USER'
-            sprintf(selected_items[i], "%s = %s", azColName[i], argv[i] ? argv[i] : "NULL");
-        }
+      printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
    }
    printf("\n");
-   return 0;
-}
-
-static int activeUsers(void *NotUsed, int argc, char **argv, char **azColName) {
-   char user[4] = "USER";
-   strcpy(active_users, argv[0]);
    return 0;
 }
 
@@ -159,32 +149,39 @@ void stopServer()
 
     //Extraer todos los usuarios activos
     sql_op = "SELECT * FROM USERS;";
-    active_rc = sqlite3_exec(active_db, sql_op, activeUsers, 0, &err);
+    active_rc = sqlite3_prepare_v2(active_db, sql_op, -1, &res, 0);
     checkError();
 
+    // content = (char **) calloc(0, sizeof(char));
     
-    for(int i = 0; i<sizeof(active_users); i++)
-    {
-        printf("%ld\n", sizeof(active_users));
-        printf("%s\n", active_users[i]);
-    }
+    // active_rc = sqlite3_step(res);
+    
+    // int i = 0;
+    // while(active_rc == SQLITE_ROW) {
+    //     content = (char **) realloc(*(&content + 100*i), sizeof(char)*100);    //Cada usuario puede tener 100 caracteres
+    //     printf("%s\n", sqlite3_column_text(res, 0));
+    //     active_rc = sqlite3_step(res);
+    //     i++;
+    // }
     
 
     int i = 0;
-    while(strcmp(active_users[i], "")!=0){
+    active_rc = sqlite3_step(res);
+    while(active_rc == SQLITE_ROW){
         strcpy(concat_sql_op, "INSERT INTO registered.FILES SELECT * FROM main.FILES WHERE user='");
-        strcat(concat_sql_op, active_users[i]);
+        strcat(concat_sql_op, (char *)sqlite3_column_text(res, 0));
         strcat(concat_sql_op, "';");
         active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
         checkError();
 
         //Borramos al usuario de active con todos sus ficheros
         strcpy(concat_sql_op, "DELETE FROM USERS WHERE user='");
-        strcat(concat_sql_op, active_users[i]);
+        strcat(concat_sql_op, (char *)sqlite3_column_text(res, 0));
         strcat(concat_sql_op, "';");
         active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
         checkError();
 
+        active_rc = sqlite3_step(res);
         i++;
     }
 
@@ -554,12 +551,33 @@ int list_users()
     active_rc = sqlite3_open("active.db", &active_db);
 	if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
 
-    //Listar usuarios
-    strcpy(concat_sql_op, "SELECT * FROM USERS;");
-    active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+    //Extraer todos los usuarios activos
+    sql_op = "SELECT * FROM USERS;";
+    active_rc = sqlite3_prepare_v2(active_db, sql_op, -1, &res, 0);
     checkError();
 
-    printf("LIST_USERS OK");
+    content = malloc(results * sizeof(*content));
+    
+    active_rc = sqlite3_step(res);
+    
+    int i = 0;
+    while(active_rc == SQLITE_ROW) {
+        content = (char **) realloc(content, (results+1) * sizeof(*content));
+        ++results;
+        content[results-1] = malloc(254 * sizeof(char*));
+        sprintf(content[i], "%s\n", sqlite3_column_text(res, 0));
+
+        active_rc = sqlite3_step(res);
+        i++;
+    }
+
+    for (int i = 0; i < results; i++)
+    {
+        printf(content[i]);
+    }
+    
+    results = 1;
+    printf("LIST_USERS OK\n");
 	sqlite3_close(active_db);
     return 0;
 }
@@ -606,8 +624,32 @@ int list_content(char *user)
             strcpy(concat_sql_op, "SELECT * FROM FILES WHERE user='");
             strcat(concat_sql_op, user);
             strcat(concat_sql_op, "';");
-            active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+            active_rc = sqlite3_prepare_v2(active_db, concat_sql_op, -1, &res, 0);
             checkError();
+
+            content = malloc(results * sizeof(*content));
+
+            active_rc = sqlite3_step(res);
+
+            int i = 0;
+            while(active_rc == SQLITE_ROW) {
+                content = (char **) realloc(content, (results+3) * sizeof(*content));
+                results+=3;
+                content[results-3] = malloc(254 * sizeof(char*));
+                content[results-2] = malloc(254 * sizeof(char*));
+                content[results-1] = malloc(254 * sizeof(char*));
+                sprintf(content[i], "FILE = %s\n", sqlite3_column_text(res, 1));
+                sprintf(content[i+1], "DESCRIPTION = %s\n", sqlite3_column_text(res, 2));
+                sprintf(content[i+2], "\n");
+
+                active_rc = sqlite3_step(res);
+                i+=3;
+            }
+
+            for (int i = 0; i < results; i++)
+            {
+                printf(content[i]);
+            }
         }else{
             printf("LIST_CONTENT FAIL, USER NOT CONNECTED\n");
             return 2;
@@ -616,7 +658,8 @@ int list_content(char *user)
         printf("LIST_CONTENT FAIL, REMOTE USER DOES NOT EXIST\n");
         return 3;
     }
-    printf("LIST_CONTENT OK");
+    results = 1;
+    printf("LIST_CONTENT OK\n");
 	sqlite3_close(active_db);
     return 0;
 }
