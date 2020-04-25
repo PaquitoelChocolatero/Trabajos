@@ -521,7 +521,7 @@ int deleteFile(char *user, char *file)
 /*
 *   LIST_USERS
 */
-int list_users()
+int list_users(char *user, char ***content)
 {
     //Abrir la base de datos de activos
     active_rc = sqlite3_open("active.db", &active_db);
@@ -565,7 +565,7 @@ int list_users()
 /*
 *   LIST_CONTENT USER
 */
-int list_content(char *user)
+int list_content(char *user1, char *user2, char ***filecontent)
 {
     //Abrir la base de datos de activos
     active_rc = sqlite3_open("active.db", &active_db);
