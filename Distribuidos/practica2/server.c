@@ -133,6 +133,7 @@ int main(int argc, char *argv[]) {
 void comunicacion(void *th_params){
     char buf[MAX_LINE];
     char user[MAX_LINE];
+    char user_dest[MAX_LINE];
     char result[MAX_LINE];
     char puerto[MAX_LINE];
     char file_name[MAX_LINE];
@@ -147,27 +148,125 @@ void comunicacion(void *th_params){
     pthread_cond_signal(&cond);
     pthread_mutex_unlock(&mutex);
     printf("S> Abriendo comunicación con cliente %s...\n", ip_local);
+    receive(s_local, buf);
+    printf("S> %s\n", buf);
+    if(strcmp(buf, "REGISTER")==0){
+        receive(s_local, user);
+        printf("S> Usuario: %s\n", user);
+        pthread_mutex_lock(&bdmutex);
+        int resultado = registerUsers(user);
+        pthread_mutex_unlock(&bdmutex);
+        sprintf(result, "%d", resultado);
+        printf("S> Enviando respuesta %s\n", result);
+        send(s_local, result);
+    }
+    else if(strcmp(buf, "UNREGISTER") == 0){
+        receive(s_local, user);
+        printf("S> Usuario: %s\n", user);
+        pthread_mutex_lock(&bdmutex);
+        int resultado = unregisterUsers(user);
+        pthread_mutex_unlock(&bdmutex);
+        sprintf(result, "%d", resultado);
+        printf("S> Enviando respuesta %s\n", result);
+        send(s_local, result);
+    }
+    else if(strcmp(buf, "CONNECT") == 0){
+        receive(s_local, user);
+        printf("S> Usuario: %s\n", user);
+        receive(s_local, puerto);
+        printf("S> puerto: %s\n", puerto);
+        int port = atoi(puerto);
+        pthread_mutex_lock(&bdmutex);
+        int resultado = connectUser(user, ip_local, port);
+        pthread_mutex_unlock(&bdmutex);
+        sprintf(result, "%d", resultado);
+        printf("S> Enviando respuesta %s\n", result);
+        send(s_local, result);
+    }
+    else if(strcmp(buf, "DISCONNECT") == 0){
+        receive(s_local, user);
+        printf("S> Usuario: %s\n", user);
+        pthread_mutex_lock(&bdmutex);
+        int resultado = disconnectUser(user);
+        pthread_mutex_unlock(&bdmutex);
+        sprintf(result, "%d", resultado);
+        printf("S> Enviando respuesta %s\n", result);
+        send(s_local, result);
+    }
+    else if(strcmp(buf, "PUBLISH") == 0){
+        receive(s_local, user);
+        printf("S> Usuario: %s\n", user);
+        receive(s_local, file_name)
+        printf("S> Fichero: %s\n", file_name);
+        receive(s_local, descript);
+        printf("S> Descripcion: %s\n", descript);
+        pthread_mutex_lock(&bdmutex);
+        int resultado = publishFile(user, file_name, descript);
+        pthread_mutex_unlock(&bdmutex);
+        sprintf(result, "%d", resultado);
+        printf("S> Enviando respuesta %s\n", result);
+        send(s_local, result);
+    }
+    else if(strcmp(buf, "DELETE") == 0){
+        receive(s_local, user);
+        printf("S> Usuario: %s\n", user);
+        receive(s_local, file_name)
+        printf("S> Fichero: %s\n", file_name);
+        pthread_mutex_lock(&bdmutex);
+        int resultado = deleteFile(user, file_name);
+        pthread_mutex_unlock(&bdmutex);
+        sprintf(result, "%d", resultado);
+        printf("S> Enviando respuesta %s\n", result);
+        send(s_local, result);
+    }
+    else if(strcmp(buf, "LIST_USERS") == 0){
+        receive(s_local, user);
+        printf("S> Usuario: %s\n", user);
+        char **content;
+        pthread_mutex_lock(&bdmutex);
+        int resultado = list_users(user, &content);
+        pthread_mutex_unlock(&bdmutex);
+
+        sprintf(result, "%d", resultado);
+        printf("S> Enviando respuesta %s\n", result);
+        send(s_local, result);
+
+        for(int i=0; i<resultado; i++) send(s_local, content[i]);
+
+        free(content);
+    }
+    else if(strcmp(buf, "LIST_CONTENT") == 0){
+        receive(s_local, user);
+        printf("S> Usuario: %s\n", user);
+        char **content;
+        receive(s_local, user_dest);
+        pthread_mutex_lock(&bdmutex);
+        int resultado = list_content(user, user_dest, &content);
+        pthread_mutex_unlock(&bdmutex);
+
+        sprintf(result, "%d", resultado);
+        printf("S> Enviando respuesta %s\n", result);
+        send(s_local, result);
+        
+        for(int i=0; i<resultado; i++) send(s_local, content[i]);
+        
+        free(content);
+    }
+
+
+
 }
 	
 //Antes de cerrar el proceso cerramos todos los elementos: conexiones a bbdd, hilos y mutex
 void cerrarServidor() {
     fprintf(stderr, "\nCerrando servidor...\n");
 
-    pthread_mutex_lock(&mfin);
-    fin = true;
-    pthread_mutex_unlock(&mfin);
-
-    pthread_mutex_lock(&mutex);
-    pthread_cond_broadcast(&no_vacio);
-    pthread_mutex_unlock(&mutex);
-
     for (int i=0;i<MAX_THREADS;i++) pthread_join(thid[i],NULL);
     
     pthread_mutex_destroy(&mutex);
-    pthread_mutex_destroy(&mfin);
     pthread_mutex_destroy(&bdmutex);
-    pthread_cond_destroy(&no_lleno);
-    pthread_cond_destroy(&no_vacio);
+    pthread_mutex_destroy(&cond);
+    pthread_mutex_destroy(&attr);
     
     stopServer();
 }
