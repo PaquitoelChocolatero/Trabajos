@@ -189,10 +189,10 @@ int registerUser(char *user)
         checkError();
     }else{
         exists = 0;
-        printf("USERNAME IN USE\n");
+        printf("S> USERNAME IN USE\n");
         return 1; 
     }
-    printf("REGISTER OK\n");
+    printf("S> REGISTER OK\n");
     sqlite3_close(registered_db); //Cerramos la base de datos
     return 0;
 }
@@ -248,10 +248,10 @@ int unregisterUser(char *user)
         active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
         checkError();
     }else{
-        printf("USER DOES NOT EXIST\n");
+        printf("S> USER DOES NOT EXIST\n");
         return 1;
     }
-    printf("UNREGISTER OK\n");
+    printf("S> UNREGISTER OK\n");
 	sqlite3_close(active_db);
     return 0;
 }
@@ -321,14 +321,14 @@ int connectUser(char *user, char *ip, int port)
             checkError();
         }else{
             exists = 0;
-            printf("USER ALREADY CONNECTED\n");
+            printf("S> USER ALREADY CONNECTED\n");
             return 2;
         }
     }else{
-        printf("CONNECT FAIL, USER DOES NOT EXIST\n");
+        printf("S> CONNECT FAIL, USER DOES NOT EXIST\n");
         return 1;
     }
-    printf("CONNECT OK\n");
+    printf("S> CONNECT OK\n");
     sqlite3_close(registered_db);
     return 0;
 }
@@ -390,14 +390,14 @@ int disconnectUser(char *user)
             active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
             checkError();
         }else{
-            printf("DISCONNECT FAIL / USER NOT CONNECTED\n");
+            printf("S> DISCONNECT FAIL / USER NOT CONNECTED\n");
             return 2;
         }
     }else{
-        printf("DISCONNECT FAIL / USER DOES NOT EXIST\n");
+        printf("S> DISCONNECT FAIL / USER DOES NOT EXIST\n");
         return 1;
     }
-    printf("DISCONNECT OK\n");
+    printf("S> DISCONNECT OK\n");
 	sqlite3_close(active_db);
     return 0;
 }
@@ -446,14 +446,14 @@ int publishFile(char *user, char *file, char *description)
             checkError();
         }else{
             exists = 0;
-            printf("PUBLISH FAIL, CONTENT ALREADY PUBLISHED\n");
+            printf("S> PUBLISH FAIL, CONTENT ALREADY PUBLISHED\n");
             return 3;
         }
     }else{
-        printf("PUBLISH FAIL, USER NOT CONNECTED\n");
+        printf("S> PUBLISH FAIL, USER NOT CONNECTED\n");
         return 2;
     }
-    printf("PUBLISH OK\n");
+    printf("S> PUBLISH OK\n");
 	sqlite3_close(active_db);
     return 0;
 }
@@ -501,14 +501,14 @@ int deleteFile(char *user, char *file)
             active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
             checkError();
         }else{
-            printf("DELETE FAIL, CONTENT NOT PUBLISHED\n");
+            printf("S> DELETE FAIL, CONTENT NOT PUBLISHED\n");
             return 3;
         }
     }else{
-        printf("DELETE FAIL, USER  NOT CONNECTED\n");
+        printf("S> DELETE FAIL, USER  NOT CONNECTED\n");
         return 2;
     }
-    printf("DELETE OK\n");
+    printf("S> DELETE OK\n");
 	sqlite3_close(active_db);
     return 0;
 }
@@ -581,14 +581,14 @@ int list_users(char *user, char ***list)
                 i+=3;
             }
         }else{
-            printf("LIST_USERS FAIL, USER NOT CONNECTED\n");
+            printf("S> LIST_USERS FAIL, USER NOT CONNECTED\n");
             return -2;
         }
     }else{
-        printf("LIST_USERS FAIL, USER DOES NOT EXIST\n");
+        printf("S> LIST_USERS FAIL, USER DOES NOT EXIST\n");
         return -1;
     }
-    printf("LIST_USERS OK\n");
+    printf("S> LIST_USERS OK\n");
 	sqlite3_close(active_db);
     return results;
 }
@@ -682,22 +682,22 @@ int list_content(char *user, char *sourceUser, char *** list)
                         i+=2;
                     }
                 }else{
-                    printf("LIST_CONTENT FAIL, REMOTE USER NOT CONNECTED\n");
+                    printf("S> LIST_CONTENT FAIL, REMOTE USER NOT CONNECTED\n");
                     return -4;
                 }
             }else{
-                printf("LIST_CONTENT FAIL, REMOTE USER DOES NOT EXIST\n");
+                printf("S> LIST_CONTENT FAIL, REMOTE USER DOES NOT EXIST\n");
                 return -3;
             }
         }else{
-            printf("LIST_CONTENT FAIL, USER NOT CONNECTED\n");
+            printf("S> LIST_CONTENT FAIL, USER NOT CONNECTED\n");
             return -2;
         }
     }else{
-        printf("LIST_CONTENT FAIL, USER DOES NOT EXIST\n");
+        printf("S> LIST_CONTENT FAIL, USER DOES NOT EXIST\n");
         return -1;
     }
-    printf("LIST_CONTENT OK\n");
+    printf("S> LIST_CONTENT OK\n");
 	sqlite3_close(active_db);
     return results/3;
 }
