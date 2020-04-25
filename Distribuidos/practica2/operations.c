@@ -570,9 +570,9 @@ int list_users(char *user, char ***list)
                     results+=3;
                     *list = (char **) realloc((*list), results * sizeof(*list));
                 }
-                (*list)[results-3] = malloc(256);
-                (*list)[results-2] = malloc(256);
-                (*list)[results-1] = malloc(256);
+                (*list)[i] = malloc(256);
+                (*list)[i+1] = malloc(256);
+                (*list)[i+2] = malloc(256);
                 sprintf((*list)[i], "%s", sqlite3_column_text(res, 0));
                 sprintf((*list)[i+1], "%s", sqlite3_column_text(res, 1));
                 sprintf((*list)[i+2], "%s", sqlite3_column_text(res, 2));
@@ -661,23 +661,25 @@ int list_content(char *user, char *sourceUser, char *** list)
                     active_rc = sqlite3_prepare_v2(active_db, concat_sql_op, -1, &res, 0);
                     checkError();
 
-                    *list = malloc(results * sizeof(**list));
-
                     active_rc = sqlite3_step(res);
 
                     int i = 0;
                     while(active_rc == SQLITE_ROW) {
-                        *list = (char **) realloc(*list, (results+3) * sizeof(**list));
-                        results+=3;
-                        *list[results-3] = malloc(254 * sizeof(char*));
-                        *list[results-2] = malloc(254 * sizeof(char*));
-                        *list[results-1] = malloc(254 * sizeof(char*));
-                        sprintf(*list[i], "FILE = %s\n", sqlite3_column_text(res, 1));
-                        sprintf(*list[i+1], "DESCRIPTION = %s\n", sqlite3_column_text(res, 2));
-                        sprintf(*list[i+2], "--");
+                        //Añadimos espacio en el array para la nueva posición
+                        if(results==1){
+                            results = 2;
+                            *list = (char **) malloc(results * sizeof(char *));
+                        }else{
+                            results+=2;
+                            *list = (char **) realloc((*list), results * sizeof(*list));
+                        }
+                        (*list)[i] = malloc(256);
+                        (*list)[i+1] = malloc(256);
+                        sprintf((*list)[i], "%s", sqlite3_column_text(res, 1));
+                        sprintf((*list)[i+1], "%s", sqlite3_column_text(res, 2));
 
                         active_rc = sqlite3_step(res);
-                        i+=3;
+                        i+=2;
                     }
                 }else{
                     printf("LIST_CONTENT FAIL, REMOTE USER NOT CONNECTED\n");
