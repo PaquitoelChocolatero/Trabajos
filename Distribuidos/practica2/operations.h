@@ -6,5 +6,5 @@ int connectUser(char *localUser, char *ip, int port);
 int disconnectUser(char *user);
 int publishFile(char *user, char *file, char *description);
 int deleteFile(char *user, char *file);
-int list_users();
+int list_users(char *** list);
 int list_content(char *localUser);

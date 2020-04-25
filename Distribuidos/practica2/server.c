@@ -73,6 +73,10 @@ int main(int argc, char *argv[]) {
     printf("Para cerrar el servidor pulse: Ctrl+C\n");
     signal(SIGINT, cerrarServidor);
 
+    char *** list;
+
+    list_users(list);
+
     // //Creación del socket
     // sd =  socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     // if (sd < 0) {
@@ -146,7 +150,7 @@ int main(int argc, char *argv[]) {
     // }   
     // close(sd);
     // return 0;
-    publishFile("test", "test.txt", "test");
+    //publishFile("test", "test.txt", "test");
 	
 	return 0;
 }

@@ -15,7 +15,6 @@ char ** content;
 int results = 1;
 sqlite3_stmt *res;
 
-
 static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
    int i;
    for(i = 0; i<argc; i++) {
@@ -521,8 +520,9 @@ int deleteFile(char *user, char *file)
 /*
 *   LIST_USERS
 */
-int list_users()
+int list_users(char *** list)
 {
+    results = 1;
     //Abrir la base de datos de activos
     active_rc = sqlite3_open("active.db", &active_db);
 	if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
@@ -540,13 +540,19 @@ int list_users()
     int i = 0;
     while(active_rc == SQLITE_ROW) {
         //Añadimos espacio en el array para la nueva posición
-        content = (char **) realloc(content, (results+1) * sizeof(*content));
-        ++results;
-        content[results-1] = malloc(254 * sizeof(char*));
-        sprintf(content[i], "%s\n", sqlite3_column_text(res, 0));
+        content = (char **) realloc(content, (results+4) * sizeof(*content));
+                results+=4;
+                content[results-4] = malloc(254 * sizeof(char*));
+                content[results-3] = malloc(254 * sizeof(char*));
+                content[results-2] = malloc(254 * sizeof(char*));
+                content[results-1] = malloc(254 * sizeof(char*));
+                sprintf(content[i], "USER = %s\n", sqlite3_column_text(res, 0));
+                sprintf(content[i+1], "IP = %s\n", sqlite3_column_text(res, 1));
+                sprintf(content[i+2], "PORT = %s\n", sqlite3_column_text(res, 2));
+                sprintf(content[i+3], "--\n");
 
         active_rc = sqlite3_step(res);
-        i++;
+        i+=4;
     }
 
     for (int i = 0; i < results; i++)
@@ -554,10 +560,9 @@ int list_users()
         printf(content[i]);
     }
     
-    results = 1;
     printf("LIST_USERS OK\n");
 	sqlite3_close(active_db);
-    return 0;
+    return results/4;
 }
 
 
@@ -567,6 +572,7 @@ int list_users()
 */
 int list_content(char *user)
 {
+    results = 1;
     //Abrir la base de datos de activos
     active_rc = sqlite3_open("active.db", &active_db);
 	if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
@@ -618,15 +624,10 @@ int list_content(char *user)
                 content[results-1] = malloc(254 * sizeof(char*));
                 sprintf(content[i], "FILE = %s\n", sqlite3_column_text(res, 1));
                 sprintf(content[i+1], "DESCRIPTION = %s\n", sqlite3_column_text(res, 2));
-                sprintf(content[i+2], "\n");
+                sprintf(content[i+2], "--");
 
                 active_rc = sqlite3_step(res);
                 i+=3;
-            }
-
-            for (int i = 0; i < results; i++)
-            {
-                printf(content[i]);
             }
         }else{
             printf("LIST_CONTENT FAIL, USER NOT CONNECTED\n");
@@ -636,8 +637,7 @@ int list_content(char *user)
         printf("LIST_CONTENT FAIL, REMOTE USER DOES NOT EXIST\n");
         return 3;
     }
-    results = 1;
     printf("LIST_CONTENT OK\n");
 	sqlite3_close(active_db);
-    return 0;
+    return results/3;
 }
