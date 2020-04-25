@@ -340,7 +340,7 @@ class client {
 				DataInputStream in = new DataInputStream(sc.getInputStream());
 
 				escribir(os, "PUBLISH");
-
+				escribir(os, _connecteduser);
 				escribir(os, file_name);
 				escribir(os, description);
 
@@ -709,10 +709,20 @@ class client {
 			usage();
 			return;
 		}
+		System.out.println("Host: "+_server+" Port: "+ _port + "\n");
 		
 		// Write code here
-		
-		shell();
-		System.out.println("+++ FINISHED +++");
+		try{
+			shell();
+			if(_serverthread != null){
+				_serverthread.Stop();
+				_serverthread = null;
+				_connecteduser = "";
+			}
+		}
+		catch(Exception e){
+			System.out.println("+++ FINISHED +++");
+			e.printStackTrace();
+		}
 	}
 }
