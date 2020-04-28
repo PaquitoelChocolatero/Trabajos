@@ -206,6 +206,11 @@ void comunicacion(void *th_params){
 
         sprintf(result, "%d", resultado);
         mySend(s_local, result);
+        /*registerUser(user);
+        int resultado = connectUser(user, ip_local, port);
+        sprintf(result, "%d", resultado);
+        mySend(s_local, result);*/
+
     }
     else if(strcmp(buf, "DISCONNECT") == 0){
         receive(s_local, user);
@@ -254,23 +259,16 @@ void comunicacion(void *th_params){
         int resultado = list_users(user, &content);
         pthread_mutex_unlock(&bdmutex);
 
-        //enviamos codigo de error o de acierto
-        if(resultado<0) sprintf(result, "%d", -resultado);
-        else sprintf(result, "0");
+        //Enviamos el número de usuarios activos
+        sprintf(result, "%d", resultado/3);
         mySend(s_local, result);
 
-        //Enviamos el número de usuarios activos
-        if(resultado >= 0) {
-            sprintf(result, "%d", resultado/3);
-            mySend(s_local, result);
+        //Enviamos todo lo que ha devuelto la base de datos
+        //Hay 3 campos por cada usuario: nombre, ip, puerto
+        for(int i=0; i<resultado; i++) mySend(s_local, content[i]);
 
-            //Enviamos todo lo que ha devuelto la base de datos
-            //Hay 3 campos por cada usuario: nombre, ip, puerto
-            for(int i=0; i<resultado; i++) mySend(s_local, content[i]);
-
-            //Eliminamos la lista
-            free(content);
-        }
+        //Eliminamos la lista
+        free(content);
     }
     else if(strcmp(buf, "LIST_CONTENT") == 0){
         receive(s_local, user);
@@ -293,27 +291,30 @@ void comunicacion(void *th_params){
         free(content);
     }
     else
-    {
-        printf("S> RECEIVED WRONG COMMAND: %s-\n", buf);
-    }
-    printf("S> Cerrando comunicacion con cliente %s...\n", ip_local);
-    close(s_local);
-    pthread_exit(NULL);
+	{
+		printf("S> RECEIVED WRONG COMMAND: %s-\n", buf);
+	}
+	printf("S> Cerrando comunicacion con cliente %s...\n", ip_local);
+	close(s_local);
+	pthread_exit(NULL);
 }
 
 
 
 void cerrarServidor() {
-    fprintf(stderr, "\nCerrando servidor...\n");
-
-    for(int i=0;i<MAX_THREADS;i++) pthread_join(thid[i], NULL);
     
+    close(sd);
+    stopServer();
     pthread_mutex_destroy(&mutex);
     pthread_mutex_destroy(&bdmutex);
-    close(sd);
+    pthread_cond_destroy(&cond);
+    
     
     //Migra los datos de la base de datos de activos a la de registrados para no perder nada
-    stopServer();
+    
+    fprintf(stderr, "\nCerrando servidor...\n");
+    exit(0);
+
 }
 
 
@@ -328,7 +329,7 @@ void receive(int socket, char *mensaje){
 
 
 void mySend(int socket, char *mensaje){
-    if(enviar(socket, mensaje, strlen(mensaje) + 1) < 0){
+    if(enviar(socket, mensaje, strlen(mensaje)+1) < 0){
         printf("Error en enviar\n");
         exit(0);
     }

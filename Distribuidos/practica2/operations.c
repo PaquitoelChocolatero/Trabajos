@@ -158,7 +158,7 @@ void stopServer()
         i++;
     }
 
-    printf("CLOSING SERVER...\n");
+    printf("CLOSING DB SERVER...\n");
 	sqlite3_close(active_db);
 }
 
@@ -292,7 +292,7 @@ int connectUser(char *user, char *ip, int port)
 
         //Si el usuario no está conectado
         if(exists == 0){
-            char str_port[3];
+            char str_port[8];
             sprintf(str_port,"%d",port);
 
             //Concatenamos la instrucción con el usuario deseado
@@ -329,7 +329,9 @@ int connectUser(char *user, char *ip, int port)
         return 1;
     }
     printf("S> CONNECT OK\n");
+    printf("aqui\n");
     sqlite3_close(registered_db);
+    printf("aqui2\n");
     return 0;
 }
 

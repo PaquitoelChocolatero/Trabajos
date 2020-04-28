@@ -43,7 +43,9 @@ class serverthread extends Thread{
 				sh.close();	
 			}
 		}
-		catch(SocketException e){}
+		catch(SocketException e) {
+			//System.out.println("Cerrando server thread...");
+		}	
 		catch(Exception e){
 			System.err.println("excepcion "+ e.toString());
 			e.printStackTrace();
@@ -53,7 +55,7 @@ class serverthread extends Thread{
 		try{
 			sc.close();
 		}
-		catch(SocketException e){}
+		catch(SocketException e) {}	
 		catch(Exception e){
 			System.err.println("excepcion "+ e.toString());
 			e.printStackTrace();
@@ -294,16 +296,17 @@ class client {
 				escribir(os, user);
 
 				String respuesta = leer(in);
+				System.out.println("respuesta = " + respuesta);
 				result = Integer.parseInt(respuesta);
 			
 				sc.close();
-				_connectedusers.clear();
+				_connectedusers = new ArrayList<userInfo>();
 			}
 
 		}
 		catch(Exception e){
 			System.err.println("excepcion " + e.toString());
-			_connectedusers.clear();
+			_connectedusers = new ArrayList<userInfo>();
 			result = 3;
 			if(_serverthread == null){
 				_serverthread.Stop();
@@ -434,9 +437,53 @@ class client {
 	 */
 	static int list_users()
 	{
-		// Write your code here
 		System.out.println("LIST_USERS " );
-		return 0;
+		int result = 0;
+		if (_serverthread == null){
+			System.out.println("c> LIST_USERS FAIL, USER NOT CONNECTED");
+			return 2;
+		}
+		try{
+			Socket sc = new Socket(_server, _port); // conexión
+			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
+			DataInputStream in = new DataInputStream(sc.getInputStream());
+			escribir(os, "LIST_USERS");
+			escribir(os, _connecteduser);
+			String respuesta = leer(in);
+			result = Integer.parseInt(respuesta);
+			if (result == 0){
+				String numusers = leer(in);
+				int num_users = Integer.parseInt(numusers);
+				_connectedusers = new ArrayList<userInfo>();
+				System.out.println("\nUSER                          IP Address      Port");
+				System.out.println("-------------------- ------------------- ---------");
+				for (int i = 0; i < num_users; i++){
+					String user = leer(in);
+					String ip = leer(in);
+					String puerto = leer(in);
+					System.out.printf("%-20s%20s%10s\n", user, ip, puerto);
+					_connectedusers.add(new userInfo(user, ip, Integer.parseInt(puerto)));
+				}
+				System.out.println(" ");
+				System.out.println("c> LIST_USERS OK");
+			}	
+			sc.close();
+			return 0;
+		}
+		catch (Exception e){
+			System.err.println("excepcion " + e.toString() );
+			result = 4;
+		}
+		if (result == 1){
+			System.out.println("c> LIST_USERS FAIL, USER DOES NOT EXIST");
+		}
+		else if (result == 2){
+			System.out.println("c> LIST_USERS FAIL, USER NOT CONNECTED");
+		}
+		else {
+			System.out.println("c> LIST_USERS FAIL");
+		}
+		return result;
 	}
 
 
@@ -449,7 +496,56 @@ class client {
 	{
 		// Write your code here
 		System.out.println("LIST_CONTENT " + user_name);
-		return 0;
+		int result = 0;
+		if (_serverthread == null){
+			System.out.println("c> LIST_CONTENT FAIL, USER NOT CONNECTED");
+			return 2;
+		}
+		try{
+			Socket sc = new Socket(_server, _port); // conexión
+			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
+			DataInputStream in = new DataInputStream(sc.getInputStream());
+			escribir(os, "LIST_CONTENT");
+			escribir(os, _connecteduser);
+			escribir(os, user_name);
+			String respuesta = leer(in);
+			result = Integer.parseInt(respuesta);
+			if (result == 0){
+				String numfiles = leer(in);
+				int num_files = Integer.parseInt(numfiles);
+				if (num_files == 0) System.out.println("NO FILES IN " + user_name);
+				else {
+					System.out.println("\nFILE                    DESCRIPTION");
+					System.out.println("----------------------- -------------------------");
+				}
+				for (int i = 0; i < num_files; i++){
+					String file = leer(in);
+					String descripcion = leer(in);
+					System.out.printf("%-25s%s\n", file, descripcion);
+				}
+				System.out.println(" ");
+				System.out.println("c> LIST_CONTENT OK");
+			}	
+			sc.close();
+			return 0;
+		}
+		catch (Exception e){
+			System.err.println("excepcion " + e.toString() );
+			result = 4;
+		}
+		if (result == 1){
+			System.out.println("c> LIST_CONTENT FAIL, USER DOES NOT EXIST");
+		}
+		else if (result == 2){
+			System.out.println("c> LIST_CONTENT FAIL, USER NOT CONNECTED");
+		}
+		else if (result == 3){
+			System.out.println("c> LIST_CONTENT FAIL, REMOTE USER DOES NOT EXIST");
+		}
+		else {
+			System.out.println("c> LIST_CONTENT FAIL");
+		}
+		return result;
 	}
 
 	 /**
