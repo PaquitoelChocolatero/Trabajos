@@ -206,11 +206,6 @@ void comunicacion(void *th_params){
 
         sprintf(result, "%d", resultado);
         mySend(s_local, result);
-        /*registerUser(user);
-        int resultado = connectUser(user, ip_local, port);
-        sprintf(result, "%d", resultado);
-        mySend(s_local, result);*/
-
     }
     else if(strcmp(buf, "DISCONNECT") == 0){
         receive(s_local, user);
@@ -278,7 +273,7 @@ void comunicacion(void *th_params){
         char **content;
         
         pthread_mutex_lock(&bdmutex);
-        int resultado = list_content(user, user_dest, &content);
+        int resultado = list_content(user_dest, user, &content);
         pthread_mutex_unlock(&bdmutex);
 
 

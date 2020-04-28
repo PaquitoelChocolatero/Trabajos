@@ -150,8 +150,6 @@ class client {
 	 */
 	static int register(String user) 
 	{
-		// Write your code here
-		System.out.println("REGISTER " + user);
 		int result = 0;
 		try{
 			Socket sc = new Socket(_server, _port);
@@ -190,8 +188,6 @@ class client {
 	 */
 	static int unregister(String user) 
 	{
-		// Write your code here
-		System.out.println("UNREGISTER " + user);
 		int result=0;
 		try{
 			Socket sc = new Socket(_server, _port);
@@ -230,8 +226,6 @@ class client {
 	 */
 	static int connect(String user) 
 	{
-		// Write your code here
-		System.out.println("CONNECT " + user);
 		int result=0;
 		try{
 			Socket sc = new Socket(_server, _port);
@@ -281,7 +275,6 @@ class client {
 	 */
 	static int disconnect(String user) 
 	{
-		System.out.println("DISCONNECT " + user);
 		int result=0;
 		try{
 			if(!user.equals(_connecteduser)){
@@ -296,7 +289,6 @@ class client {
 				escribir(os, user);
 
 				String respuesta = leer(in);
-				System.out.println("respuesta = " + respuesta);
 				result = Integer.parseInt(respuesta);
 			
 				sc.close();
@@ -333,7 +325,6 @@ class client {
 	}
 	static int publish(String file_name, String description) 
 	{
-		System.out.println("PUBLISH " + file_name + " " + description);
 		int result=0;
 		try{
 			if(_serverthread == null){
@@ -386,7 +377,6 @@ class client {
 	 */
 	static int delete(String file_name)
 	{
-		System.out.println("DELETE " + file_name);
 		int result = 0;
 		try{
 			if(_serverthread == null){
@@ -437,7 +427,6 @@ class client {
 	 */
 	static int list_users()
 	{
-		System.out.println("LIST_USERS " );
 		int result = 0;
 		if (_serverthread == null){
 			System.out.println("c> LIST_USERS FAIL, USER NOT CONNECTED");
@@ -451,21 +440,17 @@ class client {
 			escribir(os, _connecteduser);
 			String respuesta = leer(in);
 			result = Integer.parseInt(respuesta);
-			if (result == 0){
-				String numusers = leer(in);
-				int num_users = Integer.parseInt(numusers);
+			if (result >= 0){
+				System.out.println("c> LIST_USERS OK");
+				int num_users = result;
 				_connectedusers = new ArrayList<userInfo>();
-				System.out.println("\nUSER                          IP Address      Port");
-				System.out.println("-------------------- ------------------- ---------");
 				for (int i = 0; i < num_users; i++){
 					String user = leer(in);
 					String ip = leer(in);
 					String puerto = leer(in);
-					System.out.printf("%-20s%20s%10s\n", user, ip, puerto);
+					System.out.printf("%10s%15s%10s\n", user, ip, puerto);
 					_connectedusers.add(new userInfo(user, ip, Integer.parseInt(puerto)));
 				}
-				System.out.println(" ");
-				System.out.println("c> LIST_USERS OK");
 			}	
 			sc.close();
 			return 0;
@@ -474,13 +459,16 @@ class client {
 			System.err.println("excepcion " + e.toString() );
 			result = 4;
 		}
-		if (result == 1){
+		if (result == -1){
+			result *= -1;
 			System.out.println("c> LIST_USERS FAIL, USER DOES NOT EXIST");
 		}
-		else if (result == 2){
+		else if (result == -2){
+			result *= -1;
 			System.out.println("c> LIST_USERS FAIL, USER NOT CONNECTED");
 		}
 		else {
+			result *= -1;
 			System.out.println("c> LIST_USERS FAIL");
 		}
 		return result;
@@ -494,8 +482,6 @@ class client {
 	 */
 	static int list_content(String user_name)
 	{
-		// Write your code here
-		System.out.println("LIST_CONTENT " + user_name);
 		int result = 0;
 		if (_serverthread == null){
 			System.out.println("c> LIST_CONTENT FAIL, USER NOT CONNECTED");
@@ -510,39 +496,38 @@ class client {
 			escribir(os, user_name);
 			String respuesta = leer(in);
 			result = Integer.parseInt(respuesta);
-			if (result == 0){
-				String numfiles = leer(in);
-				int num_files = Integer.parseInt(numfiles);
-				if (num_files == 0) System.out.println("NO FILES IN " + user_name);
-				else {
-					System.out.println("\nFILE                    DESCRIPTION");
-					System.out.println("----------------------- -------------------------");
-				}
+			if (result > 0){
+				System.out.println("c> LIST_CONTENT OK");
+				int num_files = result;
+
 				for (int i = 0; i < num_files; i++){
 					String file = leer(in);
 					String descripcion = leer(in);
-					System.out.printf("%-25s%s\n", file, descripcion);
+					System.out.printf("\t%s\t%s\n", file, descripcion);
 				}
-				System.out.println(" ");
-				System.out.println("c> LIST_CONTENT OK");
-			}	
+			}
+			else if(result == 0) System.out.println(user_name + " hasn't published any files yet");
 			sc.close();
 			return 0;
 		}
 		catch (Exception e){
 			System.err.println("excepcion " + e.toString() );
-			result = 4;
+			result = -4;
 		}
-		if (result == 1){
+		if (result == -1){
+			result *= -1;
 			System.out.println("c> LIST_CONTENT FAIL, USER DOES NOT EXIST");
 		}
-		else if (result == 2){
+		else if (result == -2){
+			result *= -1;
 			System.out.println("c> LIST_CONTENT FAIL, USER NOT CONNECTED");
 		}
-		else if (result == 3){
+		else if (result == -3){
+			result *= -1;
 			System.out.println("c> LIST_CONTENT FAIL, REMOTE USER DOES NOT EXIST");
 		}
 		else {
+			result *= -1;
 			System.out.println("c> LIST_CONTENT FAIL");
 		}
 		return result;
@@ -557,8 +542,6 @@ class client {
 	 */
 	static int get_file(String user_name, String remote_file_name, String local_file_name)
 	{
-		// Write your code here
-		System.out.println("GET_FILE " + user_name + " "  + remote_file_name + " " + local_file_name);
 		int result = 0;
 		try{
 			if(_connectedusers == null|| _connectedusers.isEmpty()){
@@ -574,7 +557,6 @@ class client {
 						i++;
 					}
 				}
-
 				if(_connectedusers.size() == i){
 					System.out.println("c> DELETE FAIL, USER NOT CONNECTED");
 					return 2;
@@ -613,7 +595,7 @@ class client {
 			System.out.println("c> GET_FILE OK");
 		}
 		else if(result == 1){
-			System.out.println("c> GET_FILE FAIL, FILE NOT EXIST");
+			System.out.println("c> GET_FILE FAIL, FILE DOES NOT EXIST");
 		}
 		else{
 			System.out.println("c> GET_FILE FAIL");

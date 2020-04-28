@@ -327,9 +327,7 @@ int connectUser(char *user, char *ip, int port)
         return 1;
     }
     printf("S> CONNECT OK\n");
-    printf("aqui\n");
     sqlite3_close(registered_db);
-    printf("aqui2\n");
     return 0;
 }
 
@@ -699,5 +697,5 @@ int list_content(char *user, char *sourceUser, char *** list)
     }
     printf("S> LIST_CONTENT OK\n");
 	sqlite3_close(active_db);
-    return results/3;
+    return results;
 }
