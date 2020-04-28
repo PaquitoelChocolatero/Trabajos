@@ -43,6 +43,7 @@ class serverthread extends Thread{
 				sh.close();	
 			}
 		}
+		catch(SocketException e){}
 		catch(Exception e){
 			System.err.println("excepcion "+ e.toString());
 			e.printStackTrace();
@@ -52,6 +53,7 @@ class serverthread extends Thread{
 		try{
 			sc.close();
 		}
+		catch(SocketException e){}
 		catch(Exception e){
 			System.err.println("excepcion "+ e.toString());
 			e.printStackTrace();

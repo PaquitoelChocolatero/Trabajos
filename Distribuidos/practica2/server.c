@@ -254,16 +254,23 @@ void comunicacion(void *th_params){
         int resultado = list_users(user, &content);
         pthread_mutex_unlock(&bdmutex);
 
-        //Enviamos el número de usuarios activos
-        sprintf(result, "%d", resultado/3);
+        //enviamos codigo de error o de acierto
+        if(resultado<0) sprintf(result, "%d", -resultado);
+        else sprintf(result, "0");
         mySend(s_local, result);
 
-        //Enviamos todo lo que ha devuelto la base de datos
-        //Hay 3 campos por cada usuario: nombre, ip, puerto
-        for(int i=0; i<resultado; i++) mySend(s_local, content[i]);
+        //Enviamos el número de usuarios activos
+        if(resultado >= 0) {
+            sprintf(result, "%d", resultado/3);
+            mySend(s_local, result);
 
-        //Eliminamos la lista
-        free(content);
+            //Enviamos todo lo que ha devuelto la base de datos
+            //Hay 3 campos por cada usuario: nombre, ip, puerto
+            for(int i=0; i<resultado; i++) mySend(s_local, content[i]);
+
+            //Eliminamos la lista
+            free(content);
+        }
     }
     else if(strcmp(buf, "LIST_CONTENT") == 0){
         receive(s_local, user);
@@ -285,6 +292,13 @@ void comunicacion(void *th_params){
         
         free(content);
     }
+    else
+    {
+        printf("S> RECEIVED WRONG COMMAND: %s-\n", buf);
+    }
+    printf("S> Cerrando comunicacion con cliente %s...\n", ip_local);
+    close(s_local);
+    pthread_exit(NULL);
 }
 
 
@@ -314,8 +328,8 @@ void receive(int socket, char *mensaje){
 
 
 void mySend(int socket, char *mensaje){
-    if(enviar(socket, mensaje, strlen(mensaje) + 1) <=0){
-        printf("Error en readLine\n");
+    if(enviar(socket, mensaje, strlen(mensaje) + 1) < 0){
+        printf("Error en enviar\n");
         exit(0);
     }
 }
