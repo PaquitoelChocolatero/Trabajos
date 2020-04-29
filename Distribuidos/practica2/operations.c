@@ -571,7 +571,10 @@ int list_users(char *user, char ***list)
                 (*list)[i] = malloc(256);
                 (*list)[i+1] = malloc(256);
                 (*list)[i+2] = malloc(256);
-                sprintf((*list)[i], "%s", sqlite3_column_text(res, 0));
+                //Comprobamos si el usuario eres tu
+                if(strcmp((char *)sqlite3_column_text(res, 0), user)==0) sprintf((*list)[i], "%s (you)", sqlite3_column_text(res, 0));
+                else sprintf((*list)[i], "%s", sqlite3_column_text(res, 0));
+
                 sprintf((*list)[i+1], "%s", sqlite3_column_text(res, 1));
                 sprintf((*list)[i+2], "%s", sqlite3_column_text(res, 2));
 

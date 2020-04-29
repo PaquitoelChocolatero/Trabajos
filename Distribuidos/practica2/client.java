@@ -138,7 +138,7 @@ class client {
 	private static String _server   = null;
 	private static int _port = -1;
 	private static serverthread _serverthread = null;
-	private static String _connecteduser = "";
+	private static String _connecteduser = null;
 	private static ArrayList<userInfo> _connectedusers;
 	
 	/********************* METHODS ********************/
@@ -226,46 +226,51 @@ class client {
 	 */
 	static int connect(String user) 
 	{
-		int result=0;
-		try{
-			Socket sc = new Socket(_server, _port);
-			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
-			DataInputStream in = new DataInputStream(sc.getInputStream());
+		if(_connecteduser==null){
+			int result=0;
+			try{
+				Socket sc = new Socket(_server, _port);
+				DataOutputStream os = new DataOutputStream(sc.getOutputStream());
+				DataInputStream in = new DataInputStream(sc.getInputStream());
 
-			ServerSocket serverclient = new ServerSocket(0);
-			int port = serverclient.getLocalPort();
-			escribir(os, "CONNECT");
-			escribir(os, user);
-			escribir(os, Integer.toString(port));
+				ServerSocket serverclient = new ServerSocket(0);
+				int port = serverclient.getLocalPort();
+				escribir(os, "CONNECT");
+				escribir(os, user);
+				escribir(os, Integer.toString(port));
 
-			String respuesta = leer(in);
-			result = Integer.parseInt(respuesta);
-			
-			sc.close();
-			if (result==0){
-				_serverthread = new serverthread(serverclient);
-				_serverthread.start();
-				_connecteduser = user;
+				String respuesta = leer(in);
+				result = Integer.parseInt(respuesta);
+
+				sc.close();
+				if (result==0){
+					_serverthread = new serverthread(serverclient);
+					_serverthread.start();
+					_connecteduser = user;
+				}
+
 			}
-
+			catch(Exception e){
+				System.err.println("excepcion " + e.toString());
+				result = 3;
+			}
+			if(result == 0){
+				System.out.println("c> CONNECT OK");
+			}
+			else if(result == 1){
+				System.out.println("c> CONNECT FAIL, USER DOES NOT EXIST");
+			}
+			else if(result == 2){
+				System.out.println("c> USER ALREADY CONNECTED");
+			}
+			else {
+				System.out.println("c> CONNECT FAIL");
+			}
+			return result;
+		}else{
+			System.out.println("c> CONNECT FAIL, CONNECTION ACTIVE: " + _connecteduser);
+			return -1;
 		}
-		catch(Exception e){
-			System.err.println("excepcion " + e.toString());
-			result = 3;
-		}
-		if(result == 0){
-			System.out.println("c> CONNECT OK");
-		}
-		else if(result == 1){
-			System.out.println("c> CONNECT FAIL, USER DOES NOT EXIST");
-		}
-		else if(result == 2){
-			System.out.println("c> USER ALREADY CONNECTED");
-		}
-		else {
-			System.out.println("c> CONNECT FAIL");
-		}
-		return result;
 	}
 	
 	 /**
@@ -303,13 +308,13 @@ class client {
 			if(_serverthread == null){
 				_serverthread.Stop();
 				_serverthread = null;
-				_connecteduser = "";
+				_connecteduser = null;
 			}
 		}
 		if(result == 0){
 			_serverthread.Stop();
 			_serverthread = null;
-			_connecteduser = "";
+			_connecteduser = null;
 			System.out.println("c> DISCONNECT OK");
 		}
 		else if(result == 1){
@@ -451,15 +456,16 @@ class client {
 					System.out.printf("%10s%15s%10s\n", user, ip, puerto);
 					_connectedusers.add(new userInfo(user, ip, Integer.parseInt(puerto)));
 				}
+				result = 0;
 			}	
 			sc.close();
-			return 0;
 		}
 		catch (Exception e){
 			System.err.println("excepcion " + e.toString() );
 			result = 4;
 		}
-		if (result == -1){
+		if (result == 0) return result;
+		else if (result == -1){
 			result *= -1;
 			System.out.println("c> LIST_USERS FAIL, USER DOES NOT EXIST");
 		}
@@ -505,16 +511,17 @@ class client {
 					String descripcion = leer(in);
 					System.out.printf("\t%s\t%s\n", file, descripcion);
 				}
+				result = 0;
 			}
-			else if(result == 0) System.out.println(user_name + " hasn't published any files yet");
+			else if(result == 0) System.out.println("c> " + user_name + " hasn't published any files yet");
 			sc.close();
-			return 0;
 		}
 		catch (Exception e){
 			System.err.println("excepcion " + e.toString() );
-			result = -4;
+			result = -5;
 		}
-		if (result == -1){
+		if (result == 0) return result;
+		else if (result == -1){
 			result *= -1;
 			System.out.println("c> LIST_CONTENT FAIL, USER DOES NOT EXIST");
 		}
@@ -525,6 +532,10 @@ class client {
 		else if (result == -3){
 			result *= -1;
 			System.out.println("c> LIST_CONTENT FAIL, REMOTE USER DOES NOT EXIST");
+		}
+		else if (result == -4){
+			result *= -1;
+			System.out.println("c> LIST_CONTENT FAIL, REMOTE USER NOT CONNECTED");
 		}
 		else {
 			result *= -1;
@@ -778,26 +789,39 @@ class client {
 
 		return true;
 	}
+
+	/***** CAPTURAMOS EL CIERRE DE LA APLICACIÓN *****/
+	static public void attachShutDownHook(){
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+	  		@Override
+	  		public void run() {
+			  	System.out.println("\n+++ DISCONNECTING +++");
+				if(_connecteduser != null) disconnect(_connecteduser);	//Desconectamos al usuario para proteger la base de datos
+	   		}
+		});
+  	}
 	
 	
-	
+
 	/********************* MAIN **********************/
 	
 	public static void main(String[] argv) 
 	{
+	  	attachShutDownHook();
+
 		if(!parseArguments(argv)) {
 			usage();
 			return;
 		}
-		System.out.println("Host: "+_server+" Port: "+ _port + "\n");
+		System.out.println("Host: "+_server+" Port: "+ _port);
+		System.out.println("To quit type: 'QUIT' or press Ctrl+C\n");
 		
-		// Write code here
 		try{
 			shell();
 			if(_serverthread != null){
 				_serverthread.Stop();
 				_serverthread = null;
-				_connecteduser = "";
+				_connecteduser = null;
 			}
 		}
 		catch(Exception e){
