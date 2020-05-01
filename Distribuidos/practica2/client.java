@@ -569,7 +569,7 @@ class client {
 					}
 				}
 				if(_connectedusers.size() == i){
-					System.out.println("c> DELETE FAIL, USER NOT CONNECTED");
+					System.out.println("c> GET_FILE FAIL");
 					return 2;
 				}
 				String ip = _connectedusers.get(i).ipadress;
@@ -826,7 +826,7 @@ class client {
 		}
 		catch(Exception e){
 			System.out.println("+++ FINISHED +++");
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 }
