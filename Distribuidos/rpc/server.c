@@ -49,6 +49,8 @@ int busy = 1;
 CLIENT *clnt;
 enum clnt_stat retval_1;
 int result_1;
+enum clnt_stat retval_2;
+int result_2;
 /*
 *   MAIN
 */
@@ -314,7 +316,21 @@ void comunicacion(void *th_params){
 void cerrarServidor() {
     
     close(sd);
-    stopServer();
+
+    //stopServer();
+    ////////////////////////////////////////////////////////
+    clnt = clnt_create();
+    clnt = clnt_create (host, fildistributor, distrver, "tcp");
+    if (clnt == NULL) {
+		clnt_pcreateerror (host);
+		exit (1);
+	}
+
+	retval_1 = stopserver_1_svc(&result_1, clnt);
+	if (retval_1 != RPC_SUCCESS) {
+		clnt_perror (clnt, "call failed");
+	}
+    /////////////////////////////////////////////////
     pthread_mutex_destroy(&mutex);
     pthread_mutex_destroy(&bdmutex);
     pthread_cond_destroy(&cond);

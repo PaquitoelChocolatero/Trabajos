@@ -629,16 +629,13 @@ int check_User(char *user){
         //Si el usuario está conectado
         if(exists == 1){
             exists = 0;
-
-            //Comprobar si el usuario está conectado
-            sql_op = "SELECT * FROM USERS;";
-            active_rc = sqlite3_prepare_v2(active_db, sql_op, -1, &res, 0);
-            checkError();
-
+            sqlite3_close(active_db);
             return 0;
         }
+        sqlite3_close(active_db);
         return -1;
     }
+    sqlite3_close(active_db);
     return -1;
 }
     
