@@ -13,6 +13,8 @@
 #include "operations.h"
 #include "lines.h"
 
+#include "rpc/rpc.h"
+
 #define MAX_MESSAGES 10
 #define MAX_THREADS 40
 #define MAX_LINE 256
@@ -43,8 +45,10 @@ void mySend(int socket, char *mensaje);
 //Flag de actividad de los hilos
 int busy = 1;
 
-
-
+//Declaracion de las variables RPC
+CLIENT *clnt;
+enum clnt_stat retval_1;
+int result_1;
 /*
 *   MAIN
 */
@@ -72,7 +76,18 @@ int main(int argc, char *argv[]) {
 	}
 
 	//Iniciamos las bases de datos
-	startServer();
+	//startServer();
+    clnt = clnt_create();
+    clnt = clnt_create (host, fildistributor, distrver, "tcp");
+    if (clnt == NULL) {
+		clnt_pcreateerror (host);
+		exit (1);
+	}
+
+	retval_1 = startserver_1_svc(&result_1, clnt);
+	if (retval_1 != RPC_SUCCESS) {
+		clnt_perror (clnt, "call failed");
+	}
 
 	//Capturamos Ctrl+C para añadir funcionalidades
     signal(SIGINT, cerrarServidor);
