@@ -49,6 +49,7 @@ int busy = 1;
 CLIENT *clnt;
 enum clnt_stat retval_;
 int result_;
+char *host = "localhost";
 
 
 
@@ -79,8 +80,6 @@ int main(int argc, char *argv[]) {
 	}
 
 	//Iniciamos las bases de datos
-	//startServer();
-    clnt = clnt_create();
     clnt = clnt_create (host, fildistributor, distrver, "tcp");
     if (clnt == NULL) {
 		clnt_pcreateerror (host);
@@ -278,53 +277,53 @@ void comunicacion(void *th_params){
         sprintf(result, "%d", result_);
         mySend(s_local, result);
     }
-    else if(strcmp(buf, "LIST_USERS") == 0){
-        receive(s_local, user);
-        printf("S> Usuario: %s OPERACION: %s\n", user, buf);
-
-        //Creamos la lista en la que van a guardarse los resultados de la base de datos
-        char **content;
-
-        pthread_mutex_lock(&bdmutex);
-        retval_ = listuser_1(user, &result_, clnt);
-	    if (retval_ != RPC_SUCCESS) {
-	    	clnt_perror (clnt, "call failed");
-	    }
-        pthread_mutex_unlock(&bdmutex);
-
-        //Formateamos la respuesta del servidor
-        sprintf(result, "%d", result_/3);
-        mySend(s_local, result);
-
-        //Enviamos todo lo que ha devuelto la base de datos
-        //Hay 3 campos por cada usuario: nombre, ip, puerto
-        for(int i=0; i<resultado; i++) mySend(s_local, content[i]);
-
-        //Eliminamos la lista
-        free(content);
-    }
-    else if(strcmp(buf, "LIST_CONTENT") == 0){
-        receive(s_local, user);
-        receive(s_local, user_dest);
-        printf("S> Usuario: %s OPERACION: %s\n", user, buf);
-
-        char **content;
-        
-        pthread_mutex_lock(&bdmutex);
-        retval_ = listcontent_1(user_dest, user, &result_, clnt);
-	    if (retval_ != RPC_SUCCESS) {
-	    	clnt_perror (clnt, "call failed");
-	    }
-        pthread_mutex_unlock(&bdmutex);
-
-        //Formateamos la respuesta del servidor
-        sprintf(result, "%d", result_/2);
-        mySend(s_local, result);
-        
-        for(int i=0; i<resultado; i++) mySend(s_local, content[i]);
-        
-        free(content);
-    }
+//    else if(strcmp(buf, "LIST_USERS") == 0){
+//        receive(s_local, user);
+//        printf("S> Usuario: %s OPERACION: %s\n", user, buf);
+//
+//        //Creamos la lista en la que van a guardarse los resultados de la base de datos
+//        char **content;
+//
+//        pthread_mutex_lock(&bdmutex);
+//        retval_ = listuser_1(user, &result_, clnt);
+//	    if (retval_ != RPC_SUCCESS) {
+//	    	clnt_perror (clnt, "call failed");
+//	    }
+//        pthread_mutex_unlock(&bdmutex);
+//
+//        //Formateamos la respuesta del servidor
+//        sprintf(result, "%d", result_/3);
+//        mySend(s_local, result);
+//
+//        //Enviamos todo lo que ha devuelto la base de datos
+//        //Hay 3 campos por cada usuario: nombre, ip, puerto
+//        for(int i=0; i<resultado; i++) mySend(s_local, content[i]);
+//
+//        //Eliminamos la lista
+//        free(content);
+//    }
+//    else if(strcmp(buf, "LIST_CONTENT") == 0){
+//        receive(s_local, user);
+//        receive(s_local, user_dest);
+//        printf("S> Usuario: %s OPERACION: %s\n", user, buf);
+//
+//        char **content;
+//        
+//        pthread_mutex_lock(&bdmutex);
+//        retval_ = listcontent_1(user_dest, user, &result_, clnt);
+//	    if (retval_ != RPC_SUCCESS) {
+//	    	clnt_perror (clnt, "call failed");
+//	    }
+//        pthread_mutex_unlock(&bdmutex);
+//
+//        //Formateamos la respuesta del servidor
+//        sprintf(result, "%d", result_/2);
+//        mySend(s_local, result);
+//        
+//        for(int i=0; i<resultado; i++) mySend(s_local, content[i]);
+//        
+//        free(content);
+//    }
     else
 	{
 		printf("S> RECEIVED WRONG COMMAND: %s-\n", buf);
