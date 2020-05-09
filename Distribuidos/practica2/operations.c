@@ -425,7 +425,7 @@ int publishFile(char *user, char *file, char *description)
         //Comprobar si el archivo ya existe
         strcpy(concat_sql_op, "SELECT * FROM FILES WHERE user='");
         strcat(concat_sql_op, user);
-        strcat(concat_sql_op, "' AND name=';");
+        strcat(concat_sql_op, "' AND name='");
         strcat(concat_sql_op, file);
         strcat(concat_sql_op, "';");
         active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
