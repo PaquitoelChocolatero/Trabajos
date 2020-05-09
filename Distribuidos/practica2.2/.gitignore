@@ -1,0 +1,4 @@
+server
+*.o
+*.db
+*.class
