@@ -47,10 +47,11 @@ int busy = 1;
 
 //Declaracion de las variables RPC
 CLIENT *clnt;
-enum clnt_stat retval_1;
-int result_1;
-enum clnt_stat retval_2;
-int result_2;
+enum clnt_stat retval_;
+int result_;
+
+
+
 /*
 *   MAIN
 */
@@ -84,11 +85,6 @@ int main(int argc, char *argv[]) {
     if (clnt == NULL) {
 		clnt_pcreateerror (host);
 		exit (1);
-	}
-
-	retval_1 = startserver_1_svc(&result_1, clnt);
-	if (retval_1 != RPC_SUCCESS) {
-		clnt_perror (clnt, "call failed");
 	}
 
 	//Capturamos Ctrl+C para añadir funcionalidades
@@ -193,11 +189,14 @@ void comunicacion(void *th_params){
 
         //Accedemos a la base de datos
         pthread_mutex_lock(&bdmutex);
-        int resultado = registerUser(user);
+        retval_ = registeruser_1(user, &result_, clnt);
+	    if (retval_ != RPC_SUCCESS) {
+	    	clnt_perror (clnt, "call failed");
+	    }
         pthread_mutex_unlock(&bdmutex);
 
         //Formateamos la respuesta del servidor
-        sprintf(result, "%d", resultado);
+        sprintf(result, "%d", result_);
         mySend(s_local, result);
     }
     else if(strcmp(buf, "UNREGISTER") == 0){
@@ -205,10 +204,13 @@ void comunicacion(void *th_params){
         printf("S> Usuario: %s OPERACION: %s\n", user, buf);
 
         pthread_mutex_lock(&bdmutex);
-        int resultado = unregisterUser(user);
+        retval_ = unregisteruser_1(user, &result_, clnt);
+	    if (retval_ != RPC_SUCCESS) {
+	    	clnt_perror (clnt, "call failed");
+	    }
         pthread_mutex_unlock(&bdmutex);
 
-        sprintf(result, "%d", resultado);
+        sprintf(result, "%d", result_);
         mySend(s_local, result);
     }
     else if(strcmp(buf, "CONNECT") == 0){
@@ -218,21 +220,29 @@ void comunicacion(void *th_params){
         printf("S> Usuario: %s OPERACION: %s\n", user, buf);
 
         pthread_mutex_lock(&bdmutex);
-        int resultado = connectUser(user, ip_local, port);
+        retval_ = connectuser_1(user, ip_local, port, &result_, clnt);
+	    if (retval_ != RPC_SUCCESS) {
+	    	clnt_perror (clnt, "call failed");
+	    }
         pthread_mutex_unlock(&bdmutex);
 
-        sprintf(result, "%d", resultado);
+        sprintf(result, "%d", result_);
         mySend(s_local, result);
     }
     else if(strcmp(buf, "DISCONNECT") == 0){
         receive(s_local, user);
         printf("S> Usuario: %s OPERACION: %s\n", user, buf);
 
+        //Accedemos a la base de datos
         pthread_mutex_lock(&bdmutex);
-        int resultado = disconnectUser(user);
+        retval_ = disconnectuser_1(user, &result_, clnt);
+	    if (retval_ != RPC_SUCCESS) {
+	    	clnt_perror (clnt, "call failed");
+	    }
         pthread_mutex_unlock(&bdmutex);
 
-        sprintf(result, "%d", resultado);
+        //Formateamos la respuesta del servidor
+        sprintf(result, "%d", result_);
         mySend(s_local, result);
     }
     else if(strcmp(buf, "PUBLISH") == 0){
@@ -242,10 +252,14 @@ void comunicacion(void *th_params){
         printf("S> Usuario: %s OPERACION: %s\n", user, buf);
 
         pthread_mutex_lock(&bdmutex);
-        int resultado = publishFile(user, file_name, descript);
+        retval_ = publishfile_1(user, file_name, descript, &result_, clnt);
+	    if (retval_ != RPC_SUCCESS) {
+	    	clnt_perror (clnt, "call failed");
+	    }
         pthread_mutex_unlock(&bdmutex);
 
-        sprintf(result, "%d", resultado);
+        //Formateamos la respuesta del servidor
+        sprintf(result, "%d", result_);
         mySend(s_local, result);
     }
     else if(strcmp(buf, "DELETE") == 0){
@@ -254,10 +268,14 @@ void comunicacion(void *th_params){
         printf("S> Usuario: %s OPERACION: %s\n", user, buf);
 
         pthread_mutex_lock(&bdmutex);
-        int resultado = deleteFile(user, file_name);
+        retval_ = deletefile_1(user, file_name, &result_, clnt);
+	    if (retval_ != RPC_SUCCESS) {
+	    	clnt_perror (clnt, "call failed");
+	    }
         pthread_mutex_unlock(&bdmutex);
 
-        sprintf(result, "%d", resultado);
+        //Formateamos la respuesta del servidor
+        sprintf(result, "%d", result_);
         mySend(s_local, result);
     }
     else if(strcmp(buf, "LIST_USERS") == 0){
@@ -268,11 +286,14 @@ void comunicacion(void *th_params){
         char **content;
 
         pthread_mutex_lock(&bdmutex);
-        int resultado = list_users(user, &content);
+        retval_ = listuser_1(user, &result_, clnt);
+	    if (retval_ != RPC_SUCCESS) {
+	    	clnt_perror (clnt, "call failed");
+	    }
         pthread_mutex_unlock(&bdmutex);
 
-        //Enviamos el número de usuarios activos
-        sprintf(result, "%d", resultado/3);
+        //Formateamos la respuesta del servidor
+        sprintf(result, "%d", result_/3);
         mySend(s_local, result);
 
         //Enviamos todo lo que ha devuelto la base de datos
@@ -290,12 +311,14 @@ void comunicacion(void *th_params){
         char **content;
         
         pthread_mutex_lock(&bdmutex);
-        int resultado = list_content(user_dest, user, &content);
+        retval_ = listcontent_1(user_dest, user, &result_, clnt);
+	    if (retval_ != RPC_SUCCESS) {
+	    	clnt_perror (clnt, "call failed");
+	    }
         pthread_mutex_unlock(&bdmutex);
 
-
-        //Hay 2 campos por cada fichero del usuario: nombre, descripcion
-        sprintf(result, "%d", resultado/2);
+        //Formateamos la respuesta del servidor
+        sprintf(result, "%d", result_/2);
         mySend(s_local, result);
         
         for(int i=0; i<resultado; i++) mySend(s_local, content[i]);
@@ -317,20 +340,7 @@ void cerrarServidor() {
     
     close(sd);
 
-    //stopServer();
-    ////////////////////////////////////////////////////////
-    clnt = clnt_create();
-    clnt = clnt_create (host, fildistributor, distrver, "tcp");
-    if (clnt == NULL) {
-		clnt_pcreateerror (host);
-		exit (1);
-	}
-
-	retval_1 = stopserver_1_svc(&result_1, clnt);
-	if (retval_1 != RPC_SUCCESS) {
-		clnt_perror (clnt, "call failed");
-	}
-    /////////////////////////////////////////////////
+    stopServer();
     pthread_mutex_destroy(&mutex);
     pthread_mutex_destroy(&bdmutex);
     pthread_cond_destroy(&cond);

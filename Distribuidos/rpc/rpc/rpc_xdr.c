@@ -10,7 +10,18 @@ xdr_chain (XDR *xdrs, chain *objp)
 {
 	register int32_t *buf;
 
-	 if (!xdr_string (xdrs, &objp->res, 1024))
+	 if (!xdr_string (xdrs, objp, 256))
+		 return FALSE;
+	return TRUE;
+}
+
+bool_t
+xdr_mchains (XDR *xdrs, mchains *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_array (xdrs, (char **)&objp->mchains_val, (u_int *) &objp->mchains_len, ~0,
+		sizeof (chain), (xdrproc_t) xdr_chain))
 		 return FALSE;
 	return TRUE;
 }
@@ -45,6 +56,16 @@ xdr_deletefile_1_argument (XDR *xdrs, deletefile_1_argument *objp)
 	 if (!xdr_string (xdrs, &objp->user, ~0))
 		 return FALSE;
 	 if (!xdr_string (xdrs, &objp->file, ~0))
+		 return FALSE;
+	return TRUE;
+}
+
+bool_t
+xdr_listcontent_1_argument (XDR *xdrs, listcontent_1_argument *objp)
+{
+	 if (!xdr_string (xdrs, &objp->user, ~0))
+		 return FALSE;
+	 if (!xdr_string (xdrs, &objp->puser, ~0))
 		 return FALSE;
 	return TRUE;
 }

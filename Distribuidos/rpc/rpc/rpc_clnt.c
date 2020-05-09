@@ -10,24 +10,6 @@
 static struct timeval TIMEOUT = { 25, 0 };
 
 enum clnt_stat 
-startserver_1(void *clnt_res, CLIENT *clnt)
-{
-	 return (clnt_call (clnt, startServer, (xdrproc_t) xdr_void, (caddr_t) NULL,
-		(xdrproc_t) xdr_void, (caddr_t) clnt_res,
-		TIMEOUT));
-
-}
-
-enum clnt_stat 
-stopserver_1(void *clnt_res, CLIENT *clnt)
-{
-	 return (clnt_call (clnt, stopServer, (xdrproc_t) xdr_void, (caddr_t) NULL,
-		(xdrproc_t) xdr_void, (caddr_t) clnt_res,
-		TIMEOUT));
-
-}
-
-enum clnt_stat 
 registeruser_1(char *user, int *clnt_res,  CLIENT *clnt)
 {
 	return (clnt_call(clnt, registerUser,
@@ -90,20 +72,22 @@ deletefile_1(char *user, char *file, int *clnt_res,  CLIENT *clnt)
 }
 
 enum clnt_stat 
-listoneuser_1(int usernumber, chain *clnt_res,  CLIENT *clnt)
+listuser_1(char *user, mchains *clnt_res,  CLIENT *clnt)
 {
-	return (clnt_call(clnt, listOneUser,
-		(xdrproc_t) xdr_int, (caddr_t) &usernumber,
-		(xdrproc_t) xdr_chain, (caddr_t) clnt_res,
+	return (clnt_call(clnt, listUser,
+		(xdrproc_t) xdr_wrapstring, (caddr_t) &user,
+		(xdrproc_t) xdr_mchains, (caddr_t) clnt_res,
 		TIMEOUT));
 }
 
 enum clnt_stat 
-listonecontent_1(int one, chain *clnt_res,  CLIENT *clnt)
+listcontent_1(char *user, char *puser, mchains *clnt_res,  CLIENT *clnt)
 {
-	return (clnt_call(clnt, listOneContent,
-		(xdrproc_t) xdr_int, (caddr_t) &one,
-		(xdrproc_t) xdr_chain, (caddr_t) clnt_res,
+	listcontent_1_argument arg;
+	arg.user = user;
+	arg.puser = puser;
+	return (clnt_call (clnt, listContent, (xdrproc_t) xdr_listcontent_1_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_mchains, (caddr_t) clnt_res,
 		TIMEOUT));
 }
 

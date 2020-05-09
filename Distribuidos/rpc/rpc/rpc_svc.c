@@ -17,18 +17,6 @@
 #endif
 
 int
-_startserver_1 (void  *argp, void *result, struct svc_req *rqstp)
-{
-	return (startserver_1_svc(result, rqstp));
-}
-
-int
-_stopserver_1 (void  *argp, void *result, struct svc_req *rqstp)
-{
-	return (stopserver_1_svc(result, rqstp));
-}
-
-int
 _registeruser_1 (char * *argp, void *result, struct svc_req *rqstp)
 {
 	return (registeruser_1_svc(*argp, result, rqstp));
@@ -65,15 +53,15 @@ _deletefile_1 (deletefile_1_argument *argp, void *result, struct svc_req *rqstp)
 }
 
 int
-_listoneuser_1 (int  *argp, void *result, struct svc_req *rqstp)
+_listuser_1 (char * *argp, void *result, struct svc_req *rqstp)
 {
-	return (listoneuser_1_svc(*argp, result, rqstp));
+	return (listuser_1_svc(*argp, result, rqstp));
 }
 
 int
-_listonecontent_1 (int  *argp, void *result, struct svc_req *rqstp)
+_listcontent_1 (listcontent_1_argument *argp, void *result, struct svc_req *rqstp)
 {
-	return (listonecontent_1_svc(*argp, result, rqstp));
+	return (listcontent_1_svc(argp->user, argp->puser, result, rqstp));
 }
 
 int
@@ -92,8 +80,8 @@ fildistributor_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		char *disconnectuser_1_arg;
 		publishfile_1_argument publishfile_1_arg;
 		deletefile_1_argument deletefile_1_arg;
-		int listoneuser_1_arg;
-		int listonecontent_1_arg;
+		char *listuser_1_arg;
+		listcontent_1_argument listcontent_1_arg;
 		char *comprobar_1_arg;
 	} argument;
 	union {
@@ -103,8 +91,8 @@ fildistributor_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		int disconnectuser_1_res;
 		int publishfile_1_res;
 		int deletefile_1_res;
-		chain listoneuser_1_res;
-		chain listonecontent_1_res;
+		mchains listuser_1_res;
+		mchains listcontent_1_res;
 		int comprobar_1_res;
 	} result;
 	bool_t retval;
@@ -115,18 +103,6 @@ fildistributor_1(struct svc_req *rqstp, register SVCXPRT *transp)
 	case NULLPROC:
 		(void) svc_sendreply (transp, (xdrproc_t) xdr_void, (char *)NULL);
 		return;
-
-	case startServer:
-		_xdr_argument = (xdrproc_t) xdr_void;
-		_xdr_result = (xdrproc_t) xdr_void;
-		local = (bool_t (*) (char *, void *,  struct svc_req *))_startserver_1;
-		break;
-
-	case stopServer:
-		_xdr_argument = (xdrproc_t) xdr_void;
-		_xdr_result = (xdrproc_t) xdr_void;
-		local = (bool_t (*) (char *, void *,  struct svc_req *))_stopserver_1;
-		break;
 
 	case registerUser:
 		_xdr_argument = (xdrproc_t) xdr_wrapstring;
@@ -164,16 +140,16 @@ fildistributor_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		local = (bool_t (*) (char *, void *,  struct svc_req *))_deletefile_1;
 		break;
 
-	case listOneUser:
-		_xdr_argument = (xdrproc_t) xdr_int;
-		_xdr_result = (xdrproc_t) xdr_chain;
-		local = (bool_t (*) (char *, void *,  struct svc_req *))_listoneuser_1;
+	case listUser:
+		_xdr_argument = (xdrproc_t) xdr_wrapstring;
+		_xdr_result = (xdrproc_t) xdr_mchains;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_listuser_1;
 		break;
 
-	case listOneContent:
-		_xdr_argument = (xdrproc_t) xdr_int;
-		_xdr_result = (xdrproc_t) xdr_chain;
-		local = (bool_t (*) (char *, void *,  struct svc_req *))_listonecontent_1;
+	case listContent:
+		_xdr_argument = (xdrproc_t) xdr_listcontent_1_argument;
+		_xdr_result = (xdrproc_t) xdr_mchains;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_listcontent_1;
 		break;
 
 	case comprobar:
@@ -205,9 +181,18 @@ fildistributor_1(struct svc_req *rqstp, register SVCXPRT *transp)
 	return;
 }
 
+void cerrarServidor() {
+    stopServer();
+    fprintf(stderr, "\nCerrando servidor...\n");
+    exit(0);
+}
+
 int
 main (int argc, char **argv)
 {
+	//Capturamos Ctrl+C para añadir funcionalidades
+    signal(SIGINT, cerrarServidor);
+
 	register SVCXPRT *transp;
 
 	pmap_unset (fildistributor, distrver);
@@ -232,6 +217,7 @@ main (int argc, char **argv)
 		exit(1);
 	}
 
+	startServer();
 	svc_run ();
 	fprintf (stderr, "%s", "svc_run returned");
 	exit (1);

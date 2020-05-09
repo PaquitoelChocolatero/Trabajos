@@ -15,10 +15,12 @@ extern "C" {
 #endif
 
 
-struct chain {
-	char *res;
-};
-typedef struct chain chain;
+typedef char *chain;
+
+typedef struct {
+	u_int mchains_len;
+	chain *mchains_val;
+} mchains;
 
 struct connectuser_1_argument {
 	char *user;
@@ -40,77 +42,71 @@ struct deletefile_1_argument {
 };
 typedef struct deletefile_1_argument deletefile_1_argument;
 
+struct listcontent_1_argument {
+	char *user;
+	char *puser;
+};
+typedef struct listcontent_1_argument listcontent_1_argument;
+
 #define fildistributor 99
 #define distrver 1
 
 #if defined(__STDC__) || defined(__cplusplus)
-#define startServer 1
-extern  enum clnt_stat startserver_1(void *, CLIENT *);
-extern  bool_t startserver_1_svc(void *, struct svc_req *);
-#define stopServer 2
-extern  enum clnt_stat stopserver_1(void *, CLIENT *);
-extern  bool_t stopserver_1_svc(void *, struct svc_req *);
-#define registerUser 3
+#define registerUser 1
 extern  enum clnt_stat registeruser_1(char *, int *, CLIENT *);
 extern  bool_t registeruser_1_svc(char *, int *, struct svc_req *);
-#define unregisterUser 4
+#define unregisterUser 2
 extern  enum clnt_stat unregisteruser_1(char *, int *, CLIENT *);
 extern  bool_t unregisteruser_1_svc(char *, int *, struct svc_req *);
-#define connectUser 5
+#define connectUser 3
 extern  enum clnt_stat connectuser_1(char *, char *, int , int *, CLIENT *);
 extern  bool_t connectuser_1_svc(char *, char *, int , int *, struct svc_req *);
-#define disconnectUser 6
+#define disconnectUser 4
 extern  enum clnt_stat disconnectuser_1(char *, int *, CLIENT *);
 extern  bool_t disconnectuser_1_svc(char *, int *, struct svc_req *);
-#define publishFile 7
+#define publishFile 5
 extern  enum clnt_stat publishfile_1(char *, char *, char *, int *, CLIENT *);
 extern  bool_t publishfile_1_svc(char *, char *, char *, int *, struct svc_req *);
-#define deleteFile 8
+#define deleteFile 6
 extern  enum clnt_stat deletefile_1(char *, char *, int *, CLIENT *);
 extern  bool_t deletefile_1_svc(char *, char *, int *, struct svc_req *);
-#define listOneUser 9
-extern  enum clnt_stat listoneuser_1(int , chain *, CLIENT *);
-extern  bool_t listoneuser_1_svc(int , chain *, struct svc_req *);
-#define listOneContent 10
-extern  enum clnt_stat listonecontent_1(int , chain *, CLIENT *);
-extern  bool_t listonecontent_1_svc(int , chain *, struct svc_req *);
-#define comprobar 11
+#define listUser 7
+extern  enum clnt_stat listuser_1(char *, mchains *, CLIENT *);
+extern  bool_t listuser_1_svc(char *, mchains *, struct svc_req *);
+#define listContent 8
+extern  enum clnt_stat listcontent_1(char *, char *, mchains *, CLIENT *);
+extern  bool_t listcontent_1_svc(char *, char *, mchains *, struct svc_req *);
+#define comprobar 9
 extern  enum clnt_stat comprobar_1(char *, int *, CLIENT *);
 extern  bool_t comprobar_1_svc(char *, int *, struct svc_req *);
 extern int fildistributor_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
-#define startServer 1
-extern  enum clnt_stat startserver_1();
-extern  bool_t startserver_1_svc();
-#define stopServer 2
-extern  enum clnt_stat stopserver_1();
-extern  bool_t stopserver_1_svc();
-#define registerUser 3
+#define registerUser 1
 extern  enum clnt_stat registeruser_1();
 extern  bool_t registeruser_1_svc();
-#define unregisterUser 4
+#define unregisterUser 2
 extern  enum clnt_stat unregisteruser_1();
 extern  bool_t unregisteruser_1_svc();
-#define connectUser 5
+#define connectUser 3
 extern  enum clnt_stat connectuser_1();
 extern  bool_t connectuser_1_svc();
-#define disconnectUser 6
+#define disconnectUser 4
 extern  enum clnt_stat disconnectuser_1();
 extern  bool_t disconnectuser_1_svc();
-#define publishFile 7
+#define publishFile 5
 extern  enum clnt_stat publishfile_1();
 extern  bool_t publishfile_1_svc();
-#define deleteFile 8
+#define deleteFile 6
 extern  enum clnt_stat deletefile_1();
 extern  bool_t deletefile_1_svc();
-#define listOneUser 9
-extern  enum clnt_stat listoneuser_1();
-extern  bool_t listoneuser_1_svc();
-#define listOneContent 10
-extern  enum clnt_stat listonecontent_1();
-extern  bool_t listonecontent_1_svc();
-#define comprobar 11
+#define listUser 7
+extern  enum clnt_stat listuser_1();
+extern  bool_t listuser_1_svc();
+#define listContent 8
+extern  enum clnt_stat listcontent_1();
+extern  bool_t listcontent_1_svc();
+#define comprobar 9
 extern  enum clnt_stat comprobar_1();
 extern  bool_t comprobar_1_svc();
 extern int fildistributor_1_freeresult ();
@@ -120,15 +116,19 @@ extern int fildistributor_1_freeresult ();
 
 #if defined(__STDC__) || defined(__cplusplus)
 extern  bool_t xdr_chain (XDR *, chain*);
+extern  bool_t xdr_mchains (XDR *, mchains*);
 extern  bool_t xdr_connectuser_1_argument (XDR *, connectuser_1_argument*);
 extern  bool_t xdr_publishfile_1_argument (XDR *, publishfile_1_argument*);
 extern  bool_t xdr_deletefile_1_argument (XDR *, deletefile_1_argument*);
+extern  bool_t xdr_listcontent_1_argument (XDR *, listcontent_1_argument*);
 
 #else /* K&R C */
 extern bool_t xdr_chain ();
+extern bool_t xdr_mchains ();
 extern bool_t xdr_connectuser_1_argument ();
 extern bool_t xdr_publishfile_1_argument ();
 extern bool_t xdr_deletefile_1_argument ();
+extern bool_t xdr_listcontent_1_argument ();
 
 #endif /* K&R C */
 

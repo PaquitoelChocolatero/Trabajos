@@ -12,40 +12,37 @@ fildistributor_1(char *host)
 {
 	CLIENT *clnt;
 	enum clnt_stat retval_1;
-	void *result_1;
+	int result_1;
+	char *registeruser_1_user;
 	enum clnt_stat retval_2;
-	void *result_2;
+	int result_2;
+	char *unregisteruser_1_user;
 	enum clnt_stat retval_3;
 	int result_3;
-	char *registeruser_1_user;
-	enum clnt_stat retval_4;
-	int result_4;
-	char *unregisteruser_1_user;
-	enum clnt_stat retval_5;
-	int result_5;
 	char *connectuser_1_user;
 	char *connectuser_1_ip;
 	int connectuser_1_port;
-	enum clnt_stat retval_6;
-	int result_6;
+	enum clnt_stat retval_4;
+	int result_4;
 	char *disconnectuser_1_user;
-	enum clnt_stat retval_7;
-	int result_7;
+	enum clnt_stat retval_5;
+	int result_5;
 	char *publishfile_1_user;
 	char *publishfile_1_file;
 	char *publishfile_1_description;
-	enum clnt_stat retval_8;
-	int result_8;
+	enum clnt_stat retval_6;
+	int result_6;
 	char *deletefile_1_user;
 	char *deletefile_1_file;
+	enum clnt_stat retval_7;
+	mchains result_7;
+	char *listuser_1_user;
+	enum clnt_stat retval_8;
+	mchains result_8;
+	char *listcontent_1_user;
+	char *listcontent_1_puser;
 	enum clnt_stat retval_9;
-	chain result_9;
-	int listoneuser_1_usernumber;
-	enum clnt_stat retval_10;
-	chain result_10;
-	int listonecontent_1_one;
-	enum clnt_stat retval_11;
-	int result_11;
+	int result_9;
 	char *comprobar_1_user;
 
 #ifndef	DEBUG
@@ -56,48 +53,40 @@ fildistributor_1(char *host)
 	}
 #endif	/* DEBUG */
 
-	retval_1 = startserver_1(&result_1, clnt);
+	retval_1 = registeruser_1(registeruser_1_user, &result_1, clnt);
 	if (retval_1 != RPC_SUCCESS) {
 		clnt_perror (clnt, "call failed");
 	}
-	retval_2 = stopserver_1(&result_2, clnt);
+	retval_2 = unregisteruser_1(unregisteruser_1_user, &result_2, clnt);
 	if (retval_2 != RPC_SUCCESS) {
 		clnt_perror (clnt, "call failed");
 	}
-	retval_3 = registeruser_1(registeruser_1_user, &result_3, clnt);
+	retval_3 = connectuser_1(connectuser_1_user, connectuser_1_ip, connectuser_1_port, &result_3, clnt);
 	if (retval_3 != RPC_SUCCESS) {
 		clnt_perror (clnt, "call failed");
 	}
-	retval_4 = unregisteruser_1(unregisteruser_1_user, &result_4, clnt);
+	retval_4 = disconnectuser_1(disconnectuser_1_user, &result_4, clnt);
 	if (retval_4 != RPC_SUCCESS) {
 		clnt_perror (clnt, "call failed");
 	}
-	retval_5 = connectuser_1(connectuser_1_user, connectuser_1_ip, connectuser_1_port, &result_5, clnt);
+	retval_5 = publishfile_1(publishfile_1_user, publishfile_1_file, publishfile_1_description, &result_5, clnt);
 	if (retval_5 != RPC_SUCCESS) {
 		clnt_perror (clnt, "call failed");
 	}
-	retval_6 = disconnectuser_1(disconnectuser_1_user, &result_6, clnt);
+	retval_6 = deletefile_1(deletefile_1_user, deletefile_1_file, &result_6, clnt);
 	if (retval_6 != RPC_SUCCESS) {
 		clnt_perror (clnt, "call failed");
 	}
-	retval_7 = publishfile_1(publishfile_1_user, publishfile_1_file, publishfile_1_description, &result_7, clnt);
+	retval_7 = listuser_1(listuser_1_user, &result_7, clnt);
 	if (retval_7 != RPC_SUCCESS) {
 		clnt_perror (clnt, "call failed");
 	}
-	retval_8 = deletefile_1(deletefile_1_user, deletefile_1_file, &result_8, clnt);
+	retval_8 = listcontent_1(listcontent_1_user, listcontent_1_puser, &result_8, clnt);
 	if (retval_8 != RPC_SUCCESS) {
 		clnt_perror (clnt, "call failed");
 	}
-	retval_9 = listoneuser_1(listoneuser_1_usernumber, &result_9, clnt);
+	retval_9 = comprobar_1(comprobar_1_user, &result_9, clnt);
 	if (retval_9 != RPC_SUCCESS) {
-		clnt_perror (clnt, "call failed");
-	}
-	retval_10 = listonecontent_1(listonecontent_1_one, &result_10, clnt);
-	if (retval_10 != RPC_SUCCESS) {
-		clnt_perror (clnt, "call failed");
-	}
-	retval_11 = comprobar_1(comprobar_1_user, &result_11, clnt);
-	if (retval_11 != RPC_SUCCESS) {
 		clnt_perror (clnt, "call failed");
 	}
 #ifndef	DEBUG

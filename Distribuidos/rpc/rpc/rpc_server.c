@@ -8,31 +8,6 @@
 #include "../operations.h"
 
 bool_t
-startserver_1_svc(void *result, struct svc_req *rqstp)
-{
-	bool_t retval;
-
-	/*
-	 * insert server code here
-	 */
-	startServer();
-
-	return retval;
-}
-
-bool_t
-stopserver_1_svc(void *result, struct svc_req *rqstp)
-{
-	bool_t retval;
-
-	/*
-	 * insert server code here
-	 */
-	stopServer();
-	return retval;
-}
-
-bool_t
 registeruser_1_svc(char *user, int *result,  struct svc_req *rqstp)
 {
 	bool_t retval;
@@ -40,7 +15,8 @@ registeruser_1_svc(char *user, int *result,  struct svc_req *rqstp)
 	/*
 	 * insert server code here
 	 */
-	registerUser(*user);
+	registerUser(user);
+	retval = TRUE;
 	return retval;
 }
 
@@ -52,7 +28,8 @@ unregisteruser_1_svc(char *user, int *result,  struct svc_req *rqstp)
 	/*
 	 * insert server code here
 	 */
-	unregisterUser(*user);
+	unregisterUser(user);
+	retval = TRUE;
 	return retval;
 }
 
@@ -64,7 +41,8 @@ connectuser_1_svc(char *user, char *ip, int port, int *result,  struct svc_req *
 	/*
 	 * insert server code here
 	 */
-	int connectUser(char *user, char *ip, int port);
+	connectUser(user, ip, port);
+	retval = TRUE;
 	return retval;
 }
 
@@ -76,7 +54,8 @@ disconnectuser_1_svc(char *user, int *result,  struct svc_req *rqstp)
 	/*
 	 * insert server code here
 	 */
-	int disconnectUser(char *user);
+	disconnectUser(user);
+	retval = TRUE;
 	return retval;
 }
 
@@ -88,7 +67,8 @@ publishfile_1_svc(char *user, char *file, char *description, int *result,  struc
 	/*
 	 * insert server code here
 	 */
-	int publishFile(char *user, char *file, char *description);
+	publishFile(user, file, description);
+	retval = TRUE;
 	return retval;
 }
 
@@ -100,31 +80,34 @@ deletefile_1_svc(char *user, char *file, int *result,  struct svc_req *rqstp)
 	/*
 	 * insert server code here
 	 */
-	int deleteFile(char *user, char *file);
+	deleteFile(user, file);
+	retval = TRUE;
 	return retval;
 }
 
 bool_t
-listoneuser_1_svc(int usernumber, chain *result,  struct svc_req *rqstp)
+listuser_1_svc(char *user, mchains *result,  struct svc_req *rqstp)
 {
 	bool_t retval;
 
 	/*
 	 * insert server code here
 	 */
-
+	list_users(user);
+	retval = TRUE;
 	return retval;
 }
 
 bool_t
-listonecontent_1_svc(int one, chain *result,  struct svc_req *rqstp)
+listcontent_1_svc(char *user, char *puser, mchains *result,  struct svc_req *rqstp)
 {
 	bool_t retval;
 
 	/*
 	 * insert server code here
 	 */
-
+	list_content(user, puser);
+	retval = TRUE;
 	return retval;
 }
 
@@ -136,8 +119,8 @@ comprobar_1_svc(char *user, int *result,  struct svc_req *rqstp)
 	/*
 	 * insert server code here
 	 */
-	check_User(*user);
-
+	check_User(user);
+	retval = TRUE;
 	return retval;
 }
 
