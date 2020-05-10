@@ -3,14 +3,16 @@
  * It was generated using rpcgen.
  */
 
-#include "rpc.h"
+#include "storage.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <pmap_clnt.h>
+#include <rpc/pmap_clnt.h>
 #include <string.h>
 #include <memory.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include "operations.h"
+#include <signal.h>
 
 #ifndef SIG_PF
 #define SIG_PF void(*)(int)
@@ -95,7 +97,7 @@ fildistributor_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		mchains listcontent_1_res;
 		int comprobar_1_res;
 	} result;
-	bool_t retval;rpc_server
+	bool_t retval;
 	xdrproc_t _xdr_argument, _xdr_result;
 	bool_t (*local)(char *, void *, struct svc_req *);
 
@@ -181,17 +183,11 @@ fildistributor_1(struct svc_req *rqstp, register SVCXPRT *transp)
 	return;
 }
 
-void cerrarServidor() {
-    stopServer();
-    fprintf(stderr, "\nCerrando servidor...\n");
-    exit(0);
-}
 
 int
 main (int argc, char **argv)
 {
-	//Capturamos Ctrl+C para añadir funcionalidades
-    signal(SIGINT, cerrarServidor);
+	
 
 	register SVCXPRT *transp;
 
@@ -216,8 +212,10 @@ main (int argc, char **argv)
 		fprintf (stderr, "%s", "unable to register (fildistributor, distrver, tcp).");
 		exit(1);
 	}
-
 	startServer();
+	printf("Iniciando server RPC\n Ctrl + C para terminar\n");
+	//Capturamos Ctrl+C para añadir funcionalidades
+    signal(SIGINT, stopServer);
 	svc_run ();
 	fprintf (stderr, "%s", "svc_run returned");
 	exit (1);

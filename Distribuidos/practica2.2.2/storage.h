@@ -3,8 +3,8 @@
  * It was generated using rpcgen.
  */
 
-#ifndef _RPC_H_RPCGEN
-#define _RPC_H_RPCGEN
+#ifndef _STORAGE_H_RPCGEN
+#define _STORAGE_H_RPCGEN
 
 #include <rpc/rpc.h>
 
@@ -136,4 +136,4 @@ extern bool_t xdr_listcontent_1_argument ();
 }
 #endif
 
-#endif /* !_RPC_H_RPCGEN */
+#endif /* !_STORAGE_H_RPCGEN */

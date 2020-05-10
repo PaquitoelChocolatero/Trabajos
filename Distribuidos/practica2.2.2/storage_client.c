@@ -4,7 +4,7 @@
  * as a guideline for developing your own functions.
  */
 
-#include "rpc.h"
+#include "storage.h"
 
 
 void

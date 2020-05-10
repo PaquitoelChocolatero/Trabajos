@@ -13,7 +13,7 @@
 #include "operations.h"
 #include "lines.h"
 
-#include "rpc.h"
+#include "storage.h"
 
 #define MAX_MESSAGES 10
 #define MAX_THREADS 40
@@ -37,6 +37,7 @@ struct threadParams{
 int sd;
 
 //Declaracion de funciones
+void cerrarServidor();
 void comunicacion(void *th_params);
 void receive(int socket, char *mensaje);
 void mySend(int socket, char *mensaje);
@@ -44,13 +45,12 @@ void mySend(int socket, char *mensaje);
 //Flag de actividad de los hilos
 int busy = 1;
 
+
 //Declaracion de las variables RPC
 CLIENT *clnt;
 enum clnt_stat retval_;
 int result_;
-char *host = "localhost";
-
-
+char host[50];
 
 /*
 *   MAIN
@@ -63,10 +63,13 @@ int main(int argc, char *argv[]) {
     socklen_t size;
     struct sockaddr_in server_addr, client_addr;
 	
-	while((option = getopt(argc, argv,"p:")) != -1) {
+	while((option = getopt(argc, argv,"p:s:")) != -1) {
 		switch (option) {
 			case 'p' : 
 				strcpy(port, optarg);
+		    	break;
+            case 's' : 
+				strcpy(host, optarg);
 		    	break;
 		    default: 
 				printf("Usage: server -p puerto \n");
@@ -77,6 +80,7 @@ int main(int argc, char *argv[]) {
 		printf("Usage: server -p puerto \n"); 
 		exit(-1);
 	}
+    printf("sentado en la esquina %s %s\n", port, host);
 
 	//Iniciamos las bases de datos
     clnt = clnt_create (host, fildistributor, distrver, "tcp");
@@ -85,6 +89,9 @@ int main(int argc, char *argv[]) {
 		exit (1);
 	}
 
+    //Capturamos Ctrl+C para añadir funcionalidades
+    signal(SIGINT, cerrarServidor);
+
 
     //Iniciamos los hilos
     pthread_mutex_init(&bdmutex, NULL);
@@ -92,7 +99,7 @@ int main(int argc, char *argv[]) {
     pthread_cond_init(&cond, NULL);
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-
+    printf("pensando como fui tan gil\n");
     //Iniciamos el socket
     sd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sd < 0) {
@@ -194,6 +201,7 @@ void comunicacion(void *th_params){
         //Formateamos la respuesta del servidor
         sprintf(result, "%d", result_);
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s", result);
     }
     else if(strcmp(buf, "UNREGISTER") == 0){
         receive(s_local, user);
@@ -330,7 +338,20 @@ void comunicacion(void *th_params){
 	pthread_exit(NULL);
 }
 
+void cerrarServidor() {
+    
+    close(sd);
+    pthread_mutex_destroy(&mutex);
+    pthread_mutex_destroy(&bdmutex);
+    pthread_cond_destroy(&cond);
+    clnt_destroy(clnt);
+    
+    //Migra los datos de la base de datos de activos a la de registrados para no perder nada
+    
+    fprintf(stderr, "\nCerrando servidor...\n");
+    exit(0);
 
+}
 
 void receive(int socket, char *mensaje){
     if(readLine(socket, mensaje, MAX_LINE) <=0){

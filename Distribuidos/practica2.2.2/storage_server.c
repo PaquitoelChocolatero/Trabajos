@@ -4,19 +4,16 @@
  * as a guideline for developing your own functions.
  */
 
-#include "rpc.h"
+#include "storage.h"
 #include "operations.h"
 
-bool_t
+bool_t 
 registeruser_1_svc(char *user, int *result,  struct svc_req *rqstp)
 {
 	bool_t retval;
-
-	/*
-	 * insert server code here
-	 */
-	registerUser(user);
-	retval = TRUE;
+	*result=registerU(user);
+	
+	retval=TRUE;
 	return retval;
 }
 
@@ -25,11 +22,10 @@ unregisteruser_1_svc(char *user, int *result,  struct svc_req *rqstp)
 {
 	bool_t retval;
 
-	/*
-	 * insert server code here
-	 */
-	unregisterUser(user);
-	retval = TRUE;
+	*result=unregisterU(user);
+	
+	retval=TRUE;
+
 	return retval;
 }
 
@@ -38,11 +34,10 @@ connectuser_1_svc(char *user, char *ip, int port, int *result,  struct svc_req *
 {
 	bool_t retval;
 
-	/*
-	 * insert server code here
-	 */
-	connectUser(user, ip, port);
-	retval = TRUE;
+	*result=connectU(user, ip, port);
+	
+	retval=TRUE;
+
 	return retval;
 }
 
@@ -51,11 +46,10 @@ disconnectuser_1_svc(char *user, int *result,  struct svc_req *rqstp)
 {
 	bool_t retval;
 
-	/*
-	 * insert server code here
-	 */
-	disconnectUser(user);
-	retval = TRUE;
+	*result=disconnectU(user);
+	
+	retval=TRUE;
+
 	return retval;
 }
 
@@ -64,11 +58,10 @@ publishfile_1_svc(char *user, char *file, char *description, int *result,  struc
 {
 	bool_t retval;
 
-	/*
-	 * insert server code here
-	 */
-	publishFile(user, file, description);
-	retval = TRUE;
+	*result=publishF(user, file, description);
+	
+	retval=TRUE;
+
 	return retval;
 }
 
@@ -77,11 +70,10 @@ deletefile_1_svc(char *user, char *file, int *result,  struct svc_req *rqstp)
 {
 	bool_t retval;
 
-	/*
-	 * insert server code here
-	 */
-	deleteFile(user, file);
-	retval = TRUE;
+	*result=deleteF(user, file);
+	
+	retval=TRUE;
+
 	return retval;
 }
 
@@ -90,11 +82,8 @@ listuser_1_svc(char *user, mchains *result,  struct svc_req *rqstp)
 {
 	bool_t retval;
 
-	/*
-	 * insert server code here
-	 */
-	list_users(user);
-	retval = TRUE;
+
+
 	return retval;
 }
 
@@ -103,11 +92,7 @@ listcontent_1_svc(char *user, char *puser, mchains *result,  struct svc_req *rqs
 {
 	bool_t retval;
 
-	/*
-	 * insert server code here
-	 */
-	list_content(user, puser);
-	retval = TRUE;
+
 	return retval;
 }
 
@@ -116,11 +101,10 @@ comprobar_1_svc(char *user, int *result,  struct svc_req *rqstp)
 {
 	bool_t retval;
 
-	/*
-	 * insert server code here
-	 */
-	check_User(user);
-	retval = TRUE;
+	*result=check_User(user);
+	
+	retval=TRUE;
+
 	return retval;
 }
 
@@ -129,9 +113,6 @@ fildistributor_1_freeresult (SVCXPRT *transp, xdrproc_t xdr_result, caddr_t resu
 {
 	xdr_free (xdr_result, result);
 
-	/*
-	 * Insert additional freeing code here, if needed
-	 */
 
 	return 1;
 }

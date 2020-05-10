@@ -3,7 +3,7 @@
  * It was generated using rpcgen.
  */
 
-#include "rpc.h"
+#include "storage.h"
 
 bool_t
 xdr_chain (XDR *xdrs, chain *objp)
