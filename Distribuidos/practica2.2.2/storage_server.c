@@ -7,112 +7,175 @@
 #include "storage.h"
 #include "operations.h"
 
-bool_t 
-registeruser_1_svc(char *user, int *result,  struct svc_req *rqstp)
+bool_t
+registeruser_1_svc(char *user, int *result, struct svc_req *rqstp)
 {
 	bool_t retval;
-	*result=registerU(user);
+	*result = registerU(user);
+
+	retval = TRUE;
+	return retval;
+}
+
+bool_t
+unregisteruser_1_svc(char *user, int *result, struct svc_req *rqstp)
+{
+	bool_t retval;
+
+	*result = unregisterU(user);
+
+	retval = TRUE;
+
+	return retval;
+}
+
+bool_t
+connectuser_1_svc(char *user, char *ip, int port, int *result, struct svc_req *rqstp)
+{
+	bool_t retval;
+
+	*result = connectU(user, ip, port);
+
+	retval = TRUE;
+
+	return retval;
+}
+
+bool_t
+disconnectuser_1_svc(char *user, int *result, struct svc_req *rqstp)
+{
+	bool_t retval;
+
+	*result = disconnectU(user);
+
+	retval = TRUE;
+
+	return retval;
+}
+
+bool_t
+publishfile_1_svc(char *user, char *file, char *description, int *result, struct svc_req *rqstp)
+{
+	bool_t retval;
+
+	*result = publishF(user, file, description);
+
+	retval = TRUE;
+
+	return retval;
+}
+
+bool_t
+deletefile_1_svc(char *user, char *file, int *result, struct svc_req *rqstp)
+{
+	bool_t retval;
+
+	*result = deleteF(user, file);
+
+	retval = TRUE;
+
+	return retval;
+}
+
+bool_t
+listuser_1_svc(char *user, mchains *result, struct svc_req *rqstp)
+{
+	//result devuelve una matriz de strings siendo el primer elemento el codigo de error y
+	//el siguiente el numero de usuarios en caso de cod=0
+	bool_t retval;
+	mchains lista;
+	char buffer[MAX_LINE];
+	int codigo = list_users(user, &(lista.mchains_val));
+	if (codigo < 0)
+	{
+		result->mchains_val = (chain *)malloc(sizeof(chain));
+		result->mchains_val[0] = (char *)malloc(MAX_LINE);
+		sprintf(buffer, "%d", -codigo);
+		strcpy(result->mchains_val[0], buffer); // codigo de error
+		result->mchains_len = 1;
+	}
+	else
+	{
+		// añado dos elementos nuevos a lista
+		result->mchains_val = (chain *)malloc((codigo + 2) * sizeof(chain));
+		result->mchains_val[0] = (char *)malloc(MAX_LINE);
+		strcpy(result->mchains_val[0], "0"); // codigo ok
+		result->mchains_val[1] = (char *)malloc(MAX_LINE);
+		sprintf(buffer, "%d", codigo);
+		strcpy(result->mchains_val[1], buffer); // num elementos
+		for (int i = 0; i < codigo; i++)
+		{
+			result->mchains_val[i + 2] = (char *)malloc(MAX_LINE);
+			strcpy(result->mchains_val[i + 2], lista.mchains_val[i]); // lista original
+		}
+		result->mchains_len = codigo + 2;
+	}
+
+	for (int i = 0; i < lista.mchains_len; i++) free(lista.mchains_val[i]);
+	free(lista.mchains_val);
 	
-	retval=TRUE;
+	retval = TRUE;
+
 	return retval;
 }
 
 bool_t
-unregisteruser_1_svc(char *user, int *result,  struct svc_req *rqstp)
+listcontent_1_svc(char *user, char *puser, mchains *result, struct svc_req *rqstp)
 {
+	//result devuelve una matriz de strings siendo el primer elemento el codigo de error y
+	//el siguiente el numero de ficheros en caso de cod=0
 	bool_t retval;
+	mchains lista;
+	char buffer[MAX_LINE];
+	int codigo = list_content(user, puser, &(lista.mchains_val));
+	/*printf("gutifarra1\n");
+	int codigo = list_content(user, puser, &(lista.mchains_val));
+	printf("codigo %d\n", codigo);
+	for(int i=0; i<codigo; i++) printf("%s", lista.mchains_val[i]);
+	*/
+	if (codigo < 0)
+	{
+		result->mchains_val = (chain *)malloc(sizeof(chain));
+		printf("gutifarra2\n");
+		result->mchains_val[0] = (char *)malloc(MAX_LINE);
+		sprintf(buffer, "%d", -codigo);
+		strcpy(result->mchains_val[0], buffer); // codigo de error
+		result->mchains_len = 1;
 
-	*result=unregisterU(user);
+		printf("gutifarra3\n");
+	}
 	
-	retval=TRUE;
+	else
+	{
+		// añado dos elementos nuevos a lista
+		result->mchains_val = (chain *)malloc((codigo + 2) * sizeof(chain));
+		printf("gutifarra4\n");
+		result->mchains_val[0] = (char *)malloc(MAX_LINE);
+		strcpy(result->mchains_val[0], "0"); // codigo ok
+		result->mchains_val[1] = (char *)malloc(MAX_LINE);
+		printf("gutifarra5\n");
+		sprintf(buffer, "%d", codigo);
+		strcpy(result->mchains_val[1], buffer); // num elementos
+		printf("gutifarra6\n");
+		for (int i = 0; i < codigo; i++)
+		{
+			printf("gutifarra%d\n", i);
+			result->mchains_val[i + 2] = (char *)malloc(MAX_LINE);
+			strcpy(result->mchains_val[i + 2], lista.mchains_val[i]); // lista original
+		}
+		printf("gutifarra7\n");
+		result->mchains_len = codigo + 2;
+	}
+	for (int i = 0; i < lista.mchains_len; i++) free(lista.mchains_val[i]);
+	free(lista.mchains_val);
+	retval = TRUE;
 
 	return retval;
 }
 
-bool_t
-connectuser_1_svc(char *user, char *ip, int port, int *result,  struct svc_req *rqstp)
+int fildistributor_1_freeresult(SVCXPRT *transp, xdrproc_t xdr_result, caddr_t result)
 {
-	bool_t retval;
-
-	*result=connectU(user, ip, port);
-	
-	retval=TRUE;
-
-	return retval;
-}
-
-bool_t
-disconnectuser_1_svc(char *user, int *result,  struct svc_req *rqstp)
-{
-	bool_t retval;
-
-	*result=disconnectU(user);
-	
-	retval=TRUE;
-
-	return retval;
-}
-
-bool_t
-publishfile_1_svc(char *user, char *file, char *description, int *result,  struct svc_req *rqstp)
-{
-	bool_t retval;
-
-	*result=publishF(user, file, description);
-	
-	retval=TRUE;
-
-	return retval;
-}
-
-bool_t
-deletefile_1_svc(char *user, char *file, int *result,  struct svc_req *rqstp)
-{
-	bool_t retval;
-
-	*result=deleteF(user, file);
-	
-	retval=TRUE;
-
-	return retval;
-}
-
-bool_t
-listuser_1_svc(char *user, mchains *result,  struct svc_req *rqstp)
-{
-	bool_t retval;
-
-
-
-	return retval;
-}
-
-bool_t
-listcontent_1_svc(char *user, char *puser, mchains *result,  struct svc_req *rqstp)
-{
-	bool_t retval;
-
-
-	return retval;
-}
-
-bool_t
-comprobar_1_svc(char *user, int *result,  struct svc_req *rqstp)
-{
-	bool_t retval;
-
-	*result=check_User(user);
-	
-	retval=TRUE;
-
-	return retval;
-}
-
-int
-fildistributor_1_freeresult (SVCXPRT *transp, xdrproc_t xdr_result, caddr_t result)
-{
-	xdr_free (xdr_result, result);
-
+	xdr_free(xdr_result, result);
 
 	return 1;
 }

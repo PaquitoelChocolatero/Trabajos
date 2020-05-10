@@ -7,8 +7,9 @@
 #define _STORAGE_H_RPCGEN
 
 #include <rpc/rpc.h>
-
 #include <pthread.h>
+
+#define MAX_LINE 256
 
 #ifdef __cplusplus
 extern "C" {
@@ -76,9 +77,7 @@ extern  bool_t listuser_1_svc(char *, mchains *, struct svc_req *);
 #define listContent 8
 extern  enum clnt_stat listcontent_1(char *, char *, mchains *, CLIENT *);
 extern  bool_t listcontent_1_svc(char *, char *, mchains *, struct svc_req *);
-#define comprobar 9
-extern  enum clnt_stat comprobar_1(char *, int *, CLIENT *);
-extern  bool_t comprobar_1_svc(char *, int *, struct svc_req *);
+
 extern int fildistributor_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -106,9 +105,7 @@ extern  bool_t listuser_1_svc();
 #define listContent 8
 extern  enum clnt_stat listcontent_1();
 extern  bool_t listcontent_1_svc();
-#define comprobar 9
-extern  enum clnt_stat comprobar_1();
-extern  bool_t comprobar_1_svc();
+
 extern int fildistributor_1_freeresult ();
 #endif /* K&R C */
 

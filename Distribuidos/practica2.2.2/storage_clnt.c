@@ -91,11 +91,3 @@ listcontent_1(char *user, char *puser, mchains *clnt_res,  CLIENT *clnt)
 		TIMEOUT));
 }
 
-enum clnt_stat 
-comprobar_1(char *user, int *clnt_res,  CLIENT *clnt)
-{
-	return (clnt_call(clnt, comprobar,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) &user,
-		(xdrproc_t) xdr_int, (caddr_t) clnt_res,
-		TIMEOUT));
-}

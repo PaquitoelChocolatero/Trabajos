@@ -3,8 +3,9 @@
 
 # Parameters
 
-CLIENT = server
+CLIENT = server 
 SERVER = storage_server
+
 
 SOURCES_CLNT.c = 
 SOURCES_CLNT.h = 
@@ -27,8 +28,8 @@ SERVERLIBS += -l sqlite3 -Ilib/sqlite
 
 # Targets 
 
-all : $(CLIENT) $(SERVER)
 
+all : $(CLIENT) $(SERVER)
 
 $(OBJECTS_CLNT) : $(SOURCES_CLNT.c) $(SOURCES_CLNT.h) $(TARGETS_CLNT.c) 
 

@@ -13,6 +13,5 @@ program fildistributor{
         int deleteFile(string user, string file)=6;
         mchains listUser(string user)=7;
         mchains listContent(string user, string puser)=8;
-        int comprobar(string user)=9;
     }=1;
 }=99;

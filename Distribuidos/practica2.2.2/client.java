@@ -284,7 +284,7 @@ class client {
 					_connecteduser = user;
 				}
 
-			}
+			} 
 			catch(Exception e){
 				System.err.println("excepcion " + e.toString());
 				result = 3;
@@ -437,7 +437,7 @@ class client {
 	 */
 	static int delete(String file_name)
 	{
-		int result = 0;
+		int result = 4;
 		try{
 			//si el server no está activo, el usuario no está conectado, por lo tanto devuelve 2
 			if(_serverthread == null){
@@ -513,7 +513,7 @@ class client {
 
 			//si la respuesta del servidor es 0, leemos de nuevo para obtener el numero de usuarios y limpiamos la lista de usuarios conectados
 			if (result == 0){
-				int num_users = Integer.parseInt(leer(in));
+				int num_users = Integer.parseInt(leer(in)) / 3;	//recibimos un usuario cada 3 lineas
 				_connectedusers = new ArrayList<userInfo>();
 
 				//imprimimos la lista de usuarios con su ip y puerto recibiendolos del servidor y añadimos los elementos al arraylist de usuarios conectados
@@ -584,7 +584,7 @@ class client {
 			if (result == 0){
 
 				//leemos de nuevo para obtener el numero de ficheros del usuario
-				int num_files = Integer.parseInt(leer(in));
+				int num_files = Integer.parseInt(leer(in)) / 2;
 
 				//si el numero de ficheros es 0, imprime el siguiente error
 				if(num_files == 0) System.out.println("c> " + user_name + " hasn't published any files yet");

@@ -66,12 +66,6 @@ _listcontent_1 (listcontent_1_argument *argp, void *result, struct svc_req *rqst
 	return (listcontent_1_svc(argp->user, argp->puser, result, rqstp));
 }
 
-int
-_comprobar_1 (char * *argp, void *result, struct svc_req *rqstp)
-{
-	return (comprobar_1_svc(*argp, result, rqstp));
-}
-
 static void
 fildistributor_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
@@ -84,7 +78,6 @@ fildistributor_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		deletefile_1_argument deletefile_1_arg;
 		char *listuser_1_arg;
 		listcontent_1_argument listcontent_1_arg;
-		char *comprobar_1_arg;
 	} argument;
 	union {
 		int registeruser_1_res;
@@ -95,7 +88,6 @@ fildistributor_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		int deletefile_1_res;
 		mchains listuser_1_res;
 		mchains listcontent_1_res;
-		int comprobar_1_res;
 	} result;
 	bool_t retval;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -152,12 +144,6 @@ fildistributor_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		_xdr_argument = (xdrproc_t) xdr_listcontent_1_argument;
 		_xdr_result = (xdrproc_t) xdr_mchains;
 		local = (bool_t (*) (char *, void *,  struct svc_req *))_listcontent_1;
-		break;
-
-	case comprobar:
-		_xdr_argument = (xdrproc_t) xdr_wrapstring;
-		_xdr_result = (xdrproc_t) xdr_int;
-		local = (bool_t (*) (char *, void *,  struct svc_req *))_comprobar_1;
 		break;
 
 	default:
