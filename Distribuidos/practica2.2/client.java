@@ -318,7 +318,7 @@ class client {
 			System.out.println("c> DISCONNECT OK");
 		}
 		else if(result == 1){
-			System.out.println("c> DOSCONNECT FAIL / USER DOES NOT EXIST");
+			System.out.println("c> DISCONNECT FAIL / USER DOES NOT EXIST");
 		}
 		else if(result == 2){
 			System.out.println("c> DISCONNECT FAIL / USER NOT CONNECTED");
