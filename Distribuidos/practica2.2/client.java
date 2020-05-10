@@ -6,37 +6,47 @@ import java.net.*;
 import java.util.ArrayList;
 import gnu.getopt.Getopt;
 
-
+//Clase para el servidor local del cliente para la petición GET_FILE
 class serverthread extends Thread{
+	//Declaracion del serversocket
 	private ServerSocket sc;
-	
+	//constructor de la clase
 	public serverthread(ServerSocket ss){
 		sc = ss;
 	}
+	//funcion principal del server
 	public void run(){
 		try{
 			while(true){
+				//recibe una conexion de un cliente y crea el socket
 				Socket sh = sc.accept();
 				DataOutputStream os = new DataOutputStream(sh.getOutputStream());
 				DataInputStream in = new DataInputStream(sh.getInputStream());
-			
+				
+				//Lee del socket
 				String mensaje = leer(in);
+
+				//si la cadena recibida no es GET_FILE error
 				if(!mensaje.equals("GET_FILE")){
 					System.out.println("Error");
 					sc.close();
 					sh.close();	
 					return;
 				}
+				//recibe del socket el fichero
 				String rmt_file = leer(in);
 				File f = new File(rmt_file);
+
+				//Si existe el fichero lo copia al socket y envia codigo 0
 				if(f.exists() && f.isFile()){
 					escribir(os, "0");
 					InputStream inp = new FileInputStream(rmt_file);
 					DataInputStream inputfile = new DataInputStream(inp);
-
 					copy.copyFile(inputfile, os);
+					//cierre del fichero
 					inputfile.close();
 				}
+				//Si no existe envia codigo 1
 				else{
 					escribir(os, "1");
 				}
@@ -51,6 +61,7 @@ class serverthread extends Thread{
 			e.printStackTrace();
 		}
 	}
+	//funcion para terminar el servidor local del GET_FILE
 	public void Stop(){
 		try{
 			sc.close();
@@ -61,7 +72,7 @@ class serverthread extends Thread{
 			e.printStackTrace();
 		}
 	}
-
+	//Funcion para leer Strings de C en java
 	public static String leer(DataInputStream in){
     	byte[] ch = new byte[1];
     	String output = new String();
@@ -78,7 +89,8 @@ class serverthread extends Thread{
         	System.err.println("excepcion " + e.toString() );
       	}
       	return output;
-   	}
+	   }
+	//Funcion para escribir Strings de java a C
 	public static void escribir(DataOutputStream os, String salida){
 		try{
 			os.writeBytes(salida);
@@ -90,7 +102,7 @@ class serverthread extends Thread{
 	}
 	
 }
-
+//Struct para almacenar los usuarios conectados en un Arraylist
 class userInfo{
 	String username;
 	String ipadress;
@@ -106,6 +118,7 @@ class userInfo{
 class client {
 	
 	/*********FUNCIONES AUXILIARES*********************/
+	//Funcion para leer Strings de C en java
 	public static String leer(DataInputStream in){
     	byte[] ch = new byte[1];
     	String output = new String();
@@ -122,7 +135,8 @@ class client {
         	System.err.println("excepcion " + e.toString() );
       	}
       	return output;
-   	}
+	   }
+	//Funcion para escribir Strings de java a C
 	public static void escribir(DataOutputStream os, String salida){
 		try{
 			os.writeBytes(salida);
@@ -134,7 +148,7 @@ class client {
 	}
 	
 	/******************* ATTRIBUTES *******************/
-	
+	//Variables globales 
 	private static String _server   = null;
 	private static int _port = -1;
 	private static serverthread _serverthread = null;
@@ -148,33 +162,39 @@ class client {
 	 * 
 	 * @return ERROR CODE
 	 */
+
+	//Funcion register
 	static int register(String user) 
 	{
 		int result = 0;
 		try{
+			//creacion del socket
 			Socket sc = new Socket(_server, _port);
 			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
 			DataInputStream in = new DataInputStream(sc.getInputStream());
 
+			//enviamos cadena REGISTER y cadena con el nombre de usuario
 			escribir(os, "REGISTER");
 			escribir(os, user);
-
+			
+			//leemos respuesta del server
 			String respuesta = leer(in);
 			result = Integer.parseInt(respuesta);
-
+			
+			//cierre del socket
 			sc.close();
 		}
 		catch(Exception e){
 			System.err.println("excepcion " + e.toString());
 			result = 2;
 		}
-		if(result == 0){
+		if(result == 0){ //caso de result = 0
 			System.out.println("c> REGISTER OK");
 		}
-		else if(result == 1){
+		else if(result == 1){ //caso de result = 1
 			System.out.println("c> USERNAME IN USE");
 		}
-		else {
+		else {	//resto de casos
 			System.out.println("c> REGISTER FAIL");
 		}
 		
@@ -186,20 +206,26 @@ class client {
 	 * 
 	 * @return ERROR CODE
 	 */
+
+	//Funcion register
 	static int unregister(String user) 
 	{
 		int result=0;
 		try{
+			//creacion del socket
 			Socket sc = new Socket(_server, _port);
 			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
 			DataInputStream in = new DataInputStream(sc.getInputStream());
 
+			//enviamos cadena UNREGISTER y cadena con el nombre de usuario
 			escribir(os, "UNREGISTER");
 			escribir(os, user);
 
+			//leemos respuesta del server
 			String respuesta = leer(in);
 			result = Integer.parseInt(respuesta);
 			
+			//cierre del socket
 			sc.close();
 			
 		}
@@ -207,13 +233,13 @@ class client {
 			System.err.println("excepcion " + e.toString());
 			result = 2;
 		}
-		if(result == 0){
+		if(result == 0){ //caso de result = 0
 			System.out.println("c> UNREGISTER OK");
 		}
-		else if(result == 1){
+		else if(result == 1){ //caso de result = 1
 			System.out.println("c> USER DOES NOT EXIST");
 		}
-		else {
+		else { //resto de casos
 			System.out.println("c> UNREGISTER FAIL");
 		}
 		return result;
@@ -229,41 +255,50 @@ class client {
 		if(_connecteduser==null){
 			int result=0;
 			try{
+				//creacion del socket
 				Socket sc = new Socket(_server, _port);
 				DataOutputStream os = new DataOutputStream(sc.getOutputStream());
 				DataInputStream in = new DataInputStream(sc.getInputStream());
-
+				
+				//creacion del serversocket que va a utilizarse en GET_FILE
 				ServerSocket serverclient = new ServerSocket(0);
+				//obtencion del puerto local
 				int port = serverclient.getLocalPort();
+
+				//enviamos cadena CONNECT seguida de la cadena con el nombre de usuario y la cadena con el puerto
 				escribir(os, "CONNECT");
 				escribir(os, user);
 				escribir(os, Integer.toString(port));
-
+				
+				//leemos respuesta del server
 				String respuesta = leer(in);
 				result = Integer.parseInt(respuesta);
 
+				//cierre del socket
 				sc.close();
+				
+				//si la respuesta es 0 iniciamos el server para los GET_FILE
 				if (result==0){
 					_serverthread = new serverthread(serverclient);
 					_serverthread.start();
 					_connecteduser = user;
 				}
 
-			}
+			} 
 			catch(Exception e){
 				System.err.println("excepcion " + e.toString());
 				result = 3;
 			}
-			if(result == 0){
+			if(result == 0){ //caso de result = 0
 				System.out.println("c> CONNECT OK");
-			}
-			else if(result == 1){
+			} 
+			else if(result == 1){ //caso de result = 1
 				System.out.println("c> CONNECT FAIL, USER DOES NOT EXIST");
 			}
-			else if(result == 2){
+			else if(result == 2){ //caso de result = 2
 				System.out.println("c> USER ALREADY CONNECTED");
 			}
-			else {
+			else { //resto de casos
 				System.out.println("c> CONNECT FAIL");
 			}
 			return result;
@@ -282,72 +317,92 @@ class client {
 	{
 		int result=0;
 		try{
+			//Si el usuario introducido no está conectado devuelve 2
 			if(!user.equals(_connecteduser)){
 				result = 2;
 			}
 			else{
+				//creacion del socket
 				Socket sc = new Socket(_server, _port);
 				DataOutputStream os = new DataOutputStream(sc.getOutputStream());
 				DataInputStream in = new DataInputStream(sc.getInputStream());
-
+				
+				//enviamos la cadena DISCONNECT y la cadena con el nombre de usuario
 				escribir(os, "DISCONNECT");
 				escribir(os, user);
 
+				//leemos respuesta del servidor
 				String respuesta = leer(in);
 				result = Integer.parseInt(respuesta);
-			
+				
+				//cierre del socket
 				sc.close();
+
+				//clear en la lista de usuarios conectados
 				_connectedusers = new ArrayList<userInfo>();
 			}
 
 		}
 		catch(Exception e){
+			//en caso de haber excepcion hacemos clear en la lista de usuarios y cerramos el server
 			System.err.println("excepcion " + e.toString());
 			_connectedusers = new ArrayList<userInfo>();
 			result = 3;
-			if(_serverthread == null){
+			if(_serverthread != null){
 				_serverthread.Stop();
 				_serverthread = null;
 				_connecteduser = null;
 			}
 		}
-		if(result == 0){
+		if(result == 0){ //caso de result = 0
+			//cierre del server local
 			_serverthread.Stop();
 			_serverthread = null;
 			_connecteduser = null;
 			System.out.println("c> DISCONNECT OK");
 		}
-		else if(result == 1){
-			System.out.println("c> DISCONNECT FAIL / USER DOES NOT EXIST");
+		else if(result == 1){ //caso de result = 1
+			System.out.println("c> DOSCONNECT FAIL / USER DOES NOT EXIST");
 		}
-		else if(result == 2){
+		else if(result == 2){ //caso de result = 2
 			System.out.println("c> DISCONNECT FAIL / USER NOT CONNECTED");
 		}
-		else {
+		else { //resto de casos
 			System.out.println("c> DISCONNECT FAIL");
 		}
 		return result;
 	}
 	static int publish(String file_name, String description) 
 	{
-		int result=0;
+		int result = 4;
 		try{
+			//si el server no está activo, el usuario no esta conectado, por lo tanto devuelve 2
 			if(_serverthread == null){
 				result = 2;
 			}
 			else{
+				//comprobamos si el fichero introducido existe y si realmente es un fichero y no un directorio
+				File f = new File(file_name);
+				if(!f.exists() || !f.isFile()){
+					System.out.println("c> PUBLISH FAIL, FILE DOES NOT EXIST");
+					return 4;
+				}
+
+				//creacion del socket
 				Socket sc = new Socket(_server, _port);
 				DataOutputStream os = new DataOutputStream(sc.getOutputStream());
 				DataInputStream in = new DataInputStream(sc.getInputStream());
 
+				//enviamos la cadena PUBLISH junto con la cadena con el nombre de usuario, la cadena con el fichero y la cadena con la descripcion
 				escribir(os, "PUBLISH");
 				escribir(os, _connecteduser);
 				escribir(os, file_name);
 				escribir(os, description);
 
+				//leemos respuesta del servidor
 				String respuesta = leer(in);
 				result = Integer.parseInt(respuesta);
-
+				//cierre del socket
 				sc.close();
 			}
 			
@@ -356,19 +411,19 @@ class client {
 			System.err.println("excepcion " + e.toString());
 			result = 4;
 		}
-		if(result == 0){
+		if(result == 0){ //caso de result = 0
 			System.out.println("c> PUBLISH OK");
 		}
-		else if(result == 1){
+		else if(result == 1){ //caso de result = 1
 			System.out.println("c> PUBLISH FAIL, USER DOES NOT EXIST");
 		}
-		else if(result == 2){
+		else if(result == 2){ //caso de result = 2
 			System.out.println("c> PUBLISH FAIL, USER NOT CONNECTED");
 		}
-		else if(result == 3){
+		else if(result == 3){ //caso de result = 3
 			System.out.println("c> PUBLISH FAIL, CONTENT ALREADY PUBLISHED");
 		}
-		else{
+		else{ //resto de casos
 			System.out.println("c> PUBLISH FAIL");
 		}
 		
@@ -382,24 +437,28 @@ class client {
 	 */
 	static int delete(String file_name)
 	{
-		int result = 0;
+		int result = 4;
 		try{
+			//si el server no está activo, el usuario no está conectado, por lo tanto devuelve 2
 			if(_serverthread == null){
 				result = 2;
 			}
 			else{
+				//creacion del socket
 				Socket sc = new Socket(_server, _port);
 				DataOutputStream os = new DataOutputStream(sc.getOutputStream());
 				DataInputStream in = new DataInputStream(sc.getInputStream());
 
+				//envia la cadena DELETE, la cadena con el nombre de usuario y la cadena del nombre del fichero
 				escribir(os, "DELETE");
 				escribir(os, _connecteduser);
-
 				escribir(os, file_name);
 
+				//leemos respuesta del server 
 				String respuesta = leer(in);
 				result = Integer.parseInt(respuesta);
 
+				//cierre del socket
 				sc.close();
 			}
 			
@@ -408,19 +467,19 @@ class client {
 			System.err.println("excepcion " + e.toString());
 			result = 4;
 		}
-		if(result == 0){
+		if(result == 0){ //caso de result = 0
 			System.out.println("c> DELETE OK");
 		}
-		else if(result == 1){
+		else if(result == 1){ //caso de result = 1
 			System.out.println("c> DELETE FAIL, USER DOES NOT EXIST");
 		}
-		else if(result == 2){
+		else if(result == 2){ //caso de result = 2
 			System.out.println("c> DELETE FAIL, USER NOT CONNECTED");
 		}
-		else if(result == 3){
+		else if(result == 3){ //caso de result = 3
 			System.out.println("c> DELETE FAIL, CONTENT NOT PUBLISHED");
 		}
-		else{
+		else{ //resto de casos
 			System.out.println("c> DELETE FAIL");
 		}
 		
@@ -433,22 +492,31 @@ class client {
 	static int list_users()
 	{
 		int result = 0;
+		//si el server no está activo, el usuario no está conectado, por lo tanto devuelve 2
 		if (_serverthread == null){
 			System.out.println("c> LIST_USERS FAIL, USER NOT CONNECTED");
 			return 2;
 		}
 		try{
+			//creacion del socket
 			Socket sc = new Socket(_server, _port); // conexión
 			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
 			DataInputStream in = new DataInputStream(sc.getInputStream());
+
+			//enviamos la cadena LIST_USERS seguida de la cadena con el nombre de usuario
 			escribir(os, "LIST_USERS");
 			escribir(os, _connecteduser);
+
+			//leemos respuesta del servidor
 			String respuesta = leer(in);
 			result = Integer.parseInt(respuesta);
-			if (result >= 0){
-				System.out.println("c> LIST_USERS OK");
-				int num_users = result;
+
+			//si la respuesta del servidor es 0, leemos de nuevo para obtener el numero de usuarios y limpiamos la lista de usuarios conectados
+			if (result == 0){
+				int num_users = Integer.parseInt(leer(in)) / 3;	//recibimos un usuario cada 3 lineas
 				_connectedusers = new ArrayList<userInfo>();
+
+				//imprimimos la lista de usuarios con su ip y puerto recibiendolos del servidor y añadimos los elementos al arraylist de usuarios conectados
 				for (int i = 0; i < num_users; i++){
 					String user = leer(in);
 					String ip = leer(in);
@@ -456,25 +524,27 @@ class client {
 					System.out.printf("%10s%15s%10s\n", user, ip, puerto);
 					_connectedusers.add(new userInfo(user, ip, Integer.parseInt(puerto)));
 				}
-				result = 0;
 			}	
+			//cierre del socket
 			sc.close();
 		}
 		catch (Exception e){
 			System.err.println("excepcion " + e.toString() );
-			result = 4;
+			result = 3;
 		}
-		if (result == 0) return result;
-		else if (result == -1){
-			result *= -1;
+
+		if (result == 0){ //caso de result = 0
+			System.out.println("c> LIST_USERS OK");
+		}
+
+		else if (result == 1){ //caso de result = 1
 			System.out.println("c> LIST_USERS FAIL, USER DOES NOT EXIST");
 		}
-		else if (result == -2){
-			result *= -1;
+
+		else if (result == 2){ //caso de result = 2
 			System.out.println("c> LIST_USERS FAIL, USER NOT CONNECTED");
 		}
-		else {
-			result *= -1;
+		else { //resto de casos
 			System.out.println("c> LIST_USERS FAIL");
 		}
 		return result;
@@ -489,56 +559,63 @@ class client {
 	static int list_content(String user_name)
 	{
 		int result = 0;
+		
+		//si el server no está activo, el usuario no está conectado, por lo tanto devuelve 2
 		if (_serverthread == null){
 			System.out.println("c> LIST_CONTENT FAIL, USER NOT CONNECTED");
 			return 2;
 		}
 		try{
+			//creacion del socket
 			Socket sc = new Socket(_server, _port); // conexión
 			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
 			DataInputStream in = new DataInputStream(sc.getInputStream());
+
+			//enviamos la cadena LIST_CONTENT junto con la cadena del nombre del usuario
 			escribir(os, "LIST_CONTENT");
 			escribir(os, _connecteduser);
 			escribir(os, user_name);
+
+			//leemos respuesta del servidor
 			String respuesta = leer(in);
 			result = Integer.parseInt(respuesta);
-			if (result > 0){
-				System.out.println("c> LIST_CONTENT OK");
-				int num_files = result;
 
+			//Si el resultado es 0, se ha hecho correctamente
+			if (result == 0){
+
+				//leemos de nuevo para obtener el numero de ficheros del usuario
+				int num_files = Integer.parseInt(leer(in)) / 2;
+
+				//si el numero de ficheros es 0, imprime el siguiente error
+				if(num_files == 0) System.out.println("c> " + user_name + " hasn't published any files yet");
+
+				//Imprimimos la lista de ficheros junto con sus descripciones recibiendolos del servidor
 				for (int i = 0; i < num_files; i++){
 					String file = leer(in);
 					String descripcion = leer(in);
 					System.out.printf("\t%s\t%s\n", file, descripcion);
 				}
-				result = 0;
 			}
-			else if(result == 0) System.out.println("c> " + user_name + " hasn't published any files yet");
+			
 			sc.close();
 		}
 		catch (Exception e){
 			System.err.println("excepcion " + e.toString() );
-			result = -5;
+			result = 4;
 		}
-		if (result == 0) return result;
-		else if (result == -1){
-			result *= -1;
+		if (result == 0) { //caso de result = 0
+			System.out.println("c> LIST_CONTENT OK");
+		}
+		else if (result == 1){ //caso de result = 1
 			System.out.println("c> LIST_CONTENT FAIL, USER DOES NOT EXIST");
 		}
-		else if (result == -2){
-			result *= -1;
+		else if (result == 2){ //caso de result = 2
 			System.out.println("c> LIST_CONTENT FAIL, USER NOT CONNECTED");
 		}
-		else if (result == -3){
-			result *= -1;
+		else if (result == 3){ //caso de result = 3
 			System.out.println("c> LIST_CONTENT FAIL, REMOTE USER DOES NOT EXIST");
 		}
-		else if (result == -4){
-			result *= -1;
-			System.out.println("c> LIST_CONTENT FAIL, REMOTE USER NOT CONNECTED");
-		}
-		else {
-			result *= -1;
+		else { //resto de casos
 			System.out.println("c> LIST_CONTENT FAIL");
 		}
 		return result;
@@ -555,12 +632,15 @@ class client {
 	{
 		int result = 0;
 		try{
-			if(_connectedusers == null|| _connectedusers.isEmpty()){
+			//si la lista de usuarios conectados esta vacia devuelve 2
+			if(_connectedusers == null || _connectedusers.isEmpty()){
 				result = 2;
 			}
 			else{
+				//recorremos la lista de usuarios conectados
 				int i = 0;
 				while(i < _connectedusers.size()){
+					//si encuentra el usuario en cuestion sale del bucle
 					if(_connectedusers.get(i).username.equals(user_name)){
 						break;
 					}
@@ -568,30 +648,40 @@ class client {
 						i++;
 					}
 				}
+				//Si no encuentra al usuario devuelve 2 e imprime el siguiente error
 				if(_connectedusers.size() == i){
 					System.out.println("c> GET_FILE FAIL");
 					return 2;
 				}
+
+				//almacenamos la ip y el puerto del usuario encontrado
 				String ip = _connectedusers.get(i).ipadress;
 				int puerto = _connectedusers.get(i).port;
-
+				
+				//creacion del socket
 				Socket sc = new Socket(ip, puerto);
 				DataOutputStream os = new DataOutputStream(sc.getOutputStream());
 				DataInputStream in = new DataInputStream(sc.getInputStream());
 
+				//enviamos la cadena GET_FILE junto con la cadena con el nombre del fichero remoto
 				escribir(os, "GET_FILE");
 				escribir(os, remote_file_name);
 
+				//introducimos un sleep para darle tiempo al servidor local a enviar la respuesta antes de leerla
 				Thread.sleep(500);
 
+				//leemos la repuesta del servidor
 				String respuesta = leer(in);
 				result = Integer.parseInt(respuesta);
 				
+				//si el resultado es 0, copiamos el fichero remoto del socket al fichero local
 				if(result == 0){
+					//introducimos un sleep para dar tiempo al servidor de que comience a enviar el fichero
 					Thread.sleep(500);
 					OutputStream out = new FileOutputStream(local_file_name);
 					DataOutputStream outputfile = new DataOutputStream(out);
 					copy.copyFile(in,outputfile);
+					//cierre del fichero 
 					outputfile.close();
 				}
 				sc.close();
@@ -602,13 +692,13 @@ class client {
 			System.err.println("excepcion " + e.toString());
 			result = 2;
 		}
-		if(result == 0){
+		if(result == 0){	//caso de result = 0
 			System.out.println("c> GET_FILE OK");
 		}
-		else if(result == 1){
+		else if(result == 1){ //caso de result = 1
 			System.out.println("c> GET_FILE FAIL, FILE DOES NOT EXIST");
 		}
-		else{
+		else{ //resto de casos
 			System.out.println("c> GET_FILE FAIL");
 		}
 		
@@ -754,16 +844,14 @@ class client {
 	 */ 
 	static boolean parseArguments(String [] argv) 
 	{
-		Getopt g = new Getopt("client", argv, "ds:p:");
+		Getopt g = new Getopt("client", argv, "s:p:");
 
 		int c;
 		String arg;
 
 		while ((c = g.getopt()) != -1) {
 			switch(c) {
-				//case 'd':
-				//	_debug = true;
-				//	break;
+
 				case 's':
 					_server = g.getOptarg();
 					break;
@@ -795,19 +883,19 @@ class client {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 	  		@Override
 	  		public void run() {
-			  	System.out.println("\n+++ DISCONNECTING +++");
-				if(_connecteduser != null) disconnect(_connecteduser);	//Desconectamos al usuario para proteger la base de datos
+				if(_serverthread != null){
+					System.out.println("\n+++ DISCONNECTING +++");
+					disconnect(_connecteduser);	//Desconectamos al usuario para proteger la base de datos
+				}
 	   		}
 		});
-  	}
-	
-	
+	}
 
 	/********************* MAIN **********************/
 	
 	public static void main(String[] argv) 
 	{
-	  	attachShutDownHook();
+		attachShutDownHook();
 
 		if(!parseArguments(argv)) {
 			usage();
@@ -817,16 +905,18 @@ class client {
 		System.out.println("To quit type: 'QUIT' or press Ctrl+C\n");
 		
 		try{
+			//iniciamos la shell
 			shell();
+			//si el server esta activo lo desactiva
 			if(_serverthread != null){
-				_serverthread.Stop();
-				_serverthread = null;
-				_connecteduser = null;
+				System.out.println("\n+++ DISCONNECTING +++");
+				disconnect(_connecteduser);	//Desconectamos al usuario para proteger la base de datos
 			}
+			System.out.println("+++ FINISHED +++");
 		}
 		catch(Exception e){
 			System.out.println("+++ FINISHED +++");
-			// e.printStackTrace();
+			System.out.println("saliendo por la puerta de atrás");
 		}
 	}
 }

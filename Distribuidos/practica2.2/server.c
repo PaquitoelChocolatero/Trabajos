@@ -13,12 +13,14 @@
 #include "operations.h"
 #include "lines.h"
 
-#include "rpc.h"
+#include "storage.h"
 
 #define MAX_MESSAGES 10
 #define MAX_THREADS 40
 #define MAX_LINE 256
 #define MAX_LEN 1024
+#define MAX_USERS 256
+#define MAX_FILES 256
 
 //Declaracion de los mutex
 pthread_mutex_t bdmutex;
@@ -37,6 +39,7 @@ struct threadParams{
 int sd;
 
 //Declaracion de funciones
+void cerrarServidor();
 void comunicacion(void *th_params);
 void receive(int socket, char *mensaje);
 void mySend(int socket, char *mensaje);
@@ -44,13 +47,12 @@ void mySend(int socket, char *mensaje);
 //Flag de actividad de los hilos
 int busy = 1;
 
+
 //Declaracion de las variables RPC
 CLIENT *clnt;
 enum clnt_stat retval_;
 int result_;
-char *host = "localhost";
-
-
+char host[50];
 
 /*
 *   MAIN
@@ -63,10 +65,13 @@ int main(int argc, char *argv[]) {
     socklen_t size;
     struct sockaddr_in server_addr, client_addr;
 	
-	while((option = getopt(argc, argv,"p:")) != -1) {
+	while((option = getopt(argc, argv,"p:s:")) != -1) {
 		switch (option) {
 			case 'p' : 
 				strcpy(port, optarg);
+		    	break;
+            case 's' : 
+				strcpy(host, optarg);
 		    	break;
 		    default: 
 				printf("Usage: server -p puerto \n");
@@ -84,6 +89,9 @@ int main(int argc, char *argv[]) {
 		clnt_pcreateerror (host);
 		exit (1);
 	}
+
+    //Capturamos Ctrl+C para añadir funcionalidades
+    signal(SIGINT, cerrarServidor);
 
 
     //Iniciamos los hilos
@@ -185,6 +193,7 @@ void comunicacion(void *th_params){
 
         //Accedemos a la base de datos
         pthread_mutex_lock(&bdmutex);
+        result_= 2;
         retval_ = registeruser_1(user, &result_, clnt);
 	    if (retval_ != RPC_SUCCESS) {
 	    	clnt_perror (clnt, "call failed");
@@ -194,12 +203,14 @@ void comunicacion(void *th_params){
         //Formateamos la respuesta del servidor
         sprintf(result, "%d", result_);
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s", result);
     }
     else if(strcmp(buf, "UNREGISTER") == 0){
         receive(s_local, user);
         printf("S> Usuario: %s OPERACION: %s\n", user, buf);
 
         pthread_mutex_lock(&bdmutex);
+        result_= 2;
         retval_ = unregisteruser_1(user, &result_, clnt);
 	    if (retval_ != RPC_SUCCESS) {
 	    	clnt_perror (clnt, "call failed");
@@ -208,6 +219,7 @@ void comunicacion(void *th_params){
 
         sprintf(result, "%d", result_);
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s", result);
     }
     else if(strcmp(buf, "CONNECT") == 0){
         receive(s_local, user);
@@ -216,6 +228,7 @@ void comunicacion(void *th_params){
         printf("S> Usuario: %s OPERACION: %s\n", user, buf);
 
         pthread_mutex_lock(&bdmutex);
+        result_= 3;
         retval_ = connectuser_1(user, ip_local, port, &result_, clnt);
 	    if (retval_ != RPC_SUCCESS) {
 	    	clnt_perror (clnt, "call failed");
@@ -224,6 +237,7 @@ void comunicacion(void *th_params){
 
         sprintf(result, "%d", result_);
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s", result);
     }
     else if(strcmp(buf, "DISCONNECT") == 0){
         receive(s_local, user);
@@ -231,6 +245,7 @@ void comunicacion(void *th_params){
 
         //Accedemos a la base de datos
         pthread_mutex_lock(&bdmutex);
+        result_= 3;
         retval_ = disconnectuser_1(user, &result_, clnt);
 	    if (retval_ != RPC_SUCCESS) {
 	    	clnt_perror (clnt, "call failed");
@@ -240,6 +255,7 @@ void comunicacion(void *th_params){
         //Formateamos la respuesta del servidor
         sprintf(result, "%d", result_);
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s", result);
     }
     else if(strcmp(buf, "PUBLISH") == 0){
         receive(s_local, user);
@@ -248,6 +264,7 @@ void comunicacion(void *th_params){
         printf("S> Usuario: %s OPERACION: %s\n", user, buf);
 
         pthread_mutex_lock(&bdmutex);
+        result_= 4;
         retval_ = publishfile_1(user, file_name, descript, &result_, clnt);
 	    if (retval_ != RPC_SUCCESS) {
 	    	clnt_perror (clnt, "call failed");
@@ -257,6 +274,7 @@ void comunicacion(void *th_params){
         //Formateamos la respuesta del servidor
         sprintf(result, "%d", result_);
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s", result);
     }
     else if(strcmp(buf, "DELETE") == 0){
         receive(s_local, user);
@@ -264,6 +282,7 @@ void comunicacion(void *th_params){
         printf("S> Usuario: %s OPERACION: %s\n", user, buf);
 
         pthread_mutex_lock(&bdmutex);
+        result_= 4;
         retval_ = deletefile_1(user, file_name, &result_, clnt);
 	    if (retval_ != RPC_SUCCESS) {
 	    	clnt_perror (clnt, "call failed");
@@ -273,54 +292,79 @@ void comunicacion(void *th_params){
         //Formateamos la respuesta del servidor
         sprintf(result, "%d", result_);
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s", result);
     }
-//    else if(strcmp(buf, "LIST_USERS") == 0){
-//        receive(s_local, user);
-//        printf("S> Usuario: %s OPERACION: %s\n", user, buf);
-//
-//        //Creamos la lista en la que van a guardarse los resultados de la base de datos
-//        char **content;
-//
-//        pthread_mutex_lock(&bdmutex);
-//        retval_ = listuser_1(user, &result_, clnt);
-//	    if (retval_ != RPC_SUCCESS) {
-//	    	clnt_perror (clnt, "call failed");
-//	    }
-//        pthread_mutex_unlock(&bdmutex);
-//
-//        //Formateamos la respuesta del servidor
-//        sprintf(result, "%d", result_/3);
-//        mySend(s_local, result);
-//
-//        //Enviamos todo lo que ha devuelto la base de datos
-//        //Hay 3 campos por cada usuario: nombre, ip, puerto
-//        for(int i=0; i<resultado; i++) mySend(s_local, content[i]);
-//
-//        //Eliminamos la lista
-//        free(content);
-//    }
-//    else if(strcmp(buf, "LIST_CONTENT") == 0){
-//        receive(s_local, user);
-//        receive(s_local, user_dest);
-//        printf("S> Usuario: %s OPERACION: %s\n", user, buf);
-//
-//        char **content;
-//        
-//        pthread_mutex_lock(&bdmutex);
-//        retval_ = listcontent_1(user_dest, user, &result_, clnt);
-//	    if (retval_ != RPC_SUCCESS) {
-//	    	clnt_perror (clnt, "call failed");
-//	    }
-//        pthread_mutex_unlock(&bdmutex);
-//
-//        //Formateamos la respuesta del servidor
-//        sprintf(result, "%d", result_/2);
-//        mySend(s_local, result);
-//        
-//        for(int i=0; i<resultado; i++) mySend(s_local, content[i]);
-//        
-//        free(content);
-//    }
+    else if(strcmp(buf, "LIST_USERS") == 0){
+        receive(s_local, user);
+        printf("S> Usuario: %s OPERACION: %s\n", user, buf);
+
+        //Creamos la lista en la que van a guardarse los resultados de la base de datos
+        mchains content;
+        content.mchains_len = (MAX_USERS * 3) + 2;
+        content.mchains_val = malloc(sizeof(chain) * content.mchains_len);
+        for(int i = 0; i < content.mchains_len; i++) content.mchains_val[i] = malloc(MAX_LINE);
+
+        pthread_mutex_lock(&bdmutex);
+        retval_ = listuser_1(user, &content, clnt);
+        if (retval_ != RPC_SUCCESS) {
+            clnt_perror (clnt, "call failed");
+        }
+        pthread_mutex_unlock(&bdmutex);
+
+
+        //mandamos la respuesta del servidor
+        mySend(s_local, content.mchains_val[0]);
+        printf("S> Enviando respuesta al cliente %s", result);
+
+        if(strcmp(content.mchains_val[0], "0") == 0){
+            printf("S> Enviando num elem: %s\n", content.mchains_val[1]);
+            mySend(s_local, content.mchains_val[1]);    //mandamos n elem
+            //Enviamos todo lo que ha devuelto la base de datos
+            //Hay 3 campos por cada usuario: nombre, ip, puerto
+            for(int i=2; i < content.mchains_len; i++) {
+                mySend(s_local, content.mchains_val[i]);
+                printf("S> Enviando elemento %s", content.mchains_val[i]);
+            }
+        }
+        
+    }
+    else if(strcmp(buf, "LIST_CONTENT") == 0){
+        receive(s_local, user);
+        receive(s_local, user_dest);
+        printf("S> Usuario: %s Usuario 2: %s OPERACION: %s\n", user, user_dest, buf);
+
+        //Creamos la lista en la que van a guardarse los resultados de la base de datos
+        mchains content;
+        content.mchains_len = (MAX_FILES * 2) + 2;
+        content.mchains_val = malloc(sizeof(chain) * content.mchains_len);
+        for(int i = 0; i < content.mchains_len; i++) content.mchains_val[i] = malloc(MAX_LINE);
+
+        pthread_mutex_lock(&bdmutex);
+        retval_ = listcontent_1(user, user_dest, &content, clnt);
+        if (retval_ != RPC_SUCCESS) {
+            clnt_perror (clnt, "call failed");
+        }
+        pthread_mutex_unlock(&bdmutex);
+
+
+        //mandamos la respuesta del servidor
+        mySend(s_local, content.mchains_val[0]);
+        printf("S> Enviando respuesta al cliente %s", result);
+
+        if(strcmp(content.mchains_val[0], "0") == 0){
+            printf("S> Enviando num elem: %s\n", content.mchains_val[1]);
+            mySend(s_local, content.mchains_val[1]);    //mandamos n elem
+            //Enviamos todo lo que ha devuelto la base de datos
+            //Hay 2 campos por cada usuario: fichero, descripcion
+            for(int i=2; i < content.mchains_len; i++) {
+                mySend(s_local, content.mchains_val[i]);
+                printf("S> Enviando elemento %s", content.mchains_val[i]);
+            }
+        }
+        
+        
+        
+    }
     else
 	{
 		printf("S> RECEIVED WRONG COMMAND: %s-\n", buf);
@@ -330,7 +374,20 @@ void comunicacion(void *th_params){
 	pthread_exit(NULL);
 }
 
+void cerrarServidor() {
+    
+    close(sd);
+    pthread_mutex_destroy(&mutex);
+    pthread_mutex_destroy(&bdmutex);
+    pthread_cond_destroy(&cond);
+    clnt_destroy(clnt);
+    
+    //Migra los datos de la base de datos de activos a la de registrados para no perder nada
+    
+    fprintf(stderr, "\nCerrando servidor...\n");
+    exit(0);
 
+}
 
 void receive(int socket, char *mensaje){
     if(readLine(socket, mensaje, MAX_LINE) <=0){
