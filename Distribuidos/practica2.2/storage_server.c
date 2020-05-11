@@ -80,96 +80,98 @@ deletefile_1_svc(char *user, char *file, int *result, struct svc_req *rqstp)
 bool_t
 listuser_1_svc(char *user, mchains *result, struct svc_req *rqstp)
 {
-	//result devuelve una matriz de strings siendo el primer elemento el codigo de error y
-	//el siguiente el numero de usuarios en caso de cod=0
+	//result devuelve una matriz de strings siendo el primer elemento el codigo de error 
+	//el siguiente el numero de usuarios en caso de cod=0, y a partir de ahi la lista de usuarios
+	// direcciones ip y puertos
 	bool_t retval;
-	mchains lista;
+	char **lista;
 	char buffer[MAX_LINE];
-	int codigo = list_users(user, &(lista.mchains_val));
-	if (codigo < 0)
+	int codigo = list_users(user, &lista);
+	if (codigo < 0) // si codigo de error
 	{
-		result->mchains_val = (chain *)malloc(sizeof(chain));
-		result->mchains_val[0] = (char *)malloc(MAX_LINE);
+		// preparo una matriz de strings tamaño 1 para devolverla con el codigo de error
+		result->mchains_val = (chain *)malloc(1 * sizeof(chain));
+		result->mchains_val[0] = (chain)malloc(MAX_LINE);
 		sprintf(buffer, "%d", -codigo);
 		strcpy(result->mchains_val[0], buffer); // codigo de error
 		result->mchains_len = 1;
 	}
 	else
 	{
-		// añado dos elementos nuevos a lista
+		// voy a añadir dos elementos nuevos a lista para meter cod=0(ok) y num de users
+		// preparo una matriz de strings tamaño (3*num_users) + 2 para devolverla
 		result->mchains_val = (chain *)malloc((codigo + 2) * sizeof(chain));
-		result->mchains_val[0] = (char *)malloc(MAX_LINE);
+		result->mchains_val[0] = (chain)malloc(MAX_LINE);
+		result->mchains_val[1] = (chain)malloc(MAX_LINE);
+		// relleno la primera string con el codigo de ok
 		strcpy(result->mchains_val[0], "0"); // codigo ok
-		result->mchains_val[1] = (char *)malloc(MAX_LINE);
+		// relleno la segunda string con el codigo de ok
 		sprintf(buffer, "%d", codigo);
 		strcpy(result->mchains_val[1], buffer); // num elementos
+		// relleno las siguientes con la lista de usuarios
 		for (int i = 0; i < codigo; i++)
 		{
-			result->mchains_val[i + 2] = (char *)malloc(MAX_LINE);
-			strcpy(result->mchains_val[i + 2], lista.mchains_val[i]); // lista original
+			result->mchains_val[i + 2] = (chain)malloc(MAX_LINE);
+			strcpy(result->mchains_val[i + 2], lista[i]); // lista original
 		}
 		result->mchains_len = codigo + 2;
+		// libero la memoria de lista asignada en list_users()
+		if (codigo != 0) {
+			for (int i = 0; i < codigo; i++) free(lista[i]);
+			free(lista);
+		}
 	}
-
-	for (int i = 0; i < lista.mchains_len; i++) free(lista.mchains_val[i]);
-	free(lista.mchains_val);
 	
 	retval = TRUE;
-
 	return retval;
 }
 
-bool_t
-listcontent_1_svc(char *user, char *puser, mchains *result, struct svc_req *rqstp)
+bool_t listcontent_1_svc(char *user, char *puser, mchains *result, struct svc_req *rqstp)
 {
-	//result devuelve una matriz de strings siendo el primer elemento el codigo de error y
-	//el siguiente el numero de ficheros en caso de cod=0
+	//result devuelve una matriz de strings siendo el primer elemento el codigo de error
+	//el siguiente el numero de ficheros en caso de cod=0, y a partir de ahi la lista de files
+	//y descripts
 	bool_t retval;
-	mchains lista;
+	char** lista;
 	char buffer[MAX_LINE];
-	int codigo = list_content(user, puser, &(lista.mchains_val));
-	/*printf("gutifarra1\n");
-	int codigo = list_content(user, puser, &(lista.mchains_val));
-	printf("codigo %d\n", codigo);
-	for(int i=0; i<codigo; i++) printf("%s", lista.mchains_val[i]);
-	*/
+	
+	
+	int codigo = list_content(user, puser, &lista);
 	if (codigo < 0)
 	{
-		result->mchains_val = (chain *)malloc(sizeof(chain));
-		printf("gutifarra2\n");
-		result->mchains_val[0] = (char *)malloc(MAX_LINE);
+		// preparo una matriz de strings tamaño 1 para devolverla con el codigo de error
+		result->mchains_val = (chain *)malloc(1 * sizeof(chain));
+		result->mchains_val[0] = (chain)malloc(MAX_LINE);
 		sprintf(buffer, "%d", -codigo);
 		strcpy(result->mchains_val[0], buffer); // codigo de error
 		result->mchains_len = 1;
-
-		printf("gutifarra3\n");
 	}
-	
 	else
 	{
-		// añado dos elementos nuevos a lista
+		// voy a añadir dos elementos nuevos a lista para meter cod=0(ok) y num de files
+		// preparo una matriz de strings tamaño (3*num_users) + 2 para devolverla
 		result->mchains_val = (chain *)malloc((codigo + 2) * sizeof(chain));
-		printf("gutifarra4\n");
-		result->mchains_val[0] = (char *)malloc(MAX_LINE);
+		result->mchains_val[0] = (chain)malloc(MAX_LINE);
+		result->mchains_val[1] = (chain)malloc(MAX_LINE);
+		// relleno la primera string con el codigo de ok
 		strcpy(result->mchains_val[0], "0"); // codigo ok
-		result->mchains_val[1] = (char *)malloc(MAX_LINE);
-		printf("gutifarra5\n");
+		// relleno la segunda string con el codigo de ok
 		sprintf(buffer, "%d", codigo);
 		strcpy(result->mchains_val[1], buffer); // num elementos
-		printf("gutifarra6\n");
+		// relleno las siguientes con la lista de files
 		for (int i = 0; i < codigo; i++)
 		{
-			printf("gutifarra%d\n", i);
-			result->mchains_val[i + 2] = (char *)malloc(MAX_LINE);
-			strcpy(result->mchains_val[i + 2], lista.mchains_val[i]); // lista original
+			result->mchains_val[i + 2] = (chain)malloc(MAX_LINE);
+			strcpy(result->mchains_val[i + 2], lista[i]); // lista original
 		}
-		printf("gutifarra7\n");
 		result->mchains_len = codigo + 2;
+		// libero la memoria de lista asignada en list_content()
+		if (codigo != 0) {
+			for (int i = 0; i < codigo; i++) free(lista[i]);
+			free(lista);
+		}
 	}
-	for (int i = 0; i < lista.mchains_len; i++) free(lista.mchains_val[i]);
-	free(lista.mchains_val);
 	retval = TRUE;
-
 	return retval;
 }
 
@@ -179,3 +181,7 @@ int fildistributor_1_freeresult(SVCXPRT *transp, xdrproc_t xdr_result, caddr_t r
 
 	return 1;
 }
+
+
+
+	

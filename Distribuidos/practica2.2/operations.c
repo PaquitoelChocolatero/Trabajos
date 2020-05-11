@@ -520,7 +520,7 @@ int deleteF(char *user, char *file)
 */
 int list_users(char *user, char ***list)
 {
-    int results = 1;
+    int results = 0;
     //Abrir la base de datos de activos
     active_rc = sqlite3_open("active.db", &active_db);
 	if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
@@ -563,25 +563,25 @@ int list_users(char *user, char ***list)
             int i = 0;
             while(active_rc == SQLITE_ROW) {
                 //Añadimos espacio en el array para la nueva posición
-                if(results==1){
+                if(results == 0){
                     results = 3;
                     *list = (char **) malloc(results * sizeof(char *));
                 }else{
                     results+=3;
-                    *list = (char **) realloc((*list), results * sizeof(*list));
+                    *list = (char **) realloc(*list, results * sizeof(char *));
                 }
-                (*list)[i] = malloc(256);
-                (*list)[i+1] = malloc(256);
-                (*list)[i+2] = malloc(256);
+                (*list)[i] = (char *)malloc(256);
+                (*list)[i + 1] = (char *)malloc(256);
+                (*list)[i + 2] = (char *)malloc(256);
                 //Comprobamos si el usuario eres tu
                 if(strcmp((char *)sqlite3_column_text(res, 0), user)==0) sprintf((*list)[i], "%s (you)", sqlite3_column_text(res, 0));
                 else sprintf((*list)[i], "%s", sqlite3_column_text(res, 0));
 
-                sprintf((*list)[i+1], "%s", sqlite3_column_text(res, 1));
-                sprintf((*list)[i+2], "%s", sqlite3_column_text(res, 2));
+                sprintf((*list)[i + 1], "%s", sqlite3_column_text(res, 1));
+                sprintf((*list)[i + 2], "%s", sqlite3_column_text(res, 2));
 
                 active_rc = sqlite3_step(res);
-                i+=3;
+                i += 3;
             }
         }else{
             printf("SS> LIST_USERS FAIL, USER NOT CONNECTED\n");
@@ -599,7 +599,7 @@ int list_users(char *user, char ***list)
 /*
 *   LIST_CONTENT USER
 */
-int list_content(char *user, char *sourceUser, char *** list)
+int list_content(char *user1, char *user2, char *** list)
 {
     int results = 0;
     //Abrir la base de datos de activos
@@ -613,7 +613,7 @@ int list_content(char *user, char *sourceUser, char *** list)
 
     //Comprobar si el usuario existe
     strcpy(concat_sql_op, "SELECT * FROM registered.USERS WHERE user='");
-    strcat(concat_sql_op, sourceUser);
+    strcat(concat_sql_op, user1);
     strcat(concat_sql_op, "';");
     active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
     checkError();
@@ -624,7 +624,7 @@ int list_content(char *user, char *sourceUser, char *** list)
 
         //Comprobar si el usuario está conectado
         strcpy(concat_sql_op, "SELECT * FROM USERS WHERE user='");
-        strcat(concat_sql_op, sourceUser);
+        strcat(concat_sql_op, user1);
         strcat(concat_sql_op, "';");
         active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
         checkError();
@@ -635,7 +635,7 @@ int list_content(char *user, char *sourceUser, char *** list)
 
             //Comprobar si el usuario existe
             strcpy(concat_sql_op, "SELECT * FROM registered.USERS WHERE user='");
-            strcat(concat_sql_op, user);
+            strcat(concat_sql_op, user2);
             strcat(concat_sql_op, "';");
             active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
             checkError();
@@ -644,10 +644,20 @@ int list_content(char *user, char *sourceUser, char *** list)
             if(exists == 1){
                 exists = 0;
 
-                //Listar archivos del usuario
-                strcpy(concat_sql_op, "SELECT * FROM FILES WHERE user='");
-                strcat(concat_sql_op, user);
+                //Comprobar si el usuario está conectado
+                strcpy(concat_sql_op, "SELECT * FROM USERS WHERE user='");
+                strcat(concat_sql_op, user2);
                 strcat(concat_sql_op, "';");
+                active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
+                checkError();
+
+                //Segun si el usuario está conectado o no
+                if(exists == 1) strcpy(concat_sql_op, "SELECT * FROM FILES WHERE user='");
+                else strcpy(concat_sql_op, "SELECT * FROM registered.FILES WHERE user='");
+                //Listar archivos del usuario
+                strcat(concat_sql_op, user2);
+                strcat(concat_sql_op, "';");
+                exists = 0;
                 active_rc = sqlite3_prepare_v2(active_db, concat_sql_op, -1, &res, 0);
                 checkError();
 
@@ -656,20 +666,19 @@ int list_content(char *user, char *sourceUser, char *** list)
                 int i = 0;
                 while(active_rc == SQLITE_ROW) {
                     //Añadimos espacio en el array para la nueva posición
-                    if(results == 0){
-                        results = 2;
-                        *list = (char **) malloc(results * sizeof(char *));
+                    results += 2;
+                    if(results == 2){
+                        *list = (char **) malloc(2 * sizeof(char *));
                     }else{
-                        results+=2;
-                        *list = (char **) realloc((*list), results * sizeof(*list));
+                        *list = (char **) realloc(*list, results * sizeof(char *));
                     }
                     (*list)[i] = malloc(256);
                     (*list)[i+1] = malloc(256);
                     sprintf((*list)[i], "%s", sqlite3_column_text(res, 1));
-                    sprintf((*list)[i+1], "%s", sqlite3_column_text(res, 2));
+                    sprintf((*list)[i + 1], "%s", sqlite3_column_text(res, 2));
 
                     active_rc = sqlite3_step(res);
-                    i+=2;
+                    i += 2;
                 }
             }else{
                 printf("SS> LIST_CONTENT FAIL, REMOTE USER DOES NOT EXIST\n");
@@ -683,7 +692,7 @@ int list_content(char *user, char *sourceUser, char *** list)
         printf("SS> LIST_CONTENT FAIL, USER DOES NOT EXIST\n");
         return -1;
     }
-    printf("S> LIST_CONTENT OK\n");
+    printf("SS> LIST_CONTENT OK\n");
 	sqlite3_close(active_db);
     return results;
 }

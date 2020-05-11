@@ -203,7 +203,7 @@ void comunicacion(void *th_params){
         //Formateamos la respuesta del servidor
         sprintf(result, "%d", result_);
         mySend(s_local, result);
-        printf("S> Enviando respuesta al cliente %s", result);
+        printf("S> Enviando respuesta al cliente %s\n", result);
     }
     else if(strcmp(buf, "UNREGISTER") == 0){
         receive(s_local, user);
@@ -219,7 +219,7 @@ void comunicacion(void *th_params){
 
         sprintf(result, "%d", result_);
         mySend(s_local, result);
-        printf("S> Enviando respuesta al cliente %s", result);
+        printf("S> Enviando respuesta al cliente %s\n", result);
     }
     else if(strcmp(buf, "CONNECT") == 0){
         receive(s_local, user);
@@ -237,7 +237,7 @@ void comunicacion(void *th_params){
 
         sprintf(result, "%d", result_);
         mySend(s_local, result);
-        printf("S> Enviando respuesta al cliente %s", result);
+        printf("S> Enviando respuesta al cliente %s\n", result);
     }
     else if(strcmp(buf, "DISCONNECT") == 0){
         receive(s_local, user);
@@ -255,7 +255,7 @@ void comunicacion(void *th_params){
         //Formateamos la respuesta del servidor
         sprintf(result, "%d", result_);
         mySend(s_local, result);
-        printf("S> Enviando respuesta al cliente %s", result);
+        printf("S> Enviando respuesta al cliente %s\n", result);
     }
     else if(strcmp(buf, "PUBLISH") == 0){
         receive(s_local, user);
@@ -274,7 +274,7 @@ void comunicacion(void *th_params){
         //Formateamos la respuesta del servidor
         sprintf(result, "%d", result_);
         mySend(s_local, result);
-        printf("S> Enviando respuesta al cliente %s", result);
+        printf("S> Enviando respuesta al cliente %s\n", result);
     }
     else if(strcmp(buf, "DELETE") == 0){
         receive(s_local, user);
@@ -292,7 +292,7 @@ void comunicacion(void *th_params){
         //Formateamos la respuesta del servidor
         sprintf(result, "%d", result_);
         mySend(s_local, result);
-        printf("S> Enviando respuesta al cliente %s", result);
+        printf("S> Enviando respuesta al cliente %s\n", result);
     }
     else if(strcmp(buf, "LIST_USERS") == 0){
         receive(s_local, user);
@@ -301,8 +301,8 @@ void comunicacion(void *th_params){
         //Creamos la lista en la que van a guardarse los resultados de la base de datos
         mchains content;
         content.mchains_len = (MAX_USERS * 3) + 2;
-        content.mchains_val = malloc(sizeof(chain) * content.mchains_len);
-        for(int i = 0; i < content.mchains_len; i++) content.mchains_val[i] = malloc(MAX_LINE);
+        content.mchains_val = (chain *)malloc(sizeof(chain) * content.mchains_len);
+        for(int i = 0; i < content.mchains_len; i++) content.mchains_val[i] = (chain)malloc(MAX_LINE);
 
         pthread_mutex_lock(&bdmutex);
         retval_ = listuser_1(user, &content, clnt);
@@ -311,10 +311,9 @@ void comunicacion(void *th_params){
         }
         pthread_mutex_unlock(&bdmutex);
 
-
         //mandamos la respuesta del servidor
         mySend(s_local, content.mchains_val[0]);
-        printf("S> Enviando respuesta al cliente %s", result);
+        printf("S> Enviando respuesta al cliente %s\n", content.mchains_val[0]);
 
         if(strcmp(content.mchains_val[0], "0") == 0){
             printf("S> Enviando num elem: %s\n", content.mchains_val[1]);
@@ -323,10 +322,9 @@ void comunicacion(void *th_params){
             //Hay 3 campos por cada usuario: nombre, ip, puerto
             for(int i=2; i < content.mchains_len; i++) {
                 mySend(s_local, content.mchains_val[i]);
-                printf("S> Enviando elemento %s", content.mchains_val[i]);
+                printf("S> Enviando elemento %s\n", content.mchains_val[i]);
             }
-        }
-        
+        }  
     }
     else if(strcmp(buf, "LIST_CONTENT") == 0){
         receive(s_local, user);
@@ -336,8 +334,8 @@ void comunicacion(void *th_params){
         //Creamos la lista en la que van a guardarse los resultados de la base de datos
         mchains content;
         content.mchains_len = (MAX_FILES * 2) + 2;
-        content.mchains_val = malloc(sizeof(chain) * content.mchains_len);
-        for(int i = 0; i < content.mchains_len; i++) content.mchains_val[i] = malloc(MAX_LINE);
+        content.mchains_val = (chain *)malloc(sizeof(chain) * content.mchains_len);
+        for(int i = 0; i < content.mchains_len; i++) content.mchains_val[i] = (chain)malloc(MAX_LINE);
 
         pthread_mutex_lock(&bdmutex);
         retval_ = listcontent_1(user, user_dest, &content, clnt);
@@ -346,29 +344,25 @@ void comunicacion(void *th_params){
         }
         pthread_mutex_unlock(&bdmutex);
 
-
         //mandamos la respuesta del servidor
         mySend(s_local, content.mchains_val[0]);
-        printf("S> Enviando respuesta al cliente %s", result);
+        printf("S> Enviando respuesta al cliente %s\n", content.mchains_val[0]);
 
         if(strcmp(content.mchains_val[0], "0") == 0){
             printf("S> Enviando num elem: %s\n", content.mchains_val[1]);
             mySend(s_local, content.mchains_val[1]);    //mandamos n elem
             //Enviamos todo lo que ha devuelto la base de datos
             //Hay 2 campos por cada usuario: fichero, descripcion
-            for(int i=2; i < content.mchains_len; i++) {
+            for(int i = 2; i < content.mchains_len; i++) {
                 mySend(s_local, content.mchains_val[i]);
-                printf("S> Enviando elemento %s", content.mchains_val[i]);
+                printf("S> Enviando elemento %s\n", content.mchains_val[i]);
             }
-        }
-        
-        
-        
+        }  
     }
-    else
-	{
+    else {
 		printf("S> RECEIVED WRONG COMMAND: %s-\n", buf);
 	}
+
 	printf("S> Cerrando comunicacion con cliente %s...\n", ip_local);
 	close(s_local);
 	pthread_exit(NULL);
