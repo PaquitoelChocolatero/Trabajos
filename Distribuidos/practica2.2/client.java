@@ -634,7 +634,8 @@ class client {
 		try{
 			//si la lista de usuarios conectados esta vacia devuelve 2
 			if(_connectedusers == null || _connectedusers.isEmpty()){
-				result = 2;
+				System.out.println("c> GET_FILE FAIL, DO LIST_USERS FIRST");
+				return 2;
 			}
 			else{
 				//recorremos la lista de usuarios conectados
@@ -648,11 +649,14 @@ class client {
 						i++;
 					}
 				}
+
 				//Si no encuentra al usuario devuelve 2 e imprime el siguiente error
 				if(_connectedusers.size() == i){
 					System.out.println("c> GET_FILE FAIL");
 					return 2;
 				}
+
+				
 
 				//almacenamos la ip y el puerto del usuario encontrado
 				String ip = _connectedusers.get(i).ipadress;
