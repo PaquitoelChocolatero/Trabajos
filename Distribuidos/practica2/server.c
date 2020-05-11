@@ -182,6 +182,7 @@ void comunicacion(void *th_params){
         //Formateamos la respuesta del servidor
         sprintf(result, "%d", resultado);
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s\n", result);
     }
     else if(strcmp(buf, "UNREGISTER") == 0){
         receive(s_local, user);
@@ -193,6 +194,7 @@ void comunicacion(void *th_params){
 
         sprintf(result, "%d", resultado);
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s\n", result);
     }
     else if(strcmp(buf, "CONNECT") == 0){
         receive(s_local, user);
@@ -206,6 +208,7 @@ void comunicacion(void *th_params){
 
         sprintf(result, "%d", resultado);
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s\n", result);
     }
     else if(strcmp(buf, "DISCONNECT") == 0){
         receive(s_local, user);
@@ -217,6 +220,7 @@ void comunicacion(void *th_params){
 
         sprintf(result, "%d", resultado);
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s\n", result);
     }
     else if(strcmp(buf, "PUBLISH") == 0){
         receive(s_local, user);
@@ -230,6 +234,7 @@ void comunicacion(void *th_params){
 
         sprintf(result, "%d", resultado);
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s\n", result);
     }
     else if(strcmp(buf, "DELETE") == 0){
         receive(s_local, user);
@@ -242,6 +247,7 @@ void comunicacion(void *th_params){
 
         sprintf(result, "%d", resultado);
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s\n", result);
     }
     else if(strcmp(buf, "LIST_USERS") == 0){
         receive(s_local, user);
@@ -254,16 +260,27 @@ void comunicacion(void *th_params){
         int resultado = list_users(user, &content);
         pthread_mutex_unlock(&bdmutex);
 
-        //Enviamos el número de usuarios activos
-        sprintf(result, "%d", resultado/3);
+        //Formateamos y enviamos la respuesta del servidor
+        if (resultado < 0) sprintf(result, "%d", -resultado);
+        else strcpy(result, "0");
         mySend(s_local, result);
+        printf("S> Enviando respuesta al cliente %s\n", result);
 
-        //Enviamos todo lo que ha devuelto la base de datos
-        //Hay 3 campos por cada usuario: nombre, ip, puerto
-        for(int i=0; i<resultado; i++) mySend(s_local, content[i]);
+        if (resultado >=0) {
+            //Enviamos el número de usuarios activos
+            sprintf(result, "%d", resultado / 3);
+            mySend(s_local, result);
+            printf("S> Enviando num de usuarios: %s\n", result);
+            //Enviamos todo lo que ha devuelto la base de datos
+            //Hay 3 campos por cada usuario: nombre, ip, puerto
+            for(int i = 0; i < resultado; i++) {
+                mySend(s_local, content[i]);
+                printf("S> Enviando datos: %s\n", content[i]);
+            }
 
-        //Eliminamos la lista
-        free(content);
+            //Eliminamos la lista
+            if (resultado > 0) free(content); 
+        }
     }
     else if(strcmp(buf, "LIST_CONTENT") == 0){
         receive(s_local, user);
@@ -273,17 +290,33 @@ void comunicacion(void *th_params){
         char **content;
         
         pthread_mutex_lock(&bdmutex);
-        int resultado = list_content(user_dest, user, &content);
+        int resultado = list_content(user, user_dest, &content);
         pthread_mutex_unlock(&bdmutex);
-
-
-        //Hay 2 campos por cada fichero del usuario: nombre, descripcion
-        sprintf(result, "%d", resultado/2);
-        mySend(s_local, result);
         
-        for(int i=0; i<resultado; i++) mySend(s_local, content[i]);
-        
-        free(content);
+        //Formateamos y enviamos la respuesta del servidor
+        if (resultado < 0) { 
+            sprintf(result, "%d", -resultado);
+            mySend(s_local, result);
+            printf("S> Enviando respuesta al cliente %s\n", result);
+        }
+        else {
+            strcpy(result, "0");
+            mySend(s_local, result);
+            printf("S> Enviando respuesta al cliente %s\n", result);
+
+            //Hay 2 campos por cada fichero del usuario: nombre, descripcion
+            sprintf(result, "%d", resultado / 2); // envio num de files
+            mySend(s_local, result);
+            printf("S> Enviando numero de ficheros %s\n", result);
+            // envio cada file name y descripcion
+            for(int i = 0; i < resultado; i++) {
+                mySend(s_local, content[i]);
+                printf("S> Enviando datos:  %s\n", content[i]);
+            }
+            
+            //Eliminamos la lista
+            if (resultado > 0) free(content); 
+        }
     }
     else
 	{
@@ -299,15 +332,12 @@ void comunicacion(void *th_params){
 void cerrarServidor() {
     
     close(sd);
-    stopServer();
     pthread_mutex_destroy(&mutex);
     pthread_mutex_destroy(&bdmutex);
     pthread_cond_destroy(&cond);
-    
-    
     //Migra los datos de la base de datos de activos a la de registrados para no perder nada
-    
-    fprintf(stderr, "\nCerrando servidor...\n");
+    stopServer();
+    printf("\nCerrando servidor...\n");
     exit(0);
 
 }

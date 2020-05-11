@@ -304,7 +304,7 @@ class client {
 			return result;
 		}else{
 			System.out.println("c> CONNECT FAIL, CONNECTION ACTIVE: " + _connecteduser);
-			return -1;
+			return 3;
 		}
 	}
 	
@@ -318,29 +318,28 @@ class client {
 		int result=0;
 		try{
 			//Si el usuario introducido no está conectado devuelve 2
-			if(!user.equals(_connecteduser)){
-				result = 2;
+			if(_connecteduser != null && !user.equals(_connecteduser)){
+				System.out.println("c> DISCONNECT FAIL . USER CONNECTED AS " + _connecteduser);
+				return 2;
 			}
-			else{
-				//creacion del socket
-				Socket sc = new Socket(_server, _port);
-				DataOutputStream os = new DataOutputStream(sc.getOutputStream());
-				DataInputStream in = new DataInputStream(sc.getInputStream());
-				
-				//enviamos la cadena DISCONNECT y la cadena con el nombre de usuario
-				escribir(os, "DISCONNECT");
-				escribir(os, user);
+			//creacion del socket
+			Socket sc = new Socket(_server, _port);
+			DataOutputStream os = new DataOutputStream(sc.getOutputStream());
+			DataInputStream in = new DataInputStream(sc.getInputStream());
+			
+			//enviamos la cadena DISCONNECT y la cadena con el nombre de usuario
+			escribir(os, "DISCONNECT");
+			escribir(os, user);
 
-				//leemos respuesta del servidor
-				String respuesta = leer(in);
-				result = Integer.parseInt(respuesta);
-				
-				//cierre del socket
-				sc.close();
+			//leemos respuesta del servidor
+			String respuesta = leer(in);
+			result = Integer.parseInt(respuesta);
+			
+			//cierre del socket
+			sc.close();
 
-				//clear en la lista de usuarios conectados
-				_connectedusers = new ArrayList<userInfo>();
-			}
+			//clear en la lista de usuarios conectados
+			_connectedusers = new ArrayList<userInfo>();
 
 		}
 		catch(Exception e){
@@ -362,7 +361,7 @@ class client {
 			System.out.println("c> DISCONNECT OK");
 		}
 		else if(result == 1){ //caso de result = 1
-			System.out.println("c> DOSCONNECT FAIL / USER DOES NOT EXIST");
+			System.out.println("c> DISCONNECT FAIL / USER DOES NOT EXIST");
 		}
 		else if(result == 2){ //caso de result = 2
 			System.out.println("c> DISCONNECT FAIL / USER NOT CONNECTED");
@@ -587,7 +586,7 @@ class client {
 				int num_files = Integer.parseInt(leer(in));
 
 				//si el numero de ficheros es 0, imprime el siguiente error
-				if(num_files == 0) System.out.println("c> " + user_name + " hasn't published any files yet");
+				if(num_files == 0) System.out.println("c> " + user_name + " has not published any files yet");
 
 				//Imprimimos la lista de ficheros junto con sus descripciones recibiendolos del servidor
 				for (int i = 0; i < num_files; i++){
@@ -634,22 +633,18 @@ class client {
 		try{
 			//si la lista de usuarios conectados esta vacia devuelve 2
 			if(_connectedusers == null || _connectedusers.isEmpty()){
-				result = 2;
+				System.out.println("c> GET_FILE FAIL. RUN LIST_USERS FIRST");
+				return 2;
 			}
 			else{
 				//recorremos la lista de usuarios conectados
 				int i = 0;
 				while(i < _connectedusers.size()){
-					//si encuentra el usuario en cuestion sale del bucle
-					if(_connectedusers.get(i).username.equals(user_name)){
-						break;
-					}
-					else{
-						i++;
-					}
+					if(_connectedusers.get(i).username.equals(user_name)) break;
+					else i++; //si encuentra el usuario en cuestion sale del bucle
 				}
 				//Si no encuentra al usuario devuelve 2 e imprime el siguiente error
-				if(_connectedusers.size() == i){
+				if(i == _connectedusers.size()) {
 					System.out.println("c> GET_FILE FAIL");
 					return 2;
 				}
@@ -678,10 +673,12 @@ class client {
 				if(result == 0){
 					//introducimos un sleep para dar tiempo al servidor de que comience a enviar el fichero
 					Thread.sleep(500);
+					// abrimos un file para escribir
 					OutputStream out = new FileOutputStream(local_file_name);
 					DataOutputStream outputfile = new DataOutputStream(out);
-					copy.copyFile(in,outputfile);
-					//cierre del fichero 
+					// leemos del socket y escribimos en el file
+					copy.copyFile(in, outputfile);
+					//cerramos el fichero 
 					outputfile.close();
 				}
 				sc.close();

@@ -7,4 +7,4 @@ int disconnectUser(char *user);
 int publishFile(char *user, char *file, char *description);
 int deleteFile(char *user, char *file);
 int list_users(char *user, char *** list);
-int list_content(char *user, char *sourceUser, char *** list);
+int list_content(char *user1, char *user2, char *** list);
