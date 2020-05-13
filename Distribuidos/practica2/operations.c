@@ -556,7 +556,7 @@ int deleteFile(char *user, char *file)
     }else{
         sqlite3_close(active_db);
         printf("S> DELETE FAIL, USER DOES NOT EXIST\n");
-        return -1;
+        return 1;
     }
     
     printf("S> DELETE OK\n");
