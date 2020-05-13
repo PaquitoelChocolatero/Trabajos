@@ -913,7 +913,6 @@ class client {
 		}
 		catch(Exception e){
 			System.out.println("+++ FINISHED +++");
-			System.out.println("saliendo por la puerta de atrás");
 		}
 	}
 }

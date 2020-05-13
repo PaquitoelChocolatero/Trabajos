@@ -478,7 +478,7 @@ int publishFile(char *user, char *file, char *description)
     }else{
         sqlite3_close(active_db);
         printf("S> PUBLISH FAIL, USER DOES NOT EXIST\n");
-        return -1;
+        return 1;
     }
     printf("S> PUBLISH OK\n");
 	sqlite3_close(active_db);
