@@ -411,47 +411,70 @@ int publishF(char *user, char *file, char *description)
 {
     //Abrir la base de datos de activos
     active_rc = sqlite3_open("active.db", &active_db);
-	if(active_rc) fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
+	if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
 
-    //Comprobar si el usuario está conectado
-    strcpy(concat_sql_op, "SELECT * FROM USERS WHERE user='");
+    //Linkeamos la base de usuarios activos a la de registrados
+    sql_op = "ATTACH 'registered.db' AS registered;";
+    active_rc = sqlite3_exec(active_db, sql_op, callback, 0, &err);
+    checkError();
+
+    //Comprobar si el usuario existe
+    strcpy(concat_sql_op, "SELECT * FROM registered.USERS WHERE user='");
     strcat(concat_sql_op, user);
     strcat(concat_sql_op, "';");
     active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
     checkError();
 
-    //Si el usuario está conectado
+    //Si el usuario existe
     if(exists == 1){
         exists = 0;
 
-        //Comprobar si el archivo ya existe
-        strcpy(concat_sql_op, "SELECT * FROM FILES WHERE user='");
+        // comprobar si el usuario está conectado
+        strcpy(concat_sql_op, "SELECT * FROM USERS WHERE user='");
         strcat(concat_sql_op, user);
-        strcat(concat_sql_op, "' AND name='");
-        strcat(concat_sql_op, file);
         strcat(concat_sql_op, "';");
         active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
         checkError();
-        
-        if(exists == 0){
-            //Insertamos el archivo
-            strcpy(concat_sql_op, "INSERT INTO FILES (USER,NAME,DESCRIPTION) VALUES('");
-            strcat(concat_sql_op, user);
-            strcat(concat_sql_op, "','");
-            strcat(concat_sql_op, file);
-            strcat(concat_sql_op, "','");
-            strcat(concat_sql_op, description);
-            strcat(concat_sql_op, "');");
-            active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
-            checkError();
-        }else{
+
+        //Si el usuario está conectado
+        if(exists == 1){
             exists = 0;
-            printf("SS> PUBLISH FAIL, CONTENT ALREADY PUBLISHED\n");
-            return 3;
-        }
+
+            //Comprobar si el archivo existe
+            strcpy(concat_sql_op, "SELECT * FROM FILES WHERE user='");
+            strcat(concat_sql_op, user);
+            strcat(concat_sql_op, "' AND name='");
+            strcat(concat_sql_op, file);
+            strcat(concat_sql_op, "';");
+            active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
+            checkError();
+
+            if(exists == 0){
+                //Insertamos el archivo
+                strcpy(concat_sql_op, "INSERT INTO FILES (USER,NAME,DESCRIPTION) VALUES('");
+                strcat(concat_sql_op, user);
+                strcat(concat_sql_op, "','");
+                strcat(concat_sql_op, file);
+                strcat(concat_sql_op, "','");
+                strcat(concat_sql_op, description);
+                strcat(concat_sql_op, "');");
+                active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+                checkError();
+            }else{
+                exists = 0;
+                sqlite3_close(active_db);
+                printf("SS> PUBLISH FAIL, CONTENT ALREADY PUBLISHED\n");
+                return 3;
+            }
+        }else{
+            sqlite3_close(active_db);
+            printf("SS> PUBLISH FAIL, USER  NOT CONNECTED\n");
+            return 2;
+        }   
     }else{
-        printf("SS> PUBLISH FAIL, USER NOT CONNECTED\n");
-        return 2;
+        sqlite3_close(active_db);
+        printf("SS> PUBLISH FAIL, USER DOES NOT EXIST\n");
+        return 1;
     }
     printf("SS> PUBLISH OK\n");
 	sqlite3_close(active_db);
@@ -469,49 +492,74 @@ int deleteF(char *user, char *file)
     active_rc = sqlite3_open("active.db", &active_db);
 	if(active_rc)fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(active_db));
 
-    //Comprobar si el usuario está conectado
-    strcpy(concat_sql_op, "SELECT * FROM USERS WHERE user='");
+    //Linkeamos la base de usuarios activos a la de registrados
+    sql_op = "ATTACH 'registered.db' AS registered;";
+    active_rc = sqlite3_exec(active_db, sql_op, callback, 0, &err);
+    checkError();
+
+    //Comprobar si el usuario existe
+    strcpy(concat_sql_op, "SELECT * FROM registered.USERS WHERE user='");
     strcat(concat_sql_op, user);
     strcat(concat_sql_op, "';");
     active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
     checkError();
 
-    //Si el usuario está conectado
+    //Si el usuario existe
     if(exists == 1){
         exists = 0;
 
-        //Comprobar si el archivo existe
-        strcpy(concat_sql_op, "SELECT * FROM FILES WHERE user='");
+        // comprobar si el usuario está conectado
+        strcpy(concat_sql_op, "SELECT * FROM USERS WHERE user='");
         strcat(concat_sql_op, user);
-        strcat(concat_sql_op, "' AND name='");
-        strcat(concat_sql_op, file);
         strcat(concat_sql_op, "';");
         active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
         checkError();
 
+        //Si el usuario está conectado
         if(exists == 1){
             exists = 0;
 
-            //Borramos el archivo
-            strcpy(concat_sql_op, "DELETE FROM FILES WHERE user='");
+            //Comprobar si el archivo existe
+            strcpy(concat_sql_op, "SELECT * FROM FILES WHERE user='");
             strcat(concat_sql_op, user);
             strcat(concat_sql_op, "' AND name='");
             strcat(concat_sql_op, file);
             strcat(concat_sql_op, "';");
-            active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+            active_rc = sqlite3_exec(active_db, concat_sql_op, elementExists, 0, &err);
             checkError();
+
+            if(exists == 1){
+                exists = 0;
+
+                //Borramos el archivo
+                strcpy(concat_sql_op, "DELETE FROM FILES WHERE user='");
+                strcat(concat_sql_op, user);
+                strcat(concat_sql_op, "' AND name='");
+                strcat(concat_sql_op, file);
+                strcat(concat_sql_op, "';");
+                active_rc = sqlite3_exec(active_db, concat_sql_op, callback, 0, &err);
+                checkError();
+            }else{
+                sqlite3_close(active_db);
+                printf("SS> DELETE FAIL, CONTENT NOT PUBLISHED\n");
+                return 3;
+            }
         }else{
-            printf("SS> DELETE FAIL, CONTENT NOT PUBLISHED\n");
-            return 3;
-        }
+            sqlite3_close(active_db);
+            printf("SS> DELETE FAIL, USER  NOT CONNECTED\n");
+            return 2;
+        }   
     }else{
-        printf("SS> DELETE FAIL, USER  NOT CONNECTED\n");
-        return 2;
+        sqlite3_close(active_db);
+        printf("SS> DELETE FAIL, USER DOES NOT EXIST\n");
+        return 1;
     }
+    
     printf("SS> DELETE OK\n");
 	sqlite3_close(active_db);
     return 0;
 }
+
 
 
 
