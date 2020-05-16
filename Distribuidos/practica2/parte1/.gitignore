@@ -1,0 +1,6 @@
+server
+*.o
+*.db
+*.class
+*.txt
+*.jpg

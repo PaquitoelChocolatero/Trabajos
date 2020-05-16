@@ -3,19 +3,16 @@
 
 # Parameters
 
-CLIENT = server 
-SERVER = storage_server
-
+CLIENT = server
+SERVER = rpc_server
 
 SOURCES_CLNT.c = 
 SOURCES_CLNT.h = 
 SOURCES_SVC.c = 
-SOURCES_SVC.h = 
+SOURCES_SVC.h =
 
-
-TARGETS_SVC.c = storage_svc.c storage_server.c storage_xdr.c operations.c 
-TARGETS_CLNT.c = storage_clnt.c server.c storage_xdr.c lines.c
-
+TARGETS_SVC.c = rpc_svc.c rpc_server.c rpc_xdr.c operations.c
+TARGETS_CLNT.c = rpc_clnt.c server.c rpc_xdr.c lines.c
 
 OBJECTS_CLNT = $(SOURCES_CLNT.c:%.c=%.o) $(TARGETS_CLNT.c:%.c=%.o)
 OBJECTS_SVC = $(SOURCES_SVC.c:%.c=%.o) $(TARGETS_SVC.c:%.c=%.o)
@@ -23,11 +20,10 @@ OBJECTS_SVC = $(SOURCES_SVC.c:%.c=%.o) $(TARGETS_SVC.c:%.c=%.o)
 
 CPPFLAGS += -D_REENTRANT
 CFLAGS += -g 
-LDLIBS += -lnsl -lpthread
-SERVERLIBS += -l sqlite3 -Ilib/sqlite 
+LDLIBS += -lnsl -lpthread 
+SERVERLIBS += -l sqlite3 -Ilib/sqlite
 
 # Targets 
-
 
 all : $(CLIENT) $(SERVER)
 
