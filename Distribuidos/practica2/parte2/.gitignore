@@ -1,0 +1,8 @@
+server
+*.o
+*.db
+*.class
+*.txt
+*.jpg
+.vscode
+storage_server
