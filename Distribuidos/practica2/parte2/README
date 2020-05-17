@@ -1,0 +1,24 @@
+Para generar el servidor RPC, se requiere la instalación de rpcgen y para la ejecución de los programas, se requiere la herramienta rpcbind. 
+
+De igual manera, para compilar el servidor de la parte 1, es necesario instalar la herramienta sqlite3. Para el cliente, en su compilación se necesita javac y en su ejecución java.
+
+para compilar el servidor RPC junto con el servidor por defecto:
+
+make -f Makefile.storage
+
+para compilar el cliente:
+
+javac client.java
+
+para ejecutar el cliente
+
+$ java -cp . client -s <ip> -p <port>
+
+para ejecutar el server rpc:
+
+$ ./storage_server <port>
+
+para ejecutar el servidor:
+
+$ ./server -p <port> -s <ip>
+

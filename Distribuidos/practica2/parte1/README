@@ -1,0 +1,20 @@
+Para la compilación de nuestros programas es requerida la instalación de sqlite3. 
+
+Para instalar esta herramienta, se han de introducir los siguientes comandos en la terminal de debian:
+
+$ sudo apt-get install sqlite3
+
+$ sudo apt-get install libsqlite3-dev
+
+Para la compilación del cliente, se necesita tener instalado javac. De la misma manera, para la ejecución del cliente se necesita tener instalado java.
+
+Hemos añadido al Makefile la compilación de los archivos java, por lo que con el simple comando make estará todo listo para ejecutar.
+
+
+para ejecutar el cliente
+
+$ java -cp . client -s <ip> -p <port>
+
+para ejecutar el servidor:
+
+$ ./server -p <port>
