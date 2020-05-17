@@ -1,8 +1,8 @@
 package parte3;
 
-import metro.javax.jws.WebService;
-import metro.javax.jws.WebMethod;
-import metro.javax.xml.ws.Endpoint;
+import javax.jws.WebService;
+import javax.jws.WebMethod;
+import javax.xml.ws.Endpoint;
 
 @WebService
 public class webServer {
