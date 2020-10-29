@@ -1,6 +1,11 @@
-package g16.servlets;
+package g16.userManagement;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -71,6 +76,61 @@ public class RegistrationServlet extends HttpServlet {
         _usuario.setUsername(request.getParameter("username"));
 		_usuario.setEmail(request.getParameter("email"));
         _usuario.setPassword(request.getParameter("password"));
+        
+        // JDBC driver name and database URL
+        String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+        String DB_URL = "jdbc:mysql://localhost/chiquify";
+
+        //  Database credentials
+        String DB_USER = "root";
+        String DB_PASS = "root";
+                
+        Connection conn = null;
+        Statement stmt = null;
+        try{
+           //STEP 2: Register JDBC driver
+           Class.forName("com.mysql.jdbc.Driver");
+
+           //STEP 3: Open a connection
+           System.out.println("Connecting to database...");
+           conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+
+           //STEP 4: Execute a query
+           System.out.println("Creating statement...");
+           stmt = conn.createStatement();
+           String sql;
+           sql = "INSERT INTO usuario " + 
+        		   "VALUES ('" + _usuario.getUsername() + "'," +
+        		   " '" + _usuario.getPassword() + "'," +
+        		   " '" + _usuario.getEmail() + "'," +
+        		   " '" + _usuario.getName() + "'," +
+        		   " '" + _usuario.getLastName1() + "'," +
+        		   " '" + _usuario.getLastName2() + "'," +
+        		   " '" + _usuario.getCity() + "')";
+           stmt.executeUpdate(sql);
+
+           stmt.close();
+           conn.close();
+        }catch(SQLException se){
+           //Handle errors for JDBC
+           se.printStackTrace();
+        }catch(Exception e){
+           //Handle errors for Class.forName
+           e.printStackTrace();
+        }finally{
+           //finally block used to close resources
+           try{
+              if(stmt!=null)
+                 stmt.close();
+           }catch(SQLException se2){
+           }// nothing we can do
+           try{
+              if(conn!=null)
+                 conn.close();
+           }catch(SQLException se){
+              se.printStackTrace();
+           }//end finally try
+        }//end try
         
         HttpSession session = request.getSession(true);
         session.setAttribute("user", _usuario);

@@ -1,4 +1,4 @@
-package g16.servlets;
+package g16.userManagement;
 
 public class Usuario {
 	String name;
