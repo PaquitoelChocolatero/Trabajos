@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import g16.model.Usuario;
+
 /**
  * Servlet implementation class RegistrationServlet
  */
@@ -68,14 +70,13 @@ public class RegistrationServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		//doGet(request, response);
 		
-		UsuarioPre _usuario = new UsuarioPre();
-		_usuario.setName(request.getParameter("name"));
-		_usuario.setLastName1(request.getParameter("lastname1"));
-		_usuario.setLastName2(request.getParameter("lastname2"));
-		_usuario.setCity(request.getParameter("city"));
-        _usuario.setUsername(request.getParameter("username"));
+		Usuario _usuario = new Usuario();
+		_usuario.setNombre(request.getParameter("name"));
+		_usuario.setApellido1(request.getParameter("lastname1"));
+		_usuario.setApellido2(request.getParameter("lastname2"));
+		_usuario.setCiudad(request.getParameter("city"));
 		_usuario.setEmail(request.getParameter("email"));
-        _usuario.setPassword(request.getParameter("password"));
+        _usuario.setPasswd(request.getParameter("password"));
         
         // JDBC driver name and database URL
         String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
@@ -99,14 +100,13 @@ public class RegistrationServlet extends HttpServlet {
            System.out.println("Creating statement...");
            stmt = conn.createStatement();
            String sql;
-           sql = "INSERT INTO usuario " + 
-        		   "VALUES ('" + _usuario.getUsername() + "'," +
-        		   " '" + _usuario.getPassword() + "'," +
-        		   " '" + _usuario.getEmail() + "'," +
-        		   " '" + _usuario.getName() + "'," +
-        		   " '" + _usuario.getLastName1() + "'," +
-        		   " '" + _usuario.getLastName2() + "'," +
-        		   " '" + _usuario.getCity() + "')";
+           sql = "INSERT INTO usuario ('EMAIL', 'PASSWD', 'NOMBRE', 'APELLIDO1', 'APELLIDO2', 'CIUDAD') " + 
+        		   "VALUES ('" + _usuario.getEmail() + "'," +
+        		   " 'MD5(" + _usuario.getPasswd() + ")'," +
+        		   " '" + _usuario.getNombre() + "'," +
+        		   " '" + _usuario.getApellido1() + "'," +
+        		   " '" + _usuario.getApellido2() + "'," +
+        		   " '" + _usuario.getCiudad() + "')";
            stmt.executeUpdate(sql);
 
            stmt.close();
