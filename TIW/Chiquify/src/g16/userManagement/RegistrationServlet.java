@@ -68,7 +68,7 @@ public class RegistrationServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		//doGet(request, response);
 		
-		Usuario _usuario = new Usuario();
+		UsuarioPre _usuario = new UsuarioPre();
 		_usuario.setName(request.getParameter("name"));
 		_usuario.setLastName1(request.getParameter("lastname1"));
 		_usuario.setLastName2(request.getParameter("lastname2"));

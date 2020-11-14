@@ -64,7 +64,7 @@ public class LoginServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		//doGet(request, response);
 		
-		Usuario _usuario = new Usuario();
+		UsuarioPre _usuario = new UsuarioPre();
         _usuario.setUsername(request.getParameter("username"));
         _usuario.setPassword(request.getParameter("password"));
         
