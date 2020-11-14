@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="parte1/gnu/getopt/|parte2/gnu/getopt/|parte3/gnu/getopt/|parte1/|parte2/|parte3/" kind="src" path="Distribuidos/practica2"/>
+	<classpathentry excluding="gnu/getopt/" kind="src" path="Distribuidos/practica2/parte1"/>
+	<classpathentry kind="src" path="Distribuidos/practica2/parte1/gnu/getopt"/>
+	<classpathentry excluding="gnu/getopt/" kind="src" path="Distribuidos/practica2/parte2"/>
+	<classpathentry kind="src" path="Distribuidos/practica2/parte2/gnu/getopt"/>
+	<classpathentry excluding="gnu/getopt/" kind="src" path="Distribuidos/practica2/parte3"/>
+	<classpathentry kind="src" path="Distribuidos/practica2/parte3/gnu/getopt"/>
+	<classpathentry kind="src" path="TIW/Chiquify/src"/>
+	<classpathentry kind="output" path="TIW/Chiquify/build/classes"/>
+</classpath>
