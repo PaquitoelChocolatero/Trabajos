@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/services"
+    app:startDestination="@id/nav_login">
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="es.uc3m.g1.musey.ui.fragment.LogInFragment"
+        android:label="login" />
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="es.uc3m.g1.musey.ui.fragment.ProfileFragment"
+        android:label="profile" />
+    <action
+        android:id="@+id/login"
+        app:destination="@id/nav_profile"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@animator/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@animator/nav_default_pop_exit_anim" />
+    <action
+        android:id="@+id/logout"
+        app:destination="@id/nav_login"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+</navigation>

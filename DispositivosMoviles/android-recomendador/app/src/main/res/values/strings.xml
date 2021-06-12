@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Musey</string>
+    <string name="search_hint">Type a song</string>
+    <string name="search">Search</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="recommendations">Recommendations</string>
+    <string name="apikey">API Key</string>
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
+    <string name="login_text">Please log in using one of these methods</string>
+    <string name="signin_google">Sign in with Google</string>
+    <string name="signin_spotify">Sign in with Spotify</string>
+    <string name="signout">Sign Out</string>
+    <string name="profile">Profile</string>
+    <string name="services">Profile</string>
+    <string name="login">Login</string>
+    <string name="preference_file_key">preferences</string>
+    <string name="preference_apikey_key">apikey</string>
+    <string name="ssl_pin_error">SSL PIN ERROR</string>
+    <string name="api_key_error">No API key</string>
+    <string name="recover_api_key">API key recovered</string>
+    <string name="saving_api_key">Saving API key backup in Google…</string>
+    <string name="signin_to_backup">Sign in with Google to save and recover your API key</string>
+    <string name="saving_api_key_local">API key saved!</string>
+    <string name="bad_api_key">Could not connect. Is the API key valid?</string>
+    <string name="password">Password</string>
+    <string name="recover_apikey">Recover API key</string>
+    <string name="backup_apikey">Backup API key</string>
+    <string name="see_apikey">See API key</string>
+    <string name="recover_no_api_key">No backup found</string>
+    <string name="invalid_password">Invalid password</string>
+</resources>

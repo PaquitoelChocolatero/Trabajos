@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "789247303477",
+    "project_id": "musey-1616455082927",
+    "storage_bucket": "musey-1616455082927.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:789247303477:android:f72a593175dcb72548367c",
+        "android_client_info": {
+          "package_name": "es.uc3m.g1.musey"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "789247303477-ksfmh8r614jsorfdct39c8rh6u80l85p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "es.uc3m.g1.musey",
+            "certificate_hash": "3a0cef5cae60b3ebf0550085874484535ad860a5"
+          }
+        },
+        {
+          "client_id": "789247303477-3gdfpotv59i9cukgaa93g1lhqktuhfvj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4LMXGvNFs5VQ36bcSQBgqAiytnwIfQLI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "789247303477-3gdfpotv59i9cukgaa93g1lhqktuhfvj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

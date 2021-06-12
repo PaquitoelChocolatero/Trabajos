@@ -1,0 +1,50 @@
+HITO 1
+------
+Cables:
+	R1 <-> R2 : eth0.2
+	PC <-> R1 : eth0.4
+	PC <-> R2 : eth0.4
+
+IPs:
+	PC <-> R1 : 10.0.91.0/24
+	R1 <-> R2 : 10.0.0.0/30
+	PC <-> R2 : 10.0.97.0/24
+
+1º cambiar la ip del pc acorde al grupo del router (192.168.4.1/24) -> con "ip addr" vemos las interfaces y con "ip a add 192.168.4.2/24 dev eth1" cambiamos nuestra ip a la del router
+	*Usaremos el puerto 4 en los routers como auxiliar para cambios iniciales
+
+2º Para que los dos routers se puedan comunicar entre ellos cambiamos la ip de una de las dos interfaces (estando en el mismo grupo) ej: router1=10.0.0.1 router2=10.0.0.2, lo hacemos con:
+	"configure terminal" para cambiar parametros del router
+	"interface eth0.2" para conectarnos a esa interfaz en concreto
+	"no ip address 192.168.2.1/24" para borrar esa ip
+	"ip address 10.0.0.2/30" para poner esa ip y que sea diferente a la del otro router
+
+3º Tablas de rutas
+	"configure terminal" para configurar router
+	"ip route 10.0.0.0/30 eth0.2" para que pase todos los 0.0/30 a la interfaz que la conoce
+	Nos volvemos al pc
+	"ip route add 10.0.0.0/30 dev eth1" para que los 0.0/30 los pase a la interfaz que conoce nuestra red y se lo pase al router 1
+
+
+
+HITO 2
+------
+Cables:
+	PC <-> R1 : eth0.2
+	PC <-> R2 : eth0.4
+	PC <-> R3 : eth0.3
+	R1 <-> R2 : eth0.3
+	R2 <-> R3 : eth0.2
+	R1 <-> R3 : eth0.4
+
+IPs:
+	Recrear las hechas en el ejercicio entregado (images/hito2.pdf)
+
+1º Añadir al pc las siguientes IPs con "sudo ip a add <ip> dev eth1":
+	192.168.4.2/24
+	192.168.2.2/24
+	192.168.3.2/24
+	10.0.91.2/25
+
+2º Añadimos en la tabla de rutas la ruta a toda la red:
+	"sudo ip route add 10.0.91.0/24 via 10.0.91.1"

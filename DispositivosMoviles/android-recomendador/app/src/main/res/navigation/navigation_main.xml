@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/nav_search">
+
+    <fragment
+        android:id="@+id/nav_search"
+        android:name="es.uc3m.g1.musey.ui.fragment.SearchFragment"
+        android:label="fragment_song_search"
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/nav_recommend"
+        android:name="es.uc3m.g1.musey.ui.fragment.RecommendFragment"
+        android:label="fragment_song_recommendation"
+        tools:layout="@layout/fragment_recommend">
+        <argument
+            android:name="track"
+            app:argType="es.uc3m.g1.musey.model.api.lastfm.Track" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_services"
+        android:name="es.uc3m.g1.musey.ui.fragment.ServicesFragment"
+        android:label="fragment_services"
+        tools:layout="@layout/fragment_services"></fragment>
+
+    <action
+        android:id="@+id/recommend"
+        app:destination="@id/nav_recommend"
+        app:enterAnim="@anim/nav_default_enter_anim"
+
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+    <action
+        android:id="@+id/search"
+        app:destination="@id/nav_search"
+        app:enterAnim="@anim/nav_default_enter_anim"
+
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+    <action
+        android:id="@+id/services"
+        app:destination="@id/nav_services"
+        app:enterAnim="@animator/nav_default_enter_anim"
+        app:exitAnim="@animator/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+</navigation>
